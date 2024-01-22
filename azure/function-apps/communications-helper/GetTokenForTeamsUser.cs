@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 using Azure.Communication.Identity;
 using Azure.Identity;
 using Microsoft.AspNetCore.Mvc;
