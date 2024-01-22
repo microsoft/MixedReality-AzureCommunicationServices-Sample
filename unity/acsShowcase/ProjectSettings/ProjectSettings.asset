@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: ACSHL2Sample
+  productName: ACSShowcase
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -158,7 +158,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.DefaultCompany.ACSHL2Sample
+    Standalone: com.DefaultCompany.ACSShowcase
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -675,16 +675,16 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: ACSHL2Sample
+  metroPackageName: ACSShowcase
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
   metroCertificateNotAfter: 00f4dd71ef03db01
-  metroApplicationDescription: ACSHL2Sample
+  metroApplicationDescription: ACSShowcase
   wsaImages: {}
-  metroTileShortName: ACSHL2Sample
+  metroTileShortName: ACSShowcase
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
