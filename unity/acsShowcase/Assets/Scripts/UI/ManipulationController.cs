@@ -1,0 +1,43 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using UnityEngine;
+
+
+/// <summary>
+/// This class controls the logic on enable/disable for the various manipulation bars within the project
+/// </summary>
+public class ManipulationController : MonoBehaviour
+{
+    [SerializeField] [Tooltip("The reference to the view to disable when manipulating to avoid the conflict")]
+    private HorizontalCenterView horizontalCenterView;
+
+    /// <summary>
+    /// remember the status of the view 
+    /// </summary>
+    private bool horizontalCenterViewEnabled = true;
+
+    /// <summary>
+    /// start manipulating 
+    /// </summary>
+    public void StartManipulating()
+    {
+        if (horizontalCenterView is not null)
+        {
+            horizontalCenterViewEnabled = horizontalCenterView.enabled;
+            horizontalCenterView.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// end manipulating 
+    /// </summary>
+    public void EndManipulating()
+    {
+        if (horizontalCenterView is not null)
+        {
+            horizontalCenterView.enabled = horizontalCenterViewEnabled;
+        }
+    }
+    
+}

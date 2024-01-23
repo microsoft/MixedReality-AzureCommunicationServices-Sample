@@ -1,0 +1,1126 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using Azure.Communication.Calling.UnityClient;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UnityEngine;
+
+
+/// <summary>
+/// A base class which represents a manual test scenario for Azure Communication Calling SDK.
+/// This base class manages call status, microphone audio, speaker audio, video devices, and a 
+/// participant list.
+/// </summary>
+public abstract class CallScenario : MonoBehaviour
+{
+    private List<OutgoingVideoStream> outgoingVideoStreamsAtStart = new List<OutgoingVideoStream>();
+
+    private VirtualOutgoingVideoStream rawOutgoingVideoStream = null;
+    private RawOutgoingVideoStreamOptions rawOutgoingVideoStreamOptions = null;
+    private OutputVideoResolution rawOutgoingVideoStreamResolution = OutputVideoResolution.Unknown;
+    private VideoStreamPixelFormat rawOutgoingVideoStreamFormat = VideoStreamPixelFormat.Rgba;
+
+    private bool rawOutgoingAudioRequested = false;
+    private RawOutgoingAudioStream rawOutgoingAudioStream = null;
+    private RawOutgoingAudioStreamOptions rawOutgoingAudioOptions = null;
+
+    private bool rawIncomingAudioRequested = false;
+    private RawIncomingAudioStream rawIncomingAudioStream = null;
+    private RawIncomingAudioStreamOptions rawIncomingAudioOptions = null;
+
+    private SingleAsyncRunner singleAsyncRunner = null;
+    private DeviceManager currentDeviceManager = null;
+    private CallAgent currentCallAgent = null;
+    private CommunicationCall currentCall = null;
+
+    private bool updateStatus = false;
+    private bool updateRemoteParticipants = false;
+    private bool updateMuteStatus = false;
+    private bool updateSpeakerMuteStatus = false;
+    private bool updateVideoDeviceControls = false;
+    private bool updateListeningStatus = false;
+    private bool updateOutgoingAudioStatus = false;
+    private bool updateIncomingAudioStatus = false;
+    private int defaultCamIndex = 0;
+
+    private List<VideoDeviceControls> videoDeviceControlList = new List<VideoDeviceControls>();
+    protected bool isSharedCamera = true;
+
+    const string labelRaw = "Raw";
+    const string labelStandard = "Std";
+    protected ConcurrentQueue<Action> pendingActions = new ConcurrentQueue<Action>();
+
+    [Header("Audio Settings")] [SerializeField] [Tooltip("The custom audio source for generating raw outgoing audio.")]
+    private CustomAudioSource customAudioSource = null;
+
+    [SerializeField] [Tooltip("The custom audio receiver for processing raw incoming audio.")]
+    private CustomAudioReceiver customAudioReceiver = null;
+
+    [SerializeField] [Tooltip("The sample rate of the raw outgoing audio.")]
+    private AudioStreamSampleRate customAudioSampleRate = AudioStreamSampleRate.Hz_48000;
+
+    [SerializeField] [Tooltip("The channel mode of the raw outgoing audio.")]
+    private AudioStreamChannelMode customAudioChannelMode = AudioStreamChannelMode.Stereo;
+
+    [SerializeField] [Tooltip("The audio format of the raw outgoing audio.")]
+    private AudioStreamFormat customAudioFormat = AudioStreamFormat.Pcm16Bit;
+
+    [SerializeField] [Tooltip("The amount of data per block for the raw outgoing audio.")]
+    private AudioStreamBufferDuration customAudioTimePerBlock = AudioStreamBufferDuration.Ms20;
+
+    [Header("Video Settings")] [SerializeField] [Tooltip("A video source that captures frames from the Unity scene.")]
+    private CustomVideoSource customVideoSource = null;
+
+    [SerializeField] [Tooltip("A video resolution to capture the Unity scene at.")]
+    private OutputVideoResolution customVideoResolution = OutputVideoResolution.Resolution_1920x1080;
+
+    [SerializeField] [Tooltip("A video format to capture the Unity scene at.")]
+    private VideoStreamPixelFormat customVideoFormat = VideoStreamPixelFormat.Rgba;
+
+    [Header("Base Events")] [SerializeField] [Tooltip("Event fired when status changes.")]
+    private StringChangeEvent statusChanged = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when mute status changes.")]
+    private StringChangeEvent muteStatusChanged = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when speaker mute status changes.")]
+    private StringChangeEvent speakerMuteStatusChanged = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the active type of outgoing audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent outgoingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the requested type of outgoing audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent requestedOutgoingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the active type of outgoing audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent incomingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the requested type of outgoing audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent requestedIncomingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the active type of outgoing and incoming audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent outgoingAndIncomingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the active type of outgoing and incoming audio changes. You can allow change audio type while there isn't an active call.")]
+    private StringChangeEvent requestedOutgoingAndIncomingAudioStatus = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when the listening status changed.")]
+    private StringChangeEvent listeningStatusChanged = new StringChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when remote participants changed.")]
+    private ObjectChangeEvent remoteParticipantsChanged = new ObjectChangeEvent();
+
+    [SerializeField] [Tooltip("Event fired when output video devices changed.")]
+    private ObjectChangeEvent videoDeviceControlsChanged = new ObjectChangeEvent();
+
+    protected SingleAsyncRunner SingleAsyncRunner
+    {
+        get
+        {
+            if (singleAsyncRunner == null)
+            {
+                singleAsyncRunner = gameObject.EnsureComponent<SingleAsyncRunner>();
+            }
+
+            return singleAsyncRunner;
+        }
+    }
+
+    public CallAgent CurrentCallAgent
+    {
+        get => currentCallAgent;
+
+        set
+        {
+            if (currentCallAgent != value)
+            {
+                if (currentCallAgent != null)
+                {
+                    currentCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+                    currentCallAgent.Dispose();
+                }
+
+                currentCallAgent = value;
+
+                if (currentCallAgent != null)
+                {
+                    currentCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+                }
+
+                InvalidateListeningStatus();
+            }
+        }
+    }
+
+    protected bool MuteAtStart { get; private set; } = false;
+
+    protected bool MuteSpeakerAtStart { get; private set; } = false;
+
+    protected IReadOnlyList<OutgoingVideoStream> OutgoingVideoStreamsAtStart => outgoingVideoStreamsAtStart.AsReadOnly();
+
+    protected CommunicationCall CurrentCall
+    {
+        get => currentCall;
+        set
+        {
+            if (currentCall != value)
+            {
+                if (currentCall != null)
+                {
+                    currentCall.StateChanged -= OnCurrentCallStateChanged;
+                    currentCall.OutgoingAudioStateChanged -= OnCurrentCallMutedChanged;
+                    currentCall.RemoteParticipantsUpdated -= OnCurrentCallParticipantsUpdated;
+                }
+
+                currentCall = value;
+
+                if (currentCall != null)
+                {
+                    currentCall.StateChanged += OnCurrentCallStateChanged;
+                    currentCall.OutgoingAudioStateChanged += OnCurrentCallMutedChanged;
+                    currentCall.RemoteParticipantsUpdated += OnCurrentCallParticipantsUpdated;
+                }
+                else
+                {
+                    ReleaseRawOutgoingAudioStream();
+                    ReleaseRawIncomingAudioStream();
+                }
+
+                InvalidateStatus();
+                InvalidateMuteStatus();
+                InvalidateSpeakerMuteStatus();
+                InvalidateRemoteParticipants();
+                InvalidateOutgoingAudioStatus();
+                InvalidateIncomingAudioStatus();
+            }
+        }
+    }
+
+    protected DeviceManager CurrentDeviceManager
+    {
+        get => currentDeviceManager;
+
+        private set
+        {
+            if (currentDeviceManager != value)
+            {
+                if (currentDeviceManager != null)
+                {
+                    currentDeviceManager.CamerasUpdated -= OnDeviceManagerCamerasUpdated;
+                }
+
+                currentDeviceManager = value;
+
+                if (currentDeviceManager != null)
+                {
+                    currentDeviceManager.CamerasUpdated += OnDeviceManagerCamerasUpdated;
+                }
+
+                InvalidateVideoDeviceControls();
+            }
+        }
+    }
+
+    private void Start()
+    {
+        if (customVideoSource != null)
+        {
+            customVideoSource.OnMediaSampleReady += OnSceneVideoFrameReady;
+        }
+
+        if (customAudioSource != null)
+        {
+            customAudioSource.OnMediaSamplesReady += OnCustomAudioSamplesReady;
+        }
+
+        InvalidateStatus();
+        InvalidateMuteStatus();
+        InvalidateSpeakerMuteStatus();
+        InvalidateListeningStatus();
+        InvalidateOutgoingAudioStatus();
+        InvalidateIncomingAudioStatus();
+        LoadDeviceManager();
+        ScenarioStarted();
+    }
+
+
+    private void Update()
+    {
+        ApplyPendingActions();
+
+        if (rawOutgoingVideoStreamResolution != customVideoResolution ||
+            rawOutgoingVideoStreamFormat != customVideoFormat)
+        {
+            rawOutgoingVideoStreamResolution = customVideoResolution;
+            rawOutgoingVideoStreamFormat = customVideoFormat;
+            UpdateRawOutgoingVideoStream();
+        }
+
+        if (updateStatus)
+        {
+            updateStatus = false;
+            UpdateStatus();
+        }
+
+        if (updateMuteStatus)
+        {
+            updateMuteStatus = false;
+            UpdatedMuteStatus();
+        }
+
+        if (updateSpeakerMuteStatus)
+        {
+            updateSpeakerMuteStatus = false;
+            UpdatedSpeakerMuteStatus();
+        }
+
+        if (updateListeningStatus)
+        {
+            updateListeningStatus = false;
+            UpdateListeningStatus();
+        }
+
+        if (updateRemoteParticipants)
+        {
+            updateRemoteParticipants = false;
+            UpdateRemoteParticipants();
+        }
+
+        if (updateVideoDeviceControls)
+        {
+            updateVideoDeviceControls = false;
+            UpdateVideoDeviceControls();
+        }
+
+        if (updateOutgoingAudioStatus)
+        {
+            updateOutgoingAudioStatus = false;
+            UpdateOutgoingAudioStatus();
+        }
+
+        if (updateIncomingAudioStatus)
+        {
+            updateIncomingAudioStatus = false;
+            UpdateIncomingAudioStatus();
+        }
+    }
+
+    private void ApplyPendingActions()
+    {
+        while (pendingActions.TryDequeue(out Action action))
+        {
+            action();
+        }
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        InvokeScenarioDestroyed();
+    }
+
+    private void OnDestroy()
+    {
+        InvokeScenarioDestroyed();
+    }
+
+    public async void Mute()
+    {
+        MuteAtStart = true;
+        if (CurrentCall != null)
+        {
+            await CurrentCall.MuteAsync();
+        }
+
+        InvalidateMuteStatus();
+    }
+
+    public async void Unmute()
+    {
+        MuteAtStart = false;
+        if (CurrentCall != null)
+        {
+            await CurrentCall.UnmuteAsync();
+        }
+
+        InvalidateMuteStatus();
+    }
+
+    public async void MuteSpeaker()
+    {
+        MuteSpeakerAtStart = true;
+        if (CurrentCall != null)
+        {
+            await CurrentCall.MuteIncomingAudioAsync();
+        }
+
+        InvalidateSpeakerMuteStatus();
+    }
+
+    public async void UnmuteSpeaker()
+    {
+        MuteSpeakerAtStart = false;
+        if (CurrentCall != null)
+        {
+            await CurrentCall.UnmuteIncomingAudioAsync();
+        }
+
+        InvalidateSpeakerMuteStatus();
+    }
+
+    public void RequestRawOutgoingAudio()
+    {
+        rawOutgoingAudioRequested = true;
+        InvalidateOutgoingAudioStatus();
+    }
+
+    public void RequestStandardOutgoingAudio()
+    {
+        rawOutgoingAudioRequested = false;
+        InvalidateOutgoingAudioStatus();
+    }
+
+    public void RequestRawIncomingAudio()
+    {
+        rawIncomingAudioRequested = true;
+        InvalidateIncomingAudioStatus();
+    }
+
+    public void RequestStandardIncomingAudio()
+    {
+        rawIncomingAudioRequested = false;
+        InvalidateIncomingAudioStatus();
+    }
+
+    public void ShareCamera()
+    {
+        isSharedCamera = true;
+        if (videoDeviceControlList.Count > 0)
+            videoDeviceControlList[defaultCamIndex].StartCapture();
+        
+    }
+
+    public void UnShareCamera()
+    {
+        isSharedCamera = false;
+        if (videoDeviceControlList.Count > 0)
+            videoDeviceControlList[defaultCamIndex].StopCapture();
+    }
+    
+    /// <summary>
+    /// Add new participant to this call
+    /// </summary>
+    public RemoteParticipant AddParticipant(CallIdentifier personID)
+    {
+        if (CurrentCall is not null)
+        {
+            return CurrentCall?.AddParticipant(personID);
+        }
+        else
+            return null;
+    }
+
+    /// <summary>
+    /// remove a participant from this call 
+    /// </summary>
+    public async Task RemoveParticipant(RemoteParticipant identifier)
+    {
+        if (CurrentCall is not null)
+        {
+            if (CurrentCall != null && identifier != null)
+                await CurrentCall.RemoveParticipantAsync(identifier);
+        }
+    }
+
+    protected abstract void ScenarioStarted();
+
+    protected abstract void ScenarioDestroyed();
+    
+    public virtual void Leave()
+    {
+        if (isSharedCamera)
+            UnShareCamera();
+        
+        CurrentCallAgent = null;
+        SingleAsyncRunner.QueueAsync(async () =>
+        {
+            await HangUpCurrentCall();
+        });
+    }
+
+    protected async Task HangUpCurrentCall()
+    {
+        if (CurrentCall != null)
+        {
+            try
+            {
+                await CurrentCall.HangUpAsync(new HangUpOptions()
+                {
+                    ForEveryone = false
+                });
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error HangUpCurrentCall. Exception: " + e.Message);
+            }
+            CurrentCall = null;
+        }
+        InvalidateStatus();
+    }
+
+    protected virtual void IncomingCall(IncomingCall call)
+    {
+    }
+
+    protected OutgoingVideoOptions CreateOutgoingVideoOptions()
+    {
+        if (CurrentCall != null)
+        {
+            Debug.LogError("Unable to create new outgoing video options while there is an active call.");
+            return null;
+        }
+
+        var result = new OutgoingVideoOptions();
+        if (OutgoingVideoStreamsAtStart != null &&
+            OutgoingVideoStreamsAtStart.Count > 0)
+        {
+            result.Streams = OutgoingVideoStreamsAtStart.ToArray();
+        }
+
+        return result;
+    }
+
+    protected IncomingVideoOptions CreateIncomingVideoOptions()
+    {
+        if (CurrentCall != null)
+        {
+            Debug.LogError("Unable to create new incoming video options while there is an active call.");
+            return null;
+        }
+
+        return new IncomingVideoOptions()
+        {
+            FrameKind = RawVideoFrameKind.Buffer,
+            StreamKind = VideoStreamKind.RawIncoming
+        };
+    }
+
+    protected OutgoingAudioOptions CreateOutgoingAudioOptions()
+    {
+        if (CurrentCall != null)
+        {
+            Debug.LogError("Unable to create new outgoing audio options while there is an active call.");
+            return null;
+        }
+
+        UpdateRawOutgoingAudioStream();
+
+        var result = new OutgoingAudioOptions()
+        {
+            IsMuted = MuteAtStart
+        };
+
+        if (rawOutgoingAudioStream != null)
+        {
+            result.Stream = rawOutgoingAudioStream;
+        }
+
+        return result;
+    }
+
+    protected IncomingAudioOptions CreateIncomingAudioOptions()
+    {
+        if (CurrentCall != null)
+        {
+            Debug.LogError("Unable to create new incoming audio options while there is an active call.");
+            return null;
+        }
+
+        UpdateRawIncomingAudioStream();
+
+        var result = new IncomingAudioOptions()
+        {
+            IsMuted = MuteSpeakerAtStart
+        };
+
+        if (rawIncomingAudioStream != null)
+        {
+            result.Stream = rawIncomingAudioStream;
+        }
+
+        return result;
+    }
+
+    protected void LoadDeviceManager()
+    {
+        SingleAsyncRunner.QueueAsync(async () =>
+        {
+            var callClient = CallClientHost.Instance.CallClient;
+            CurrentDeviceManager = await callClient.GetDeviceManager();
+        });
+    }
+
+    protected void UnloadDeviceManager()
+    {
+        SingleAsyncRunner.QueueAsync(() =>
+        {
+            CurrentDeviceManager = null;
+            return Task.CompletedTask;
+        });
+    }
+
+    protected void InvalidateStatus()
+    {
+        updateStatus = true;
+        InvalidateOutgoingAudioStatus();
+        InvalidateIncomingAudioStatus();
+    }
+
+    protected void InvalidateMuteStatus()
+    {
+        updateMuteStatus = true;
+    }
+
+    protected void InvalidateSpeakerMuteStatus()
+    {
+        updateSpeakerMuteStatus = true;
+    }
+
+    protected void InvalidateListeningStatus()
+    {
+        updateListeningStatus = true;
+    }
+
+    protected void InvalidateRemoteParticipants()
+    {
+        updateRemoteParticipants = true;
+    }
+
+    protected void InvalidateVideoDeviceControls()
+    {
+        updateVideoDeviceControls = true;
+    }
+
+    protected void InvalidateOutgoingAudioStatus()
+    {
+        updateOutgoingAudioStatus = true;
+    }
+
+    protected void InvalidateIncomingAudioStatus()
+    {
+        updateIncomingAudioStatus = true;
+    }
+
+    private void OnCurrentCallStateChanged(object sender, PropertyChangedEventArgs args)
+    {
+        InvalidateStatus();
+    }
+
+    private void OnCurrentCallMutedChanged(object sender, PropertyChangedEventArgs args)
+    {
+        InvalidateMuteStatus();
+    }
+
+    private void OnCurrentCallParticipantsUpdated(object sender, ParticipantsUpdatedEventArgs args)
+    {
+        InvalidateRemoteParticipants();
+    }
+
+    private void OnDeviceManagerCamerasUpdated(object sender, VideoDevicesUpdatedEventArgs args)
+    {
+        InvalidateVideoDeviceControls();
+    }
+
+    private void OnCurrentCallAgentIncomingCall(object sender, IncomingCallReceivedEventArgs args)
+    {
+        IncomingCall(args.IncomingCall);
+    }
+
+    private void OnOutgoingVideoStreamStateChanged(object sender, VideoStreamStateChangedEventArgs args)
+    {
+        if (customVideoSource == null)
+        {
+            return;
+        }
+
+        var stream = args.Stream as RawOutgoingVideoStream;
+
+        switch (stream.State)
+        {
+            case VideoStreamState.Available:
+                break;
+            case VideoStreamState.Started:
+                customVideoSource.Generate(new CustomVideoSourceSettings()
+                {
+                    Size = rawOutgoingVideoStreamResolution.ToVector(),
+                    Format = rawOutgoingVideoStreamFormat.ToTextureFormat()
+                });
+                break;
+            case VideoStreamState.Stopping:
+                break;
+            case VideoStreamState.Stopped:
+                customVideoSource.Stop();
+                break;
+            case VideoStreamState.NotAvailable:
+                break;
+        }
+    }
+
+    private void OnOutgoingVideoStreamFormatChanged(object sender, VideoStreamFormatChangedEventArgs args)
+    {
+        Debug.LogError("Unable handle outgoing video format change.");
+    }
+
+    private void OnRawOutgoingAudioStreamStateChanged(object sender, AudioStreamStateChangedEventArgs args)
+    {
+        var stream = sender as RawOutgoingAudioStream;
+        switch (args.Stream.State)
+        {
+            case AudioStreamState.Started:
+                OnRawOutgingAudioStreamReady(stream);
+                break;
+
+            case AudioStreamState.Stopped:
+                OnRawOutgoingAudioStreamStopped();
+                break;
+        }
+    }
+
+    private void OnRawOutgingAudioStreamReady(RawOutgoingAudioStream stream)
+    {
+        if (customAudioSource != null && stream != null)
+        {
+            customAudioSource.Generate(new CustomAudioSourceSettings()
+            {
+                Channels = this.customAudioChannelMode.ToInteger(),
+                SampleRate = this.customAudioSampleRate.ToInteger(),
+                SampleSizeInBytes = this.customAudioFormat.ToSizeInBytes(),
+                ExpectedBufferSizeInBytes = stream.ExpectedBufferSizeInBytes
+            });
+        }
+    }
+
+    private void OnRawOutgoingAudioStreamStopped()
+    {
+        if (customAudioSource != null)
+        {
+            customAudioSource.Stop();
+        }
+    }
+
+    private void OnRawIncomingHasMixedAudioBufferAvailable(object sender, IncomingMixedAudioEventArgs args)
+    {
+        var stream = sender as RawIncomingAudioStream;
+        if (customAudioReceiver != null && stream != null)
+        {
+            customAudioReceiver.AddSamples(args.AudioBuffer.Buffer);
+        }
+    }
+
+    private void OnRawIncomingHasUnmixedAudioBufferAvailable(object sender, IncomingUnmixedAudioEventArgs args)
+    {
+        var stream = sender as RawIncomingAudioStream;
+        if (customAudioReceiver != null && stream != null && args.AudioBuffer.Count > 0)
+        {
+            var participantIds = args.RemoteParticipantIds;
+            Debug.Log($"Using ummixed audio for participant id = {(participantIds != null && participantIds.Count > 0 ? participantIds[0] : "empty")}");
+            customAudioReceiver.AddSamples(args.AudioBuffer[0].Buffer);
+        }
+    }
+
+    private void OnRawIncomingAudioStreamChanged(object sender, AudioStreamStateChangedEventArgs args)
+    {
+        var stream = sender as RawIncomingAudioStream;
+        if (args.Stream.State == AudioStreamState.Stopped)
+        {
+            OnRawIncomingAudioStreamStopped();
+            stream.MixedAudioBufferReceived -= OnRawIncomingHasMixedAudioBufferAvailable;
+            stream.UnmixedAudioBufferReceived -= OnRawIncomingHasUnmixedAudioBufferAvailable;
+        }
+        else
+        {
+            OnRawIncomingAudioStreamStarted(stream);
+            stream.MixedAudioBufferReceived += OnRawIncomingHasMixedAudioBufferAvailable;
+            stream.UnmixedAudioBufferReceived += OnRawIncomingHasUnmixedAudioBufferAvailable;
+        }
+    }
+
+
+    private void OnRawIncomingAudioStreamStarted(RawIncomingAudioStream stream)
+    {
+        if (customAudioReceiver != null &&
+            !customAudioReceiver.IsProcessing &&
+            rawIncomingAudioOptions != null)
+        {
+            customAudioReceiver.Process(new CustomAudioReceiverSettings()
+            {
+                Channels = rawIncomingAudioOptions.Properties.ChannelMode.ToInteger(),
+                SampleRate = rawIncomingAudioOptions.Properties.SampleRate.ToInteger()
+            });
+        }
+    }
+
+    private void OnRawIncomingAudioStreamStopped()
+    {
+        if (customAudioReceiver != null)
+        {
+            customAudioReceiver.Stop();
+        }
+    }
+
+    private void InvokeScenarioDestroyed()
+    {
+        if (customVideoSource != null)
+        {
+            customVideoSource.OnMediaSampleReady -= OnSceneVideoFrameReady;
+        }
+
+        if (customAudioSource != null)
+        {
+            customAudioSource.OnMediaSamplesReady -= OnCustomAudioSamplesReady;
+        }
+
+        UnloadDeviceManager();
+        StopAndReleaseRawOutgoingVideo();
+        ReleaseRawOutgoingAudioStream();
+        ReleaseRawIncomingAudioStream();
+        ScenarioDestroyed();
+    }
+
+    private void UpdateStatus()
+    {
+        string status = null;
+        if (CurrentCall == null)
+        {
+            status = "No Call";
+        }
+        else
+        {
+            status = CurrentCall.State.ToString();
+        }
+
+        statusChanged?.Invoke(status);
+    }
+
+    private void UpdatedMuteStatus()
+    {
+        bool muted = MuteAtStart;
+        if (CurrentCall != null)
+        {
+            muted = CurrentCall.IsOutgoingAudioMuted;
+        }
+
+        muteStatusChanged?.Invoke(muted ? "Muted" : "Unmuted");
+    }
+
+    private void UpdateListeningStatus()
+    {
+        listeningStatusChanged?.Invoke(CurrentCallAgent == null ? "Not Listening" : "Listening");
+    }
+
+    private void UpdatedSpeakerMuteStatus()
+    {
+        bool muted = MuteSpeakerAtStart;
+        if (CurrentCall != null)
+        {
+            muted = CurrentCall.IsIncomingAudioMuted;
+        }
+
+        speakerMuteStatusChanged?.Invoke(muted ? "Muted" : "Unmuted");
+    }
+
+    private void UpdateOutgoingAudioStatus()
+    {
+        requestedOutgoingAudioStatus?.Invoke(rawOutgoingAudioRequested ? labelRaw : labelStandard);
+        outgoingAudioStatus?.Invoke(rawOutgoingAudioStream != null ? labelRaw : labelStandard);
+        UpdateOutgoingAndIncomingAudioStatus();
+    }
+
+    private void UpdateIncomingAudioStatus()
+    {
+        requestedIncomingAudioStatus?.Invoke(rawIncomingAudioRequested ? labelRaw : labelStandard);
+        incomingAudioStatus?.Invoke(rawIncomingAudioStream != null ? labelRaw : labelStandard);
+        UpdateOutgoingAndIncomingAudioStatus();
+    }
+
+    private void UpdateOutgoingAndIncomingAudioStatus()
+    {
+        requestedOutgoingAndIncomingAudioStatus?.Invoke($"{(rawOutgoingAudioRequested ? labelRaw : labelStandard)} / {(rawIncomingAudioRequested ? labelRaw : labelStandard)}");
+        outgoingAndIncomingAudioStatus?.Invoke($"{(rawOutgoingAudioStream != null ? labelRaw : labelStandard)} / {(rawIncomingAudioStream != null ? labelRaw : labelStandard)}");
+    }
+
+    private void UpdateRemoteParticipants()
+    {
+        List<object> remoteParticipants = new List<object>();
+        if (CurrentCall != null)
+        {
+            var inner = CurrentCall.RemoteParticipants;
+            foreach (var item in inner)
+            {
+                remoteParticipants.Add(item);
+            }
+        }
+
+        remoteParticipantsChanged?.Invoke(remoteParticipants);
+    }
+
+    private void ReleaseRawOutgoingAudioStream()
+    {
+        if (rawOutgoingAudioStream != null)
+        {
+            rawOutgoingAudioStream.StateChanged -= OnRawOutgoingAudioStreamStateChanged;
+            rawOutgoingAudioStream = null;
+        }
+
+        rawOutgoingAudioOptions = null;
+
+        if (customAudioSource != null)
+        {
+            customAudioSource.Stop();
+        }
+    }
+
+    private void UpdateRawOutgoingAudioStream()
+    {
+        ReleaseRawOutgoingAudioStream();
+
+        if (rawOutgoingAudioRequested)
+        {
+            rawOutgoingAudioOptions = new RawOutgoingAudioStreamOptions()
+            {
+                Properties = new RawOutgoingAudioStreamProperties()
+                {
+                    ChannelMode = customAudioChannelMode,
+                    Format = customAudioFormat,
+                    BufferDuration = customAudioTimePerBlock,
+                    SampleRate = customAudioSampleRate
+                }
+            };
+
+            rawOutgoingAudioStream = new RawOutgoingAudioStream(rawOutgoingAudioOptions);
+            rawOutgoingAudioStream.StateChanged += OnRawOutgoingAudioStreamStateChanged;
+        }
+
+        InvalidateOutgoingAudioStatus();
+    }
+
+    private void ReleaseRawIncomingAudioStream()
+    {
+        if (rawIncomingAudioStream != null)
+        {
+            rawIncomingAudioStream.StateChanged -= OnRawIncomingAudioStreamChanged;
+            rawIncomingAudioStream = null;
+        }
+
+        rawIncomingAudioOptions = null;
+
+        if (customAudioReceiver != null)
+        {
+            customAudioReceiver.Stop();
+        }
+    }
+
+    private void UpdateRawIncomingAudioStream()
+    {
+        ReleaseRawIncomingAudioStream();
+
+        if (rawIncomingAudioRequested)
+        {
+            rawIncomingAudioOptions = new RawIncomingAudioStreamOptions()
+            {
+                Properties = new RawIncomingAudioStreamProperties()
+                {
+                    ChannelMode = customAudioChannelMode,
+                    Format = customAudioFormat,
+                    SampleRate = customAudioSampleRate,
+                },
+                ReceiveUnmixedAudio = false
+            };
+
+            rawIncomingAudioStream = new RawIncomingAudioStream(rawIncomingAudioOptions);
+            rawIncomingAudioStream.StateChanged += OnRawIncomingAudioStreamChanged;
+        }
+
+        InvalidateIncomingAudioStatus();
+    }
+
+    private void StopAndReleaseRawOutgoingVideo()
+    {
+        if (customVideoSource != null)
+        {
+            customVideoSource.Stop();
+        }
+
+        if (rawOutgoingVideoStream != null)
+        {
+            _ = StopVideoCapture(rawOutgoingVideoStream);
+            rawOutgoingVideoStream = null;
+
+            try
+            {
+                rawOutgoingVideoStream.StateChanged += OnOutgoingVideoStreamStateChanged;
+                rawOutgoingVideoStream.FormatChanged -= OnOutgoingVideoStreamFormatChanged;
+            }
+            catch (Exception)
+            {
+                // BUGBUG sometimes removing event handlers throws
+            }
+        }
+
+        rawOutgoingVideoStreamOptions = null;
+    }
+
+    private void UpdateRawOutgoingVideoStream()
+    {
+        StopAndReleaseRawOutgoingVideo();
+
+        var rawOutgoingVideoStreamSize = rawOutgoingVideoStreamResolution.ToVector();
+        rawOutgoingVideoStreamOptions = new RawOutgoingVideoStreamOptions();
+        rawOutgoingVideoStreamOptions.Formats = new VideoStreamFormat[]
+        {
+            new VideoStreamFormat()
+            {
+                Width = rawOutgoingVideoStreamSize.x,
+                Height = rawOutgoingVideoStreamSize.y,
+                FramesPerSecond = 15,
+                PixelFormat = rawOutgoingVideoStreamFormat,
+                Stride1 = rawOutgoingVideoStreamSize.x * rawOutgoingVideoStreamFormat.PixelSize(),
+                Stride2 = 0,
+                Stride3 = 0
+            }
+        };
+
+        rawOutgoingVideoStream = new VirtualOutgoingVideoStream(rawOutgoingVideoStreamOptions);
+        rawOutgoingVideoStream.StateChanged += OnOutgoingVideoStreamStateChanged;
+        rawOutgoingVideoStream.FormatChanged += OnOutgoingVideoStreamFormatChanged;
+
+        InvalidateVideoDeviceControls();
+    }
+
+    private void UpdateVideoDeviceControls()
+    {
+        List<object> videoDeviceControls = new List<object>();
+
+        if (rawOutgoingVideoStream != null)
+        {
+            VideoDeviceControls videoDevCtrl = new VideoDeviceControls("Scene Generate", rawOutgoingVideoStream, StartVideoCapture, StopVideoCapture);
+            videoDeviceControlList.Add(videoDevCtrl);
+            videoDeviceControls.Add(videoDevCtrl);
+        }
+
+        if (CurrentDeviceManager != null)
+        {
+            var inner = CurrentDeviceManager.Cameras;
+            foreach (var item in inner)
+            {
+                VideoDeviceControls videoDevCtrl = new VideoDeviceControls(item.Name, new LocalOutgoingVideoStream(item), StartVideoCapture, StopVideoCapture);
+                videoDeviceControlList.Add(videoDevCtrl);
+                videoDeviceControls.Add(videoDevCtrl);
+                // default camera for HoloLens2
+                if (item.Name.Contains("QC Back Camera"))
+                {
+                    defaultCamIndex = videoDeviceControlList.Count - 1;
+                }
+            }
+        }
+
+        videoDeviceControlsChanged?.Invoke(videoDeviceControls);
+    }
+
+    private async Task<bool> StartVideoCapture(OutgoingVideoStream outgoingVideoStream)
+    {
+        bool startedOrStarting = false;
+
+        if (outgoingVideoStream != null)
+        {
+            if (CurrentCall != null)
+            {
+                try
+                {
+                    await CurrentCall.StartVideoAsync(outgoingVideoStream);
+                    startedOrStarting = true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to start video. Exception: {ex}");
+                }
+            }
+            else
+            {
+                startedOrStarting = true;
+            }
+        }
+
+        if (startedOrStarting)
+        {
+            outgoingVideoStreamsAtStart.Add(outgoingVideoStream);
+        }
+
+        return startedOrStarting;
+    }
+
+    private async Task<bool> StopVideoCapture(OutgoingVideoStream outgoingVideoStream)
+    {
+        bool stopped = false;
+
+        if (outgoingVideoStream != null)
+        {
+            outgoingVideoStreamsAtStart.Remove(outgoingVideoStream);
+            if (outgoingVideoStream.State == VideoStreamState.Stopped ||
+                outgoingVideoStream.State == VideoStreamState.NotAvailable)
+            {
+                stopped = true;
+            }
+            else if (CurrentCall != null)
+            {
+                try
+                {
+                    await CurrentCall.StopVideoAsync(outgoingVideoStream);
+                    stopped = true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to stop video. Exception: {ex}");
+                }
+            }
+            else
+            {
+                stopped = true;
+            }
+        }
+
+        return stopped;
+    }
+
+    private void OnSceneVideoFrameReady(object sender, MediaSampleArgs args)
+    {
+        var stream = rawOutgoingVideoStream;
+
+        if (rawOutgoingVideoStream != null &&
+            rawOutgoingVideoStream.Format != null &&
+            rawOutgoingVideoStream.State == VideoStreamState.Started)
+        {
+            // Callback is called on a background thread. So ok to block
+            rawOutgoingVideoStream.SendRawVideoFrameAsync(new RawVideoFrameBuffer()
+            {
+                Buffers = new NativeBuffer[] { args.Buffer },
+                StreamFormat = rawOutgoingVideoStream.Format,
+                TimestampInTicks = stream.TimestampInTicks
+            }).Wait();
+        }
+    }
+
+    private void OnCustomAudioSamplesReady(object sender, MediaSampleArgs args)
+    {
+        var stream = rawOutgoingAudioStream;
+
+        if (stream != null && args.Container is RawAudioBuffer)
+        {
+            stream.SendRawAudioBufferAsync((RawAudioBuffer)args.Container).Wait();
+        }
+    }
+}
