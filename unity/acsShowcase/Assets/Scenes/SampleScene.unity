@@ -11147,7 +11147,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Recent Contacts
+  m_text: Relevant Contacts
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d8d4c483bafea904fb43aabacba90d60, type: 2}
   m_sharedMaterial: {fileID: 8216279866288206051, guid: d8d4c483bafea904fb43aabacba90d60, type: 2}
@@ -20813,7 +20813,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: No Recent Contacts
+  m_text: No Relevant Contacts
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}
   m_sharedMaterial: {fileID: 3494153625042623378, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}

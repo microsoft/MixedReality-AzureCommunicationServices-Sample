@@ -131,7 +131,7 @@ public class UserController : MonoBehaviour
     }
 
     /// <summary>
-    /// add user to recent contact
+    /// add user to relevant contact
     /// </summary>
     /// <param name="user"></param>
     public static void AddToRecentContacts(UserObject user)

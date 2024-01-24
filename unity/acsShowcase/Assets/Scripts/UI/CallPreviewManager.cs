@@ -158,7 +158,7 @@ public class CallPreviewManager : MonoBehaviour
         
         allAttendeeInfos.Clear();
         
-        //Fill the Recent contacts list
+        //Fill the Relevant Contacts list
         List<string> notFoundProfileEmailList = new List<string>();
         foreach (var attendee in curMeeting.Data.attendees.value)
         {
@@ -185,7 +185,7 @@ public class CallPreviewManager : MonoBehaviour
             UserProfile profile = userControler.GetUserProfile(attendee.emailAddress.address);
             if (profile == null)
             {
-                // this attendee is not found in the the most recent contact list
+                // this attendee is not found in the the most relevant contact list
                 // we have to query their photo and status 
                 notFoundProfileEmailList.Add(attendee.emailAddress.address);
                 var userObject = newAttendee.GetComponent<UserObject>();
@@ -199,7 +199,7 @@ public class CallPreviewManager : MonoBehaviour
             }
             else
             {
-                // this attendee is found in the most recent contact list, get info from there
+                // this attendee is found in the most relevant contact list, get info from there
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
@@ -224,7 +224,7 @@ public class CallPreviewManager : MonoBehaviour
     /// <param name="userList"></param>
     private void GetPeopleHandler(IUsers userList)
     {
-        // retrieve photos for these people who are not in recent contact list 
+        // retrieve photos for these people who are not in relevant contact list 
         photoGettter.UpdateProfilesWorkerAsync(userList, OnAllPhotosLoaded);
 
     }
