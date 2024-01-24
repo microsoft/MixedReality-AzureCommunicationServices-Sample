@@ -16,14 +16,14 @@ public class IncomingCallController : MonoBehaviour
     [SerializeField] private Texture2D nullIconTexture;
 
     /// <summary>
-    /// Sets the icon for the incoming call window. If the user is in recent contacts and has a profile image, it will use that image.
+    /// Sets the icon for the incoming call window. If the user is in relevant contacts and has a profile image, it will use that image.
     /// Otherwise, it will set it with the incoming callers initials (as the only data recieved is the name)
     /// </summary>
     /// <param name="callerNameObject">The incoming callers display name object in the incoming call window</param>
     public void GetInitials(TextMeshProUGUI callerNameObject)
     {
         var callerName = callerNameObject.text;
-        //User is in recent contacts and has a non-null profile picture
+        //User is in relevant contacts and has a non-null profile picture
         if (UserController.UserProfiles != null && UserController.UserProfiles.Any(x => x.DisplayName == callerName && x.Icon != null && x.Icon.name != "Ellipse 8"))
         {
             callerProfileIcon.color = Color.white;

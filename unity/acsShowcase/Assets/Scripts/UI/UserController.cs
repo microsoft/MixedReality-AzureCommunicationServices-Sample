@@ -131,10 +131,10 @@ public class UserController : MonoBehaviour
     }
 
     /// <summary>
-    /// add user to recent contact
+    /// add user to relevant contact
     /// </summary>
     /// <param name="user"></param>
-    public static void AddToRecentContacts(UserObject user)
+    public static void AddToRelevantContacts(UserObject user)
     { 
         if(!UserProfiles.Exists(x => x.Id == user.Id))
         {

@@ -89,10 +89,6 @@ namespace Azure.Communication.Calling.Unity
         [Header("Authentication Settings")]
 
         [SerializeField]
-        [Tooltip("The sign-in type")]
-        private SignInType signinType = SignInType.MSAL;
-
-        [SerializeField]
         [Tooltip("The audience that can authenticate with this application")]
         private AppAuthorityAudience authority = AppAuthorityAudience.None;
 
@@ -139,15 +135,6 @@ namespace Azure.Communication.Calling.Unity
         #endregion
 
         #region properties
-        /// <summary>
-        /// The sign-in type
-        /// </summary>
-        public SignInType SignInType
-        {
-            get => signinType;
-            set => signinType = value;
-        }
-
         public AppAuthorityAudience Authority
         {
             get => authority;
@@ -236,21 +223,11 @@ namespace Azure.Communication.Calling.Unity
                 return;
             }
 
-            switch (SignInType)
-            {
-                case SignInType.MSAL:
-                default:
-                    _signin = new MsalSignin();
-                    break;
-
-                case SignInType.WAM:
 #if UNITY_WSA && !UNITY_EDITOR
-                    _signin = new WamSignin();
+            _signin = new WamSignin();
 #else
-                    _signin = new MsalSignin();
+            _signin = new MsalSignin();
 #endif
-                    break;
-            }
 
             if (UseTenant)
             {
