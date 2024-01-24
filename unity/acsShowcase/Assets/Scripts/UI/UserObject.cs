@@ -221,7 +221,7 @@ public class UserObject : MonoBehaviour
                 UserController.SelectedUserObject = this;
                 SetSelectedOverlay(true);
                 IsSelected = true;
-                UserController.AddToRecentContacts(this);
+                UserController.AddToRelevantContacts(this);
             }
         }
         //Selected single participant for adding to a call
@@ -230,7 +230,7 @@ public class UserObject : MonoBehaviour
             OnSelectedParticipantToAdd?.Invoke();
         }
         //Selected single participant for 1on1 call
-        else if ( userPageType == PageType.RecentContacts || userPageType == PageType.SearchMain)
+        else if ( userPageType == PageType.RelevantContacts || userPageType == PageType.SearchMain)
         {
             OnSelectedParticipantCall?.Invoke();
         }
@@ -309,7 +309,7 @@ public class UserObject : MonoBehaviour
             case PageType.Participants:
                 checkIcon.SetActive(setActive);
                 break;
-            case PageType.RecentContacts:
+            case PageType.RelevantContacts:
                 phoneIcon.SetActive(setActive);
                 break;
             case PageType.SearchMain:
@@ -476,7 +476,7 @@ public class UserObject : MonoBehaviour
 
 public enum PageType
 {
-    RecentContacts,
+    RelevantContacts,
     SearchMain,
     Participants,
     SearchParticipants

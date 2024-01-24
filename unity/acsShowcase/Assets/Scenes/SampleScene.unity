@@ -22215,7 +22215,7 @@ GameObject:
   - component: {fileID: 900897505}
   - component: {fileID: 900897504}
   m_Layer: 0
-  m_Name: NoRecentContactsLabel
+  m_Name: NoRelevantContactsLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -162,7 +162,6 @@ public class CallPreviewManager : MonoBehaviour
         List<string> notFoundProfileEmailList = new List<string>();
         foreach (var attendee in curMeeting.Data.attendees.value)
         {
-            //Debug.Log("Attendee " + attendee.emailAddress.name );
             GameObject newAttendee = Instantiate(attendeePrefab,attendeeContainer.transform);
             AttendeeInfo attendeeInfo = newAttendee.GetComponent<AttendeeInfo>();
             attendeeInfo.SetInfo(attendee);
