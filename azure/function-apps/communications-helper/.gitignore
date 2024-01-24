@@ -1,5 +1,6 @@
 # Azure Functions localsettings file
 local.settings.json
+/bin/Release/net6.0
 
 # Allow tracking of .vscode settings for this project
 !.vscode/
