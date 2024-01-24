@@ -23608,7 +23608,6 @@ MonoBehaviour:
   - {fileID: 1267737078}
   - {fileID: 181668147}
   - {fileID: 1810769794}
-  signinType: 2
   authority: 3
   clientID: 
   tenantId: 
