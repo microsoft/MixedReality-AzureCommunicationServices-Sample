@@ -15357,6 +15357,14 @@ PrefabInstance:
       propertyPath: m_IsTrackedAction.m_Action.m_Id
       value: c99eca67-59d0-4e5e-9f79-1b2c25794a92
       objectReference: {fileID: 0}
+    - target: {fileID: 404949538145338360, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: opaqueDisplay.clearColor.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 404949538145338360, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: transparentDisplay.clearColor.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2304670408713330098, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_UIScrollAction.m_Action.m_Id
       value: 692b0483-4371-4d2b-8071-2b20505a5743
