@@ -1,0 +1,30 @@
+{
+    "title": "./../markdown/title-page.md",
+    "files": [
+        "./../markdown/overview.md",
+        "./../markdown/azure-communication-services-setup-1.md",
+        "./../markdown/azure-function-setup-1.md",
+        "./../markdown/azure-function-setup-2.md",
+        "./../markdown/azure-function-setup-3.md",
+        "./../markdown/azure-function-setup-4.md",
+        "./../markdown/azure-function-setup-5.md",
+        "./../markdown/azure-function-setup-6.md",
+        "./../markdown/azure-function-setup-7.md",
+        "./../markdown/azure-function-setup-8.md",
+        "./../markdown/azure-function-setup-9.md",
+        "./../markdown/azure-function-setup-10.md",
+        "./../markdown/unity-sample-app-setup-1.md",
+        "./../markdown/unity-sample-app-setup-2.md",
+        "./../markdown/unity-sample-app-setup-3.md",
+        "./../markdown/unity-sample-app-setup-4.md",
+        "./../markdown/unity-sample-app-setup-5.md",
+        "./../markdown/unity-sample-app-setup-6.md",
+        "./../markdown/unity-sample-app-setup-7.md",
+        "./../markdown/tutorial.md"
+    ],
+    "assets": [
+        "./../markdown/images"
+    ],
+    "style": "@media print { .break-page { page-break-before: always;} }",
+    "pageBreak": "<div class='break-page'></div>"
+}

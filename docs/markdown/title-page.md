@@ -1,0 +1,1 @@
+<h1 style="text-align: center; vertical-align: middle">Azure Communication Services<br/>HoloLens 2 Samples</h1>
