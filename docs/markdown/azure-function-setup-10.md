@@ -20,9 +20,9 @@ To add a native app support to the existing web app registration:
    
 8. Add `http://localhost` redirect URI to the **Mobile and desktop application** section.
 
-    ![Screenshot showing the AAD app registrations within the Azure Portal](./images/image-24-web-native-app.png)
+    ![Screenshot showing the AAD app registrations within the Azure Portal](./images/image-14-web-native-app.png)
 
-    > Note, `http://localhost` is only used for development purposes. The sample code is currently configured to use `http://localhost` for authentication within the Unity Editor. When deploying to HoloLens, an additional redirect URI will be needed. These URIs are described in later [steps](unity-sample-app-setup-4.md#setup-web-authentication-manager-wam).
+    > Note, `http://localhost` is only used for development purposes. The sample code is currently configured to use `http://localhost` for authentication within the Unity Editor. When deploying to HoloLens, an additional redirect URI will be needed. These URIs are described in later [steps](unity-sample-app-setup-2.md#setup-web-authentication-manager-wam).
 
 9. Click **Save** to save the configuration changes.
 
@@ -42,7 +42,7 @@ The Unity app requires an AAD access token to access Teams. To add the Teams per
    
 7. Click **Add** to confirm.
 
-    ![Screenshot showing the app registration adding ACS permissions within the Azure Portal](./images/image-27-web-native-app.png)
+    ![Screenshot showing the app registration adding ACS permissions within the Azure Portal](./images/image-15-web-native-app.png)
 
 The Unity app requires an AAD access token to access the users' calendar events, contacts, online meetings, and chat messages from the Microsoft Graph. To add Microsoft Graph permissions to the native app registration:
 
@@ -80,11 +80,11 @@ If using a separate app registration for the web app, the Unity app will require
     
 6. Select **Delegated permissions**, since the app will access the Microsoft Graph as a signed-in user.
    
-7. Select the **user_permission** permission. The sample app requires this when accessing the sample web app API. This is not required if the web app and native app share the same app registration.
+7. Select the **user_impersonation** permission. The sample app requires this when accessing the sample web app API. This is not required if the web app and native app share the same app registration.
    
 8. Click **Add permissions**.
 
-    ![Screenshot showing the app registration adding the 'My API' permission within the Azure Portal](./images/image-28-web-native-app.png)
+    ![Screenshot showing the app registration adding the 'My API' permission within the Azure Portal](./images/image-17-web-native-app.png)
 
 The native app registration should now have the following API permissions listed:
 
@@ -98,11 +98,12 @@ The native app registration should now have the following API permissions listed
 * Microsoft Graph's *Presence.ReadWrite*
 * Custom Web App's *user_impersonation*, if web and native app share different app registrations.
 
- ![Screenshot showing the app registration's API permissions within the Azure Portal](./images/image-28-1-web-native-app-permissions.png)
+ ![Screenshot showing the app registration's API permissions within the Azure Portal](./images/image-16-web-native-app-permissions.png)
     
 Your Azure setup is now complete. The sample Unity app can now be updated to connect to your newly configured resources.
 
 > Optionally, if the web app and native app have unique app registrations, the native client app may need granted access to the web API. From the web app registration page go to **Manage > Expose an API** and click **Add a client application**, under the **Authorized client applications**. Add the native app registration's application (client) ID, and select the custom API scope created earlier.
 
 ## Next Step
-The next step, [Building MediaPlayback Unity Plugin](./unity-sample-app-setup-1.md#building-mediaplayback-unity-plugin), describes how to build the custom MediaPlayback plugin for Unity. This plugin is required before building the Unity sample app.
+ The next step, [Configuring Sample with AAD Authentication](./unity-sample-app-setup-1.md), describes how to configure the Unity sample app
+ with AAD authentication.

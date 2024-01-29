@@ -1,25 +1,31 @@
-# Before Building Unity App
-Before building the Unity app, the following may be configured:
+# Setup Microsoft Authentication Library (MSAL)
+If the authentication type has been set MSAL, the setup is very simple and does not require an application specific URI.
 
-* **Teams Meeting Join URL**. It is possible to hardcode a meeting join URL for testing.  The application will display upcoming meetings for the signed in user, and the app can join any meeting in this list. So a hardcode join URL is not required if the in app meeting list is sufficient.
-  
-* **Authentication Type**. Microsoft Authentication Library ([MSAL](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview)), or Windows Web Account Manager ([WAM](https://docs.microsoft.com/en-us/windows/uwp/security/web-account-manager)), or authentication key.
+To configured authentication with MSAL:
 
-Setting the Teams Meeting URL is easy:
-
-1. First, if needed, copy a Teams meeting URL from a upcoming meeting. 
-
-2. Open the Unity project's **Main** scene.
-  
-3. Locate the **EventsManager** object in the scene's hierarchy.
+1. Sign in to the [Azure portal](https://portal.azure.com).
    
-4. Edit the **Static Events** array
+2. Go to the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade.
    
-5. Paste the Teams meeting URL into the inspector window.
+3. Find and go to the [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps).  
+   
+4. In the left-side navigation under Manage, select **Authentication**.
+   
+5. In the Configure platforms panel, click Mobile and desktop applications.
+
+This step depends on whether your app hosts a browser in a UI control (an embedded browser) or uses the operating system's browser (a system browser). 
+
+1. If your app uses an embedded browser: Under Configure Desktop + devices, select the first redirect URI:
+   
+    ```
+    https://login.microsoftonline.com/common/oauth2/nativeclient.
+    ```
+
+2. If your app uses a system browser: In the Custom redirect URIs box, enter http://localhost. Make sure you enter http, and not https.
+   
+    > If you're a Unity user, this makes authentication work in Editor mode.
     
-    <img src="./images/image-510-default-teams-url.png" alt="Screenshot Teams meeting URL being entered into the Unity inspector window" style="max-height: 250px" />
+    <img src="./images/image-507-msal-auth-app-reg.png" alt="Adding MSAL support to a Windows apps by adding the default MSAL and localhost reply URIs to the Azure app's registration" style="max-height: 250px" />
 
-6. Now, after authentication, the HoloLens 2 will display this hardcoded meeting and the user's upcoming meetings.
-
-## Next Step
-Finally, the last step is to configure the app's authentication type. The first option is WAM authentication, as discussed in the next section, [Setup Web Authentication Manager (WAM)](unity-sample-app-setup-4.md#setup-web-authentication-manager-wam).
+## Next Optional Step
+The next optional step, [Additional Admin Consent Information](./unity-sample-app-setup-4.md#additional-admin-consent-information), describes how to grant the sample app admin consent using the web browser.

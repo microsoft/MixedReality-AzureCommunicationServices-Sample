@@ -9,7 +9,7 @@ To create a the resource:
 
 3. Select an Azure **Subscription** that will be charged when using this Function App
    
-4. Create or select an existing **Resource Group**. For more information on Resource Groups, visit [What is a resource group](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#what-is-a-resource-group).
+4. Create or select an existing **Resource Group**. For more information on Resource Groups, visit [What is a resource group](https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal#what-is-a-resource-group).
 
 5. Enter a **Function App name**.
    
@@ -37,7 +37,7 @@ To create a the resource:
     
 16. Wait for your new Function App resource to be deployed. 
 
-> For more on setting up Azure Functions and their pricing, visit [Introduction to Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-overview) and [Azure Functions Pricing](https://azure.microsoft.com/en-us/pricing/details/functions/).
+> For more on setting up Azure Functions and their pricing, visit [Introduction to Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview) and [Azure Functions Pricing](https://azure.microsoft.com/pricing/details/functions/).
 
 ## Next Step
 The next step, [Sample Project Overview](./azure-function-setup-3.md#sample-web-app-overview), describes the sample web app that'll be deployed to the newly created Azure Function resource.

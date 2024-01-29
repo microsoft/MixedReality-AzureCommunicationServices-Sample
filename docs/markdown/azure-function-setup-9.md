@@ -14,7 +14,7 @@ To grant access:
    
 5. Click **Save** and confirm the changes.
 
-   <img src="./images/image-17-function-app-id.png" alt="Screenshot showing the function app's identity settings within the Azure Portal" style="max-height: 200px"/>
+   <img src="./images/image-11-function-app-id.png" alt="Screenshot showing the function app's identity settings within the Azure Portal" style="max-height: 200px"/>
 
 6. Next, go to your [Azure Communication Services](https://portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.Communication%2FCommunicationServices) blade.
    
@@ -24,7 +24,7 @@ To grant access:
    
 9. Select the **Contributor** role, and click **Next**.
 
-   ![Screenshot showing the Azure Communication Services resource's access control settings within the Azure Portal](./images/image-19-acs-role.png)
+   ![Screenshot showing the Azure Communication Services resource's access control settings within the Azure Portal](./images/image-12-acs-role.png)
 
 10. Assign access to a **Manage identity**.
     
@@ -34,7 +34,7 @@ To grant access:
     
 13. Click **Next** and **Review + Assign** to complete the role assignment.
 
-    ![Screenshot showing the Azure Communication Services resource's access control settings within the Azure Portal. The panel shows given access to the newly created Function App](./images/image-20-acs-role.png)
+    ![Screenshot showing the Azure Communication Services resource's access control settings within the Azure Portal. The panel shows given access to the newly created Function App](./images/image-13-acs-role.png)
 
 14. The Function App resource can now access your Communication Services resource. 
 

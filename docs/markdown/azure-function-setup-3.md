@@ -1,5 +1,5 @@
 # Sample Web App Overview
-Once you've created a Function App resource, it's time to deploy the sample web app. The sample project can be located within this repository under the [azure/function-apps/communications-helper](https://microsoft.visualstudio.com/Analog/_git/oss.mixedreality.acs.sample?path=/azure/function-apps/communications-helper) directory.
+Once you've created a Function App resource, it's time to deploy the sample web app. The sample project can be located within this repository under the [azure/function-apps/communications-helper](https://github.com/microsoft/MixedReality-AzureCommunicationServices-Sample/tree/main/azure/function-apps/communications-helper) directory.
 
 ![Screenshot showing the sample Function App code in Visual Studio Code](./images/image-200-function-app-code.png)
 
@@ -11,7 +11,7 @@ Once you've created a Function App resource, it's time to deploy the sample web 
   
 * **GetTokenForTeamsUser**: Used to create an ACS access token for a Teams Work/School identity. When calling this API, the application must send along a valid Azure access token with the appropriate ACS scopes (Teams.ManageCalls and/or Teams.ManageChat). The returned ACS access token will expire after a certain amount of time. To refresh a Teams user token, call **GetTokenForTeamsUser** again.
 
-The request and response schemas for these functions match the schemas for the ACS REST APIs described in the [ACS Communication Identity](https://docs.microsoft.com/en-us/rest/api/communication/communication-identity) documentation.
+The request and response schemas for these functions match the schemas for the ACS REST APIs described in the [ACS Communication Identity](https://docs.microsoft.com/rest/api/communication/communication-identity) documentation.
 
 ## Next Step
 The next step, [Deploying Sample Web App](./azure-function-setup-4.md#deploying-sample-web-app), describes how to deploy this sample project to the Azure Function resource.

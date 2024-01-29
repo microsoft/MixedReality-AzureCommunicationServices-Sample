@@ -1,77 +1,87 @@
-# Setup Web Authentication Manager (WAM)
-When deploying the sample Unity application to the HoloLens 2, the app automatically works with authentication based on MSAL. However, if you preferred, the app can be configured with WAM support, which streamlines the log-in process for users on Windows devices.
+# Additional Admin Consent Information
+Depending on a tenant's configuration, before a user can sign-in, an admin may need first consent the application access to Teams, Microsoft Graph, and the custom web app API. By default admin consent isn't required for any of the resources used by the sample, however a tenant may have stricter policies in place that require admin consent.
 
-> Using WAM requires registering an app package security identifier (SID) with the Azure native application registration. The package SID is part of the app specific reply URI that WAM uses during authentication.
+It's possible to grant admin consent from within the application, using the built-in OAuth interface. However it may be easier to grant consent from outside the application. Outside consent is accomplished with the Azure [admin consent endpoint](https://docs.microsoft.com/azure/active-directory/develop/v2-admin-consent).
 
-Microsoft Authentication Library ([MSAL](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-overview)) Provides:
-* Web-based UI that many users of Windows applications will be familiar with.
-* The only authentication option available for use inside the Unity editor.
-* Can be used with UWP applications for desktop or other devices.
-* Requires no custom URI registration in the Azure portal.
+> For information on the Azure consent experience and framework read [Understanding Azure AD application consent experiences](https://docs.microsoft.com/azure/active-directory/develop/application-consent-experience) and [Microsoft identity platform consent framework](https://docs.microsoft.com/azure/active-directory/develop/consent-framework).
 
-Web Account Manager ([WAM](https://docs.microsoft.com/en-us/windows/uwp/security/web-account-manager)) Provides:
-* Non-Web UI that can only be used with UWP applications.
-* Provides a more OS-integrated authentication experience on HoloLens 2. It makes use of the user credentials already on the device so the user does not need to type a password in order to log in.
-* Requires registration of an authentication ID as described below.
+> For more information on granting tenant wide permissions read [Grant tenant-wide admin consent to an application](https://docs.microsoft.com/azure/active-directory/manage-apps/grant-admin-consent).
 
-If the authentication type has been set WAM, the compiled app package won't be able to receive AAD tokens until the application's reply URI has been registered with the native app's Azure registration. That is, Windows provides each application package with a unique URI and ensures that messages sent to that URI are only sent to that application. This is the URI that needs to registered on your [Azure portal](https://portal.azure.com).
+To complete this type of admin consent, the following pieces of information are needed:
+  
+* **Teams Directory (tenant) ID**. GUID is found on the [Azure Portal](https://portal.azure.com) for the Work/School Teams tenant. Go to the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade blade on the [Azure Portal](https://portal.azure.com), sign in with the Teams user, and copy the Teams user's tenant ID. If supporting multiple tenants, this ID is not necessarily the same tenant ID as the native/web application tenant ID.
+  
+* **Native application (client) ID**. GUID is found on the native [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps) overview section.
+  
+* **Web application (client) ID**. GUID is found on the web [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps) overview section. This is not needed if the native and web app share the same registration.
+  
+* **Web application Directory (tenant) ID**. Go to the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade blade on the [Azure Portal](https://portal.azure.com), sign in with the Azure app owner, and copy the tenant ID. If supporting multiple tenants, this ID is not necessarily the same tenant ID as the Teams tenant ID.
+  
+To grant admin consent outside of the native application:
 
-To determine the redirect URI for your app:
-
-1. Download the [AppPackageInfo](https://github.com/najadojo/AppPackageInfo/releases) tool.
+1. If the web app and native app use unique app registrations, enter the following URL into a web browser. 
    
-2. Build a Universal Windows Package (UWP) for the sample Unity project.
+   <table style="max-width: 700px">
+    <tr>
+      <td><h4>Grant Permissions</h4></td>
+      <td><h4>URL</h4></td>
+    </tr>
+    <tr>
+      <td>All Web App's Default Permissions</td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/adminconsent?client_id={web-client-app-id}</code></td>
+    </tr>
+    <tr>
+      <td>Reading MS Graph User Data</td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/v2.0/adminconsent?client_id={web-app-client-id}&scope=https://graph.microsoft.com/User.Read</code></td>
+    </tr>
+   </table>
+      
+2. If the web app consent was successful, the web browser will be redirected to a success page.
 
-3. Get your app package path and run the tool on the command line. The tool will take any of the following:
-   * package.appxmanifest
-   * appxmanifest.xml
-   * my package.appx
-   * my package.appxbundle
-   * my package.msix
-   * my package.msixbundle
-    
-To quickly and easily get the Package SID:
+    ![Web page bar default admin consent succeeded for the web application.](./images/image-512-admin-consent-web-app-default.png)
 
-1. Move the AppPackageInfo.exe file into a folder with one of the files listed above.
+3. Enter following URLs in a web browser. Only enter the URLs for the permissions you want to grant admin consent.
+      
+   <table style="max-width: 700px">
+    <tr>
+      <td><h4>Grant Permissions</45></td>
+      <td><h4>URL</h4></td>
+    </tr>
+    <tr>
+      <td>All Native App's Default Permissions</td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/adminconsent?client_id={native-app-client-id}</code></td>
+    </tr>
+    <tr>
+      <td>Teams Meeting & Chat</td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/v2.0/adminconsent?client_id={native-app-client-id}&scope=https://auth.msft.communication.azure.com/Teams.ManageCalls+https://auth.msft.communication.azure.com/Teams.ManageChats</code></td>
+    </tr>
+    <tr>
+      <td>Reading MS Graph Calendars, People, Chat, Online Meetings, and User Data</td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/v2.0/adminconsent?client_id={native-app-client-id}&scope=https://graph.microsoft.com/Calendars.Read+https://graph.microsoft.com/People.Read+https://graph.microsoft.com/User.Read+https://graph.microsoft.com/Chat.ReadWrite+https://graph.microsoft.com/OnlineMeetings.Read</code></td>
+    </tr>
+    <tr>
+      <td>Custom Function App API<span style="color:red">*</span></td>
+      <td style="word-break: break-all; word-wrap: break-word"><code>https://login.microsoftonline.com/{users-teams-tenant-id}/v2.0/adminconsent?client_id={native-app-client-id}&scope=api://{web-app-tenant-id}/{web-app-client-id}/user_impersonation</code> <span style="color:red">**</span></td>
+    </tr>
+   </table>
+
+    <span style="color:red">*</span> Granting access to the Function App API is not required if the web and native app share the same app registration.
+
+    <span style="color:red">**</span> The scope URI maybe different, depending on how the web app is exposing its API.
    
-2. Open the Context Menu: Hold shift and right click in the folder.
-   
-3. Select Open PowerShell Window Here.
-   
-4. In the PowerShell window, type the following, replacing *{your filename with extension}* with the your file: 
+4. For each successful permission request, the web browser will be redirect to a URL with *admin_consent=true*.
 
-    ```PowerShell
-    PS C:\> .\AppPackageInfo.exe .\{your filename with extension}
-    ```
-6. Copy the returned Package SID value to the clipboard.
-7. 
-   ![UWP App registration SID](./images/image-505-wam-auth-sid-sample.png)
+    ![Web browser URL bar when default admin consent succeeded for the native application.](./images/image-511-admin-consent-native-app-default.png)
 
-    > There is a risk of getting a wrong value if you use just the appxmanifest.xml or package.appxmanifest where if the signing cert doesn't match the publisher, the package publisher will prefer the cert. If it isn't working, try using .appx, .appxbundle, .msix or .msixbundle.
 
-8. Sign in to the [Azure portal](https://portal.azure.com).
-   
-9.  Search for and select Azure Active Directory. In the left-side navigation under Manage, select App registrations.
-   
-10. Under Display Name, select your app.
-    
-11. In the left-side navigation under Manage, select Authentication.
-    
-12. Under Mobile and desktop applications, paste the following into the editable box located below the three listed options:
-    
-    ```
-    ms-appx-web://Microsoft.AAD.BrokerPlugIn/<your Package SID>
-    ```
+5. The sample application, if everything was successful, now has been granted admin consent. User's can now sign-in without be asked for admin consent.
 
-13. Select Save.    
+## Publisher Verification
+The walk-through assumes this sample application is being setup in a non-production tenant. This means that when granting admin consent, the sample app is marked as being from an unverified publisher. For production scenarios, the application publisher should be verified with Microsoft. For more information on this process visit the [Publisher Verification](https://docs.microsoft.com/azure/active-directory/develop/publisher-verification-overview) documents.
 
-    <img src="./images/image-506-wam-auth-app-reg.png" alt="Adding WAM support by the app's reply URI to the Azure app's registration" style="max-height: 300px" />
-
-    > WAM Authentication doesn't work within the Unity Editor. Even if you set the authentication type to WAM, the app will still use MSAL when running in the editor. The app can only use WAM authentication when running inside a built app package, not the Unity Editor.
-
-To validate that the WAM setup, the Unity project must be built and deployed to a HoloLen 2 device. However, there are a couple of optional steps to consider before building the Unity project. After that, build and deploy an app package to the HoloLens, and validate that the app can connect to ACS.
-
-Before attempting to use WAM sign-in, first ensure the application has been given admin consent for the Teams' tenant. For more information on ways to grant admin consent, see the [Additional Admin Consent Information](unity-sample-app-setup-6.md#additional-admin-consent-information).
+## Removing Admin Consent
+If needed, the admin consent for the Teams tenant can be revoked. This can be accomplished from the [Enterprise Application](https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview/menuId~/null) tab on the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade, accessible from the [Azure Portal](https://portal.azure.com). For more information, visit [Delete an enterprise application](https://docs.microsoft.com/azure/active-directory/manage-apps/delete-application-portal?pivots=portal).
 
 ## Next Optional Step
-The next optional, [Setup Microsoft Authentication Library (MSAL)](./unity-sample-app-setup-5.md#setup-microsoft-authentication-library-msal), describes how to configure the sample app with MSAL authentication, instead of WAM authentication. 
+The final optional step, [Configuring Sample with Authentication Key](./unity-sample-app-setup-5.md#configuring-sample-with-authentication-key), describes how to configure the app with an authentication key, instead of using AAD authentication.
+

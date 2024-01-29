@@ -1,82 +1,75 @@
-# Configuring Sample with AAD Authentication
-The Azure Communication Services (ACS) Unity sample can now be configured to use AAD authentication. To use this type of authentication, the app requires a custom REST/App service. If you haven't already, please follow the setup steps starting at [Creating a Communication Services Resource](./azure-communication-services-setup-1.md#setting-up-azure-communication-services).
+# Setup Web Authentication Manager (WAM)
+When deploying the sample Unity application to the HoloLens 2, the app works with authentication based on WAM, which streamlines the log-in process for users on Windows devices. Note that in editor the app will use MSAL authentication instead.
 
-To complete this configuration, following pieces of information are needed:
+> Using WAM requires registering an app package security identifier (SID) with the Azure native application registration. The package SID is part of the app specific reply URI that WAM uses during authentication.
 
-* **Azure Communication Services Endpoint**. URI can be found at the [Azure Communication Services](https://portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.Communication%2FCommunicationServices) blade on the [Azure Portal](https://portal.azure.com).
-  
-* **Azure Function App Endpoint**. URI can be found at the [Function App](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites/kind/functionapp) blade on the [Azure Portal](https://portal.azure.com).
-  
-* **Application (client) ID**. GUID is found on the native [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps) overview section.
-  
-* **Directory (tenant) ID**. GUID is found on the native [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps) overview section.
-  
-* **Custom Web API Scope URI**. URI can be found on the web [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps), under the **Expose an API** section. This URI should look similar to `api://{web-app-tenant-id}/{web-app-client-id}/user_impersonation`.
+Microsoft Authentication Library ([MSAL](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)) Provides:
+* Web-based UI that many users of Windows applications will be familiar with.
+* The only authentication option available for use inside the Unity editor.
+* Can be used with UWP applications for desktop or other devices.
+* Requires no custom URI registration in the Azure portal.
 
-To configure the Unity app with AAD authentication:
+Web Account Manager ([WAM](https://docs.microsoft.com/windows/uwp/security/web-account-manager)) Provides:
+* Non-Web UI that can only be used with UWP applications.
+* Provides a more OS-integrated authentication experience on HoloLens 2. It makes use of the user credentials already on the device so the user does not need to type a password in order to log in.
+* Requires registration of an authentication ID as described below.
 
-1. Open the sample Unity app project.
+If the authentication type has been set WAM, the compiled app package won't be able to receive AAD tokens until the application's reply URI has been registered with the native app's Azure registration. That is, Windows provides each application package with a unique URI and ensures that messages sent to that URI are only sent to that application. This is the URI that needs to registered on your [Azure portal](https://portal.azure.com).
+
+To determine the redirect URI for your app you will need the Package SID. To quickly and easily get the Package SID you can:
+
+1. Download the [AppPackageInfo](https://github.com/najadojo/AppPackageInfo/releases) tool.
    
-2. Open the **Main** scene file. 
-   
-3. If prompted, install the TextMesh Pro components by clicking the **Import TMP Essentials** button. Without this component some text assets will not render correctly.
+2. Build a Universal Windows Package (UWP) for the sample Unity project.
 
-4. From the scene's hierarchy select the **MeetingManager** object.
-   
-5. In the inspector window set the **Communication Endpoint** to the endpoint URI for the ACS resource.
-   
-6. Also in the inspector window set the **Function App Endpoint** to the endpoint URI for the sample web app API.
+3. Get your app package path and run the tool on the command line. The tool will take any of the following:
+   * package.appxmanifest
+   * appxmanifest.xml
+   * my package.appx
+   * my package.appxbundle
+   * my package.msix
+   * my package.msixbundle
 
-   <img src="./images/image-501-unity-setup-meeting-mgr.png" alt="Screenshot showing the user editing the meeting manager properties within the Unity Editor" style="max-height: 300px" />
-
-7. Next select the **AuthenticationManager** object in the hierarchy window. 
+4. Move the AppPackageInfo.exe file into a folder with one of the files listed above.
    
-8. Go to inspector window and set **Client ID** to the application (client) id for your native application registration. 
+5. Open the Context Menu: Hold shift and right click in the folder.
    
-   > Optionally, you can set the **Sign Type** to either WAM (Windows' Web Authentication Manager) or MSAL (Microsoft Authentication Library). The app setup will verify depending on what value you pick. See the [WAM](#setup-web-authentication-manager-wam) and [MSAL](#setup-microsoft-authentication-library-msal) sections for more details.
+6. Select Open PowerShell Window Here.
+   
+7. In the PowerShell window, type the following, replacing *{your filename with extension}* with the your file: 
 
-   <img src="./images/image-502-unity-setup-auth-mgr.png" alt="Screenshot showing the user editing the authentication manager properties within the Unity Editor" style="max-height: 350px" />
+    ```PowerShell
+    PS C:\> .\AppPackageInfo.exe .\{your filename with extension}
+    ```
+8. Copy the returned Package SID value to the clipboard.
+9. 
+   ![UWP App registration SID](./images/image-505-wam-auth-sid-sample.png)
 
-9. Next select the **AzureFunctionAppToken** object in the hierarchy window. 
+    > There is a risk of getting a wrong value if you use just the appxmanifest.xml or package.appxmanifest where if the signing cert doesn't match the publisher, the package publisher will prefer the cert. If it isn't working, try using .appx, .appxbundle, .msix or .msixbundle.
+
+10. Sign in to the [Azure portal](https://portal.azure.com).
+   
+11. Search for and select Azure Active Directory. In the left-side navigation under Manage, select App registrations.
+   
+12. Under Display Name, select your app.
     
-10. Go to inspector window and add a **Scope** to your custom web API scope URI. This URI should look similar to `api://{web-app-tenant-id}/{web-app-client-id}/user_impersonation`.
-
-    <img src="./images/image-503-unity-setup-func-token.png" alt="Screenshot showing the user editing the azure function app token properties within the Unity Editor" style="max-height: 350px" />
-
-You can now validate your configuration within the Unity Editor by:
-
-1. Click the editor's **play** button.
-   
-2. Click the app menu's **Join** button. 
-
-    <img src="./images/image-504-unity-validate-log-in-1.png" alt="Screenshot showing the menu in this sample app, while playing in the Unity Editor" style="max-height: 300px" />
-
-3. If the app was setup successfully, a browser window should launch, asking for the user's AAD credentials. Enter the user's AAD credentials.
-   
-4. If this is the first time signing into the application, a admin dialog may appear. This dialog will request admin consent before continuing. If no such dialog appears, skip to step 8.
-   
-5. If admin consent is requested, select **sign-in as administrator** and enter administrator credentials  for the user's tenant. Note, this tenant is not necessarily the same tenant hosting the Communication Services. 
+13. In the left-side navigation under Manage, select **Authentication**.
     
-   > To connect to ACS as an authenticated Teams users, administrator authorization may be needed to use the sample application. This means, the first time a Teams user authenticates with ACS, using this application, the Teams user may need to be an administrator for their tenant. 
-   
-   > Another way to grant administrator consent is by entering this URL into a browser. For information on how to do this, read the [Additional Admin Consent Information](./unity-sample-app-setup-6.md#additional-admin-consent-information) section.
-   
-   
-6. If admin consent is request, the administrator must now grant the application permissions for the entire organization.
-   
-7. Attempt to sign into the application again. 
-   
-8. The first time a user signs in, a permissions dialog may appear. Grant the application the requested user permissions. 
-
-9.  The application should now receive an Azure Active Directory access token.
+14. Under Mobile and desktop applications, paste the following into the editable box located below the three listed options:
     
-10. The application then calls the deployed Function App to exchange the Azure Active Directory access token for a Communication Services identity access token.
+    ```
+    ms-appx-web://Microsoft.AAD.BrokerPlugIn/<your Package SID>
+    ```
 
-If everything worked correctly, the app's status message should read "Mock: Not in Meeting" if playing the Unity Editor, and "Not in Meeting" if playing within a UWP application.
+15. Select Save.    
 
-To clarify, the sample application supports authenticating with the Azure Communication Services, in both the Unity Editor and Unity Player (i.e. UWP application). However, the application does not support making calls or joining meetings from within the Unity Editor. The sample app "mocks" connecting to a Teams meeting when in editor, and to indicate this "Mock" is prepended to status messages.
+    <img src="./images/image-506-wam-auth-app-reg.png" alt="Adding WAM support by the app's reply URI to the Azure app's registration" style="max-height: 300px" />
 
-To connect to a real meeting, the Unity app must be built as a Universal Windows Package (UWP) and deployed.
+    > WAM Authentication doesn't work within the Unity Editor. The app can only use WAM authentication when running inside a built app package, not the Unity Editor.
 
-## Next Step
-Also most done. Before building the Unity app, there are couple of quick steps to complete. Continue onto [Before Building Unity App](./unity-sample-app-setup-3.md#before-building-unity-app).
+To validate that the WAM setup, the Unity project must be built and deployed to a HoloLen 2 device. However, there are a couple of optional steps to consider before building the Unity project. After that, build and deploy an app package to the HoloLens, and validate that the app can connect to ACS.
+
+Before attempting to use WAM sign-in, first ensure the application has been given admin consent for the Teams' tenant. For more information on ways to grant admin consent, see the [Additional Admin Consent Information](unity-sample-app-setup-4.md#additional-admin-consent-information).
+
+## Next Optional Step
+The next optional, [Setup Microsoft Authentication Library (MSAL)](./unity-sample-app-setup-3.md#setup-microsoft-authentication-library-msal), describes how to configure the sample app with MSAL authentication. 
