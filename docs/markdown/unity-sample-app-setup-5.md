@@ -1,34 +1,31 @@
-# Configuring Sample with Authentication Key
-During development it might be easier to avoid setting up AAD authentication, and instead use an Azure authentication key to authenticate with the Azure Communication Services (ACS). If using an authentication key, be careful not to commit the key into source control, and avoid shipping production applications using the key directly. Authentication keys should remain secret and be kept secure.
+# Setup Microsoft Authentication Library (MSAL)
+If the authentication type has been set MSAL, the setup is very simple and does not require an application specific URI.
 
-First find the key for the ACS resource:
+To configured authentication with MSAL:
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
    
-2. Search for and select the Communication Services resource.
+2. Go to the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade.
    
-3. Select **Settings > Keys**
+3. Find and go to the [application registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps).  
    
-4. Copy one of the two keys
-      
-Next paste this the key into the Unity project:
+4. In the left-side navigation under Manage, select **Authentication**.
+   
+5. In the Configure platforms panel, click Mobile and desktop applications.
 
-1. Open the Unity app project.
-   
-2. Open the **SampleScene** scene.
-   
-3. Find and select the **MeetingManager** object in the scene's hierarchy.
-   
-4. Paste the authentication key into the inspector window.
-   
-5. Clear the **Authentication Manager**, **Communication Authentication Token**, **Function App Endpoint**, and **Function App  Authentication Token** settings. These aren't needed if a key is being used. Having these fields set to some value can prevent the authentication key from being used.
-   
-    <img src="./images/image-508-auth-key-app.png" alt="Entering the auth key into MeetingManager's inspector properties" style="max-height: 350px" />
+This step depends on whether your app hosts a browser in a UI control (an embedded browser) or uses the operating system's browser (a system browser). 
 
-6. The application is now configured to use the Azure Communication Services with an authentication key. 
+1. If your app uses an embedded browser: Under Configure Desktop + devices, select the first redirect URI:
+   
+    ```
+    https://login.microsoftonline.com/common/oauth2/nativeclient.
+    ```
 
-    > For development purposes, you can also use a communication user access token for authentication. This can be generated from **Settings > Identities & User Access Tokens** from the ACS resource.
+2. If your app uses a system browser: In the Custom redirect URIs box, enter http://localhost. Make sure you enter http, and not https.
+   
+    > If you're a Unity user, this makes authentication work in Editor mode.
+    
+    <img src="./images/image-507-msal-auth-app-reg.png" alt="Adding MSAL support to a Windows apps by adding the default MSAL and localhost reply URIs to the Azure app's registration" style="max-height: 250px" />
 
-# The End
- This is the of the sample app documentation. To learn about the Unity sample application, and how setup with
- AAD, go to the [start](./azure-function-setup-1.md#multi-tenant-accounts-and-communication-services) of this documentation
+## Next Optional Step
+The next optional step, [Additional Admin Consent Information](./unity-sample-app-setup-4.md#additional-admin-consent-information), describes how to grant the sample app admin consent using the web browser.
