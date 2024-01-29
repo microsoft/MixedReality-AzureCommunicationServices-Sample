@@ -1,0 +1,1 @@
+<h1 style="text-align: center; vertical-align: middle">Azure Communication Services<br/>Sample App</h1>
