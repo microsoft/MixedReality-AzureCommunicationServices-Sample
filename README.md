@@ -45,7 +45,7 @@ The following Microsoft components are used by this sample:
 * **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. One of the authenticated methods used by the Unity app. 
 * **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Another one of the authenticated methods used by the Unity app when playing in the Unity editor
 
-![Block diagram detailing the components used in this sample application](./images/acs-on-hololens-2-block-diag.png)
+![Block diagram detailing the components used in this sample application](./docs/markdown/images/acs-on-hololens-2-block-diag.png)
 
 
 ## Next Step

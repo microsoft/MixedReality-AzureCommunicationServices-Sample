@@ -81,7 +81,10 @@ public class VideoStreamPlayer : MonoBehaviour
         if (rawIncomingStream is not null)
         {
             ClearTextures();
-            rawIncomingStream.Stop();
+            if (rawIncomingStream.State == VideoStreamState.Started)
+            {
+                rawIncomingStream.Stop();
+            }
             isActive = false;
         }
     }
@@ -182,7 +185,10 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         rawIncomingStream.RawVideoFrameReceived -= OnRawVideoFrameAvailable;
-        rawIncomingStream.Stop();
+        if (rawIncomingStream.State == VideoStreamState.Started)
+        {
+            rawIncomingStream.Stop();
+        }
     }
 
     private void OnRawVideoFrameAvailable(object sender, RawVideoFrameReceivedEventArgs args)
