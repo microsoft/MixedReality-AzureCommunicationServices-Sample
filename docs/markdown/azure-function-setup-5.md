@@ -1,6 +1,6 @@
 # Adding AAD Authentication
 
-It's time to secure the Azure Function App resource with an Azure Active Directory (AAD) authentication provider. This walk-through assumes the Function App will use an AAD authentication provider, however the Function App can be configured to use other types of providers. If more information is required about Function App setup and its configuration, please visit [Authentication and authorization in Azure App Service and Azure Functions](https://docs.microsoft.com/en-us/azure/app-service/overview-authentication-authorization#authentication-flow).
+It's time to secure the Azure Function App resource with an Azure Active Directory (AAD) authentication provider. This walk-through assumes the Function App will use an AAD authentication provider, however the Function App can be configured to use other types of providers. If more information is required about Function App setup and its configuration, please visit [Authentication and authorization in Azure App Service and Azure Functions](https://docs.microsoft.com/azure/app-service/overview-authentication-authorization#authentication-flow).
 
 To add an AAD authentication provider:
 
@@ -16,7 +16,7 @@ To add an AAD authentication provider:
    
 6. Click **Create new app registration** for the app registration type. An existing app registration can be used, but for simplicity this walk-through assumes you'll be creating a new app registration.
    
-   <img src="./images/image-09-add-auth.png" alt="Screenshot showing the creation of a authentication provider for a Function App" style="max-height:500px"/>
+   <img src="./images/image-09-web-app.png" alt="Screenshot showing the creation of a authentication provider for a Function App" style="max-height:500px"/>
 
 7. Select the appropriate account type of your application. However, for this walk-through select **Any Azure AD directory - Multi-tenant**.  
    
@@ -34,7 +34,7 @@ To add an AAD authentication provider:
     
 14. Click the **Add** button to complete the identity provider setup. 
     
-    <img src="./images/image-10-add-auth.png" alt="Screenshot showing the app permissions of the new app registration" style="max-height:400px"/>
+    <img src="./images/image-05-add-auth.png" alt="Screenshot showing the app permissions of the new app registration" style="max-height:400px"/>
 
 ## Next Step
 The next step, [Complete Web App Registration Setup](./azure-function-setup-6.md#complete-web-app-registration-setup), describes how to configure the new app registration so that it can properly expose a web API that is accessible to multi-tenant accounts.

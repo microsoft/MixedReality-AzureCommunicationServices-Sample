@@ -17,7 +17,7 @@ To configure the Unity app with AAD authentication:
 
 1. Open the sample Unity app project.
    
-2. Open the **Main** scene file. 
+2. Open the **SampleScene** scene file. 
    
 3. If prompted, install the TextMesh Pro components by clicking the **Import TMP Essentials** button. Without this component some text assets will not render correctly.
 
@@ -32,12 +32,10 @@ To configure the Unity app with AAD authentication:
 7. Next select the **AuthenticationManager** object in the hierarchy window. 
    
 8. Go to inspector window and set **Client ID** to the application (client) id for your native application registration. 
-   
-   > Optionally, you can set the **Sign Type** to either WAM (Windows' Web Authentication Manager) or MSAL (Microsoft Authentication Library). The app setup will verify depending on what value you pick. See the [WAM](#setup-web-authentication-manager-wam) and [MSAL](#setup-microsoft-authentication-library-msal) sections for more details.
 
    <img src="./images/image-502-unity-setup-auth-mgr.png" alt="Screenshot showing the user editing the authentication manager properties within the Unity Editor" style="max-height: 350px" />
 
-9. Next select the **AzureFunctionAppToken** object in the hierarchy window. 
+9. Next select the **FunctionAppAccess** object in the hierarchy window. 
     
 10. Go to inspector window and add a **Scope** to your custom web API scope URI. This URI should look similar to `api://{web-app-tenant-id}/{web-app-client-id}/user_impersonation`.
 
@@ -47,7 +45,7 @@ You can now validate your configuration within the Unity Editor by:
 
 1. Click the editor's **play** button.
    
-2. Click the app menu's **Join** button. 
+2. Click the app menu's **Sign In** button. 
 
     <img src="./images/image-504-unity-validate-log-in-1.png" alt="Screenshot showing the menu in this sample app, while playing in the Unity Editor" style="max-height: 300px" />
 
@@ -59,24 +57,14 @@ You can now validate your configuration within the Unity Editor by:
     
    > To connect to ACS as an authenticated Teams users, administrator authorization may be needed to use the sample application. This means, the first time a Teams user authenticates with ACS, using this application, the Teams user may need to be an administrator for their tenant. 
    
-   > Another way to grant administrator consent is by entering this URL into a browser. For information on how to do this, read the [Additional Admin Consent Information](./unity-sample-app-setup-6.md#additional-admin-consent-information) section.
+   > Another way to grant administrator consent is by entering this URL into a browser. For information on how to do this, read the [Additional Admin Consent Information](./unity-sample-app-setup-4.md#additional-admin-consent-information) section.
    
    
 6. If admin consent is request, the administrator must now grant the application permissions for the entire organization.
    
-7. Attempt to sign into the application again. 
+7. Attempt to sign into the application again. The application should now receive an Azure Active Directory access token. The application then calls the deployed Function App to exchange the Azure Active Directory access token for a Communication Services identity access token.
    
-8. The first time a user signs in, a permissions dialog may appear. Grant the application the requested user permissions. 
-
-9.  The application should now receive an Azure Active Directory access token.
-    
-10. The application then calls the deployed Function App to exchange the Azure Active Directory access token for a Communication Services identity access token.
-
-If everything worked correctly, the app's status message should read "Mock: Not in Meeting" if playing the Unity Editor, and "Not in Meeting" if playing within a UWP application.
-
-To clarify, the sample application supports authenticating with the Azure Communication Services, in both the Unity Editor and Unity Player (i.e. UWP application). However, the application does not support making calls or joining meetings from within the Unity Editor. The sample app "mocks" connecting to a Teams meeting when in editor, and to indicate this "Mock" is prepended to status messages.
-
-To connect to a real meeting, the Unity app must be built as a Universal Windows Package (UWP) and deployed.
+8. If everything worked correctly, the app should display a list of relevant contacts and any upcoming meetings. The first time a user joins a meeting, a permissions dialog may appear. Grant the application the requested user permissions. 
 
 ## Next Step
-Also most done. Before building the Unity app, there are couple of quick steps to complete. Continue onto [Before Building Unity App](./unity-sample-app-setup-3.md#before-building-unity-app).
+Finally, the last step is to configure the app's authentication type. The first option is WAM authentication, as discussed in the next section, [Setup Web Authentication Manager (WAM)](unity-sample-app-setup-2.md#setup-web-authentication-manager-wam).

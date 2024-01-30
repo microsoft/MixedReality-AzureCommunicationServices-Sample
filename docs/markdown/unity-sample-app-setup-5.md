@@ -28,4 +28,4 @@ This step depends on whether your app hosts a browser in a UI control (an embedd
     <img src="./images/image-507-msal-auth-app-reg.png" alt="Adding MSAL support to a Windows apps by adding the default MSAL and localhost reply URIs to the Azure app's registration" style="max-height: 250px" />
 
 ## Next Optional Step
-The next optional step, [Additional Admin Consent Information](./unity-sample-app-setup-6.md#additional-admin-consent-information), describes how to grant the sample app admin consent using the web browser.
+The next optional step, [Additional Admin Consent Information](./unity-sample-app-setup-4.md#additional-admin-consent-information), describes how to grant the sample app admin consent using the web browser.

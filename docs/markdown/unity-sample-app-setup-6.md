@@ -1,11 +1,11 @@
 # Additional Admin Consent Information
 Depending on a tenant's configuration, before a user can sign-in, an admin may need first consent the application access to Teams, Microsoft Graph, and the custom web app API. By default admin consent isn't required for any of the resources used by the sample, however a tenant may have stricter policies in place that require admin consent.
 
-It's possible to grant admin consent from within the application, using the built-in OAuth interface. However it may be easier to grant consent from outside the application. Outside consent is accomplished with the Azure [admin consent endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-admin-consent).
+It's possible to grant admin consent from within the application, using the built-in OAuth interface. However it may be easier to grant consent from outside the application. Outside consent is accomplished with the Azure [admin consent endpoint](https://docs.microsoft.com/azure/active-directory/develop/v2-admin-consent).
 
-> For information on the Azure consent experience and framework read [Understanding Azure AD application consent experiences](https://docs.microsoft.com/en-us/azure/active-directory/develop/application-consent-experience) and [Microsoft identity platform consent framework](https://docs.microsoft.com/en-us/azure/active-directory/develop/consent-framework).
+> For information on the Azure consent experience and framework read [Understanding Azure AD application consent experiences](https://docs.microsoft.com/azure/active-directory/develop/application-consent-experience) and [Microsoft identity platform consent framework](https://docs.microsoft.com/azure/active-directory/develop/consent-framework).
 
-> For more information on granting tenant wide permissions read [Grant tenant-wide admin consent to an application](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent).
+> For more information on granting tenant wide permissions read [Grant tenant-wide admin consent to an application](https://docs.microsoft.com/azure/active-directory/manage-apps/grant-admin-consent).
 
 To complete this type of admin consent, the following pieces of information are needed:
   
@@ -77,11 +77,11 @@ To grant admin consent outside of the native application:
 5. The sample application, if everything was successful, now has been granted admin consent. User's can now sign-in without be asked for admin consent.
 
 ## Publisher Verification
-The walk-through assumes this sample application is being setup in a non-production tenant. This means that when granting admin consent, the sample app is marked as being from an unverified publisher. For production scenarios, the application publisher should be verified with Microsoft. For more information on this process visit the [Publisher Verification](https://docs.microsoft.com/en-us/azure/active-directory/develop/publisher-verification-overview) documents.
+The walk-through assumes this sample application is being setup in a non-production tenant. This means that when granting admin consent, the sample app is marked as being from an unverified publisher. For production scenarios, the application publisher should be verified with Microsoft. For more information on this process visit the [Publisher Verification](https://docs.microsoft.com/azure/active-directory/develop/publisher-verification-overview) documents.
 
 ## Removing Admin Consent
-If needed, the admin consent for the Teams tenant can be revoked. This can be accomplished from the [Enterprise Application](https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview/menuId~/null) tab on the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade, accessible from the [Azure Portal](https://portal.azure.com). For more information, visit [Delete an enterprise application](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/delete-application-portal?pivots=portal).
+If needed, the admin consent for the Teams tenant can be revoked. This can be accomplished from the [Enterprise Application](https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview/menuId~/null) tab on the [Azure Activate Directory](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview) blade, accessible from the [Azure Portal](https://portal.azure.com). For more information, visit [Delete an enterprise application](https://docs.microsoft.com/azure/active-directory/manage-apps/delete-application-portal?pivots=portal).
 
 ## Next Optional Step
-The final optional step, [Configuring Sample with Authentication Key](./unity-sample-app-setup-7.md#configuring-sample-with-authentication-key), describes how to configure the app with an authentication key, instead of using AAD authentication.
+The final optional step, [Configuring Sample with Authentication Key](./unity-sample-app-setup-5.md#configuring-sample-with-authentication-key), describes how to configure the app with an authentication key, instead of using AAD authentication.
 
