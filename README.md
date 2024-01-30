@@ -4,7 +4,7 @@
 This sample demonstrates how to use the Azure Communication Services (ACS) within an immersive mixed reality application, running on HoloLens 2.
 
 ## Getting Started
-1.	Install [Visual 2019/2022](https://visualstudio.microsoft.com/downloads/)
+1.	Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
 2.  Install [Windows 10.0+ SDK](https://developer.microsoft.com/windows/downloads/windows-sdk/)
 3.  Install [Unity 2022 LTS](https://unity3d.com/get-unity/download) with Universal Windows Platform Build Support
 4.  Install [.Net 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
@@ -43,7 +43,7 @@ The following Microsoft components are used by this sample:
 * **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the Azure Function App.
 * **[Mixed Reality Toolkit 3](https://github.com/Microsoft/MixedRealityToolkit-Unity)**. Used to create mixed reality user experiences in the Unity app.
 * **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. One of the authenticated methods used by the Unity app. 
-* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Another one of the authenticated methods used by the Unity app. 
+* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Another one of the authenticated methods used by the Unity app when playing in the Unity editor
 
 ![Block diagram detailing the components used in this sample application](./images/acs-on-hololens-2-block-diag.png)
 

@@ -21,7 +21,7 @@ Next paste this the key into the Unity project:
    
 4. Paste the authentication key into the inspector window.
    
-5. Clear the **Authentication Manager**, **Communication Authentication Token**, **Function App Endpoint**, and **Function App  Authentication Token** settings. These aren't needed if a key is being used. Having these fields set to some value can prevent the authentication key from being used.
+5. Clear the **Function App Endpoint** setting. This isn't needed if a key is being used. Having the field set to some value can prevent the authentication key from being used.
    
     <img src="./images/image-508-auth-key-app.png" alt="Entering the auth key into MeetingManager's inspector properties" style="max-height: 350px" />
 

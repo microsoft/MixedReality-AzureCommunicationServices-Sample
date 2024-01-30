@@ -8,7 +8,7 @@ This walk-through describes how to setup a custom web API, using Azure Functions
 
 For more information on authentication, visit [Single-tenant and multi-tenant authentication for Teams users](https://docs.microsoft.com/azure/communication-services/concepts/interop/custom-teams-endpoint-authentication-overview#case-2-example-of-a-multi-tenant-application).
 
-During development it might be easier to use an Azure authentication key, instead of setting up additional services. However, when using a key, app users will only be able to use Teams interoperability as "guests". To setup the sample with an authentication key, skip to [Configuring Sample with Authentication Key](./unity-sample-app-setup-7.md).
+During development you may also opt to use an Azure authentication key to get the ACS access token. [Configuring Sample with Authentication Key](./unity-sample-app-setup-7.md).
 
 ## Next Step
 The next step, [Azure Function Setup](./azure-function-setup-2.md#azure-function-app-setup), describes how to create an Azure Function App.
