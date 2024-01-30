@@ -33,7 +33,12 @@ namespace azure_communications_helper_func
 
             var configuration = Helpers.LoadConfiguration(context, log);
             string communicationsEndpointString = configuration[Constants.CommunicationsEndpointKey];
-            
+            if (string.IsNullOrWhiteSpace(communicationsEndpointString))
+            {
+                log.LogInformation("The communications endpoint wasn't found.");
+                return new BadRequestResult();
+            }
+
             AccessToken accessToken;
             var communicationsEndpoint = new Uri(communicationsEndpointString);
             var communicationsCredential = new ManagedIdentityCredential();
