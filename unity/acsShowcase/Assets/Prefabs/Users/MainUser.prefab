@@ -542,6 +542,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4282714146169015396, guid: 6058caa3f50f2324f8291323011cf5a8, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7500776780266850959, guid: 6058caa3f50f2324f8291323011cf5a8, type: 3}
       propertyPath: managedReferences[2].tintables.Array.data[0]
       value: 
