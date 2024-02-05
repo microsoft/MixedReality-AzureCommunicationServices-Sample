@@ -103,7 +103,12 @@ namespace Azure.Communication.Calling.Unity
                     var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
                     var count = response.id - 1;
                     var byteArr = System.Convert.FromBase64String(response.body);
-                    if (photo.LoadImage(byteArr))
+                    if (response.status == 404)
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("No user photo found.");
+                    }
+                    else if (photo.LoadImage(byteArr))
                     {
                         tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("User photo loaded."); 
@@ -152,7 +157,12 @@ namespace Azure.Communication.Calling.Unity
                     var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
                     var count = response.id - 1;
                     var byteArr = System.Convert.FromBase64String(response.body);
-                    if (photo.LoadImage(byteArr))
+                    if (response.status == 404)
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("No user photo found.");
+                    }
+                    else if (photo.LoadImage(byteArr))
                     {
                         tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("User photo loaded."); 
@@ -259,6 +269,8 @@ namespace Azure.Communication.Calling.Unity
         public int id { get; set; }
         [JsonProperty(PropertyName = "body")]
         public string body { get; set; }
+        [JsonProperty(PropertyName = "status")]
+        public int status { get; set; }
     }
     public struct ReturnedPhotoData
     {

@@ -234,22 +234,27 @@ public class ParticipantVideoController : MonoBehaviour
         {
             this.transform.localScale = new Vector3(0.5f,0.4f,0.1f);
         }
-        var currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
         bool iconFoundInRecentUsers = false;
-        foreach(var recentUser in UserController.UserProfiles)
+
+        if (allParticipants.Length > 0)
         {
-            if(recentUser.DisplayName == currentSpeakerDisplayName)
-            { 
-                if(recentUser.Icon != null)
+            var currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
+            foreach (var recentUser in UserController.UserProfiles)
+            {
+                if (recentUser.DisplayName == currentSpeakerDisplayName)
                 {
-                    iconFoundInRecentUsers = true;
-                    initials.gameObject.SetActive(false);
-                    profileIcon.color = Color.white;
-                    profileIcon.texture = recentUser.Icon; 
-                } 
-                break;
+                    if (recentUser.Icon != null)
+                    {
+                        iconFoundInRecentUsers = true;
+                        initials.gameObject.SetActive(false);
+                        profileIcon.color = Color.white;
+                        profileIcon.texture = recentUser.Icon;
+                    }
+                    break;
+                }
             }
         }
+        
         if (!iconFoundInRecentUsers)
         {
             profileIcon.texture = null;
