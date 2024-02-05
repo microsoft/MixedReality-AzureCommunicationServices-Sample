@@ -68,10 +68,7 @@ public class MeetingManager : MonoBehaviour
 
     [SerializeField] [Tooltip("Set if local camera video will be played locally.")]
     private bool playLocalVideo = true;
-
-    [SerializeField] [Tooltip("participant prefab")]
-    private GameObject participantPrefab = null;
-
+    
     [Header("Events")] [SerializeField] [Tooltip("GraphEvent raised when joined a call.")]
     private UnityEvent joinedCall = new UnityEvent();
 

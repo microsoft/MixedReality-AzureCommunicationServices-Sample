@@ -5582,7 +5582,6 @@ GameObject:
   m_Component:
   - component: {fileID: 185344017}
   - component: {fileID: 185344019}
-  - component: {fileID: 185344018}
   m_Layer: 0
   m_Name: PeopleSearcher
   m_TagString: Untagged
@@ -5605,18 +5604,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 216367316}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &185344018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 185344016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fbd7a6ddba0fd34b96fa14feea364b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &185344019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15196,7 +15183,6 @@ GameObject:
   m_Component:
   - component: {fileID: 504284134}
   - component: {fileID: 504284136}
-  - component: {fileID: 504284135}
   m_Layer: 0
   m_Name: PeopleGetter
   m_TagString: Untagged
@@ -15219,18 +15205,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 216367316}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &504284135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 504284133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88f09a35a9c2b924180736b7e011b496, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &504284136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15253,7 +15227,7 @@ MonoBehaviour:
   peopleChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 504284135}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Azure.Communication.Calling.Unity.UI.PeopleView,
           Assembly-CSharp-firstpass
         m_MethodName: UpdatePeople
@@ -33187,7 +33161,6 @@ MonoBehaviour:
   autoShareLocalVideo: 1
   playRemoteVideo: 1
   playLocalVideo: 1
-  participantPrefab: {fileID: 1791563580207494978, guid: 2d3d0cc65650424439ad1f1c7bbe99e9, type: 3}
   joinedCall:
     m_PersistentCalls:
       m_Calls:
