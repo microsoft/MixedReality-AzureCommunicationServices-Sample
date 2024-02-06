@@ -122,7 +122,7 @@ public class UserObject : MonoBehaviour
     /// <summary>
     /// event fired when selecting a particiant for a one to one call
     /// </summary>
-    public static event Action OnSelectedParticipantCall;
+    public static event Action<UserObject> OnSelectedParticipantCall;
     /// <summary>
     /// time when hover exit occurs 
     /// </summary>
@@ -232,7 +232,7 @@ public class UserObject : MonoBehaviour
         //Selected single participant for 1on1 call
         else if ( userPageType == PageType.RelevantContacts || userPageType == PageType.SearchMain)
         {
-            OnSelectedParticipantCall?.Invoke();
+            OnSelectedParticipantCall?.Invoke(this);
         }
     }
 
