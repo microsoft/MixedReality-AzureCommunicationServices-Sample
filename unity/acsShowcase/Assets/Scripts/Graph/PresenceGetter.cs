@@ -68,7 +68,35 @@ namespace Azure.Communication.Calling.Unity
         {
             PhotoGetter.OnAllPhotosLoaded -= UpdatePresenceAsyncWorker;
         }
+        private PresenceAvailability GetPresence(string presence)
+        {
+            switch (presence)
+            {
+                case "available":
+                    return PresenceAvailability.Available;
+                case "availableidle":
+                    return PresenceAvailability.AvailableIdle;
+                case "away":
+                    return PresenceAvailability.Away;
+                case "berightback":
+                    return PresenceAvailability.BeRightBack;
+                case "busy":
+                    return PresenceAvailability.Busy;
+                case "busyidle":
+                    return PresenceAvailability.BusyIdle;
+                case "donotdisturb":
+                    return PresenceAvailability.DoNotDisturb;
+                case "offline":
+                    return PresenceAvailability.Offline;
+                case "inameeting":
+                    return PresenceAvailability.Busy;
+                default:
+                    return PresenceAvailability.PresenceUnknown;
+            }
+        }
+        #endregion Private Functions
 
+        #region Public Functions
         public async Task UpdatePresenceAsyncWorker()
         {
             IPresence presence = null;
@@ -145,33 +173,7 @@ namespace Azure.Communication.Calling.Unity
             OnProfilesFullyLoaded?.Invoke(tempUserProfiles);
 
         }
-        private PresenceAvailability GetPresence(string presence)
-        { 
-            switch (presence)
-            {
-                case "available":
-                    return PresenceAvailability.Available; 
-                case "availableidle":
-                    return PresenceAvailability.AvailableIdle; 
-                case "away":
-                    return PresenceAvailability.Away; 
-                case "berightback":
-                    return PresenceAvailability.BeRightBack; 
-                case "busy":
-                    return PresenceAvailability.Busy; 
-                case "busyidle":
-                    return PresenceAvailability.BusyIdle; 
-                case "donotdisturb":
-                    return PresenceAvailability.DoNotDisturb; 
-                case "offline":
-                    return PresenceAvailability.Offline;
-                case "inameeting":
-                    return PresenceAvailability.Busy;
-                default:
-                    return PresenceAvailability.PresenceUnknown; 
-            }
-        }
-        #endregion
+        #endregion Public Functions
     }
 
     [Serializable]

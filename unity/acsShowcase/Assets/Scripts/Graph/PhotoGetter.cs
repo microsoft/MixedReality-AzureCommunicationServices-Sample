@@ -121,8 +121,9 @@ namespace Azure.Communication.Calling.Unity
             }  
             OnAllPhotosLoaded?.Invoke(tempUserProfiles);
         }
+        #endregion Private Functions
 
-
+        #region Public Functions
         public async void UpdateProfilesWorkerAsync(IUsers userList, OnAllPhotosLoadedHanlder handler)
         {
             string data = null;
@@ -176,8 +177,6 @@ namespace Azure.Communication.Calling.Unity
             handler?.Invoke(tempUserProfiles);
         }
         
-        
-
         public async Task UpdateProfileWorkerAsync()
         {
             byte[] data = null;
@@ -221,7 +220,7 @@ namespace Azure.Communication.Calling.Unity
             }
 
         }
-        #endregion
+        #endregion Public Functions
     }
 
     [Serializable]
