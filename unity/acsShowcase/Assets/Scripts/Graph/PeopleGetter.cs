@@ -32,7 +32,6 @@ namespace Azure.Communication.Calling.Unity
         private PeopleChangedEvent peopleChanged = new PeopleChangedEvent();
 
         public static event Action<PeopleGetter, PeopleChangedEventArgs> PeopleChanged;
-        public static event Action<string> SendMainUserName;
         public static event Action<string> SendToken;
         public delegate void GetPeopleHandler(IUsers allUsers);
         
@@ -110,7 +109,6 @@ namespace Azure.Communication.Calling.Unity
             var args = new PeopleChangedEventArgs(People);
             PeopleChanged?.Invoke(this, args);
             peopleChanged?.Invoke(args);
-            SendMainUserName?.Invoke(people?.value[0].displayName);
         }
         #endregion Private Functions
         

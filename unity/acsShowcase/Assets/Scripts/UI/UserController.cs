@@ -30,19 +30,13 @@ public class UserController : MonoBehaviour
     /// fired when user profiles is loaded  
     /// </summary>
     public static event Action LoadedStaticUserProfiles;
-    
-    /// <summary>
-    /// main user name 
-    /// </summary>
-    public static string MainUserName;
-    
+
     /// <summary>
     /// OnEnable 
     /// </summary>
     private void OnEnable()
     {
         PresenceGetter.OnProfilesFullyLoaded += OnProfilesFullyLoaded;
-        PeopleGetter.SendMainUserName += SendMainUserName;
     }
 
     /// <summary>
@@ -51,17 +45,8 @@ public class UserController : MonoBehaviour
     private void OnDisable()
     {
         PresenceGetter.OnProfilesFullyLoaded -= OnProfilesFullyLoaded;
-        PeopleGetter.SendMainUserName -= SendMainUserName;
     }
 
-    /// <summary>
-    /// set user name 
-    /// </summary>
-    /// <param name="name"></param>
-    private void SendMainUserName(string name)
-    {
-        MainUserName = name;
-    }
     /// <summary>
     /// Fires when all the recent users have their photos, precenses and names sent to the app.
     /// </summary>

@@ -285,7 +285,7 @@ public class MeetingManager : MonoBehaviour
                 // wait for previous call agent to be destroyed before start listening 
                 if (currentActiveCall.CurrentCallAgent == null)
                 {
-                    handleIncomingCall.StartListening(displayName);
+                    handleIncomingCall.StartListening(displayName, forceSignInAsGuest);
                     SetCurrentActiveCall(null);
                     startListeningComingCall = false;
                 }
@@ -583,14 +583,13 @@ public class MeetingManager : MonoBehaviour
             if (string.IsNullOrEmpty(displayName) || (displayName.Equals(SystemUser.UNKNOWN_USER) || displayName.ToLower() == "unknown user"))
             {
                 displayName = displayName;
-                ProfileGetter localProfile = GameObject.FindObjectOfType<ProfileGetter>();
-                if (localProfile != null)
-                    displayName = localProfile.Profile.displayName;
+                if (ProfileGetter.Profile != null)
+                    displayName = ProfileGetter.Profile.displayName;
             }
 
             // start listening to the incoming call
             handleIncomingCall.Token = serviceIdentity.CommunicationAccessToken;
-            handleIncomingCall.StartListening(displayName);
+            handleIncomingCall.StartListening(displayName, forceSignInAsGuest);
         }
         else
         {

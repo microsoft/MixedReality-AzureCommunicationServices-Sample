@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -56,7 +57,6 @@ namespace Azure.Communication.Calling.Unity
         #region Protected Functions
         protected override void OnAuthenticated()
         {
-            UpdateProfileWorkerAsync();
         }
         #endregion Protected Functions
 
@@ -178,7 +178,7 @@ namespace Azure.Communication.Calling.Unity
         
         
 
-        private async void UpdateProfileWorkerAsync()
+        public async Task UpdateProfileWorkerAsync()
         {
             byte[] data = null;
             string token = Token;

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -48,7 +49,6 @@ namespace Azure.Communication.Calling.Unity
         #region Protected Functions
         protected override void OnAuthenticated()
         {
-            UpdatePresenceAsyncWorker();
         }
         #endregion Protected Functions
 
@@ -68,7 +68,8 @@ namespace Azure.Communication.Calling.Unity
         {
             PhotoGetter.OnAllPhotosLoaded -= UpdatePresenceAsyncWorker;
         }
-        private async void UpdatePresenceAsyncWorker()
+
+        public async Task UpdatePresenceAsyncWorker()
         {
             IPresence presence = null;
             string token = Token;  
@@ -101,43 +102,7 @@ namespace Azure.Communication.Calling.Unity
                 presenceLoaded?.Invoke(args);
                 PresenceLoaded?.Invoke(this, args);
             }
-
         }
-        //private async void UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
-        //{
-        //    IPresence presence = null;
-        //    string token = Token;
-        //    if (!string.IsNullOrEmpty(token))
-        //    {
-        //        try
-        //        {
-        //            if (string.IsNullOrEmpty(id))
-        //            {
-        //                Log.Verbose<PresenceGetter>("Requesting presence for signed in user.");
-        //                presence = await Rest.Presence.Get(token);
-        //            }
-        //            else
-        //            {
-        //                Log.Verbose<PresenceGetter>("Requesting presence for user ({0})", id);
-        //                presence = await Rest.Presence.Get(token, id);
-        //            }
-        //            Log.Verbose<PresenceGetter>("Requested for user presence completed.");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
-        //        }
-        //    }
-        //    if (presence != null)
-        //    {
-        //        Log.Verbose<PresenceGetter>("Loaded presence");
-        //        Presence = presence;
-        //        var args = new PresenceLoadedEventArgs(presence);
-        //        presenceLoaded?.Invoke(args);
-        //        PresenceLoaded?.Invoke(this, args);
-        //    }
-
-        //}
 
         public async void UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
         {
