@@ -10114,6 +10114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e37921134c0124385f5dd2329ece67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meetingManager: {fileID: 1450737122}
+  cameraOnButton: {fileID: 10280569}
+  cameraOffButton: {fileID: 1959775042}
   showMainPanel:
     m_PersistentCalls:
       m_Calls:
@@ -10403,42 +10406,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 10280569}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1959775042}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1450737122}
-        m_TargetAssemblyTypeName: MeetingManager, Assembly-CSharp
-        m_MethodName: ShareCamera
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -33169,8 +33136,7 @@ MonoBehaviour:
   autoLogin: 1
   forceSignInAsGuest: 0
   displayName: 
-  startMuted: 0
-  autoShareLocalVideo: 1
+  autoShareLocalVideo: 0
   playRemoteVideo: 1
   playLocalVideo: 1
   joinedCall:

@@ -56,12 +56,13 @@ public class MeetingManager : MonoBehaviour
 
     [Header("Meeting Settings")] [SerializeField] [Tooltip("The default meeting locator to use during a Join() request.")]
     private MeetingLocator defaultMeetingLocator = null;
-
-    [SerializeField] [Tooltip("Should a the user join the call muted.")]
-    private bool startMuted = false;
-
+    
     [SerializeField] [Tooltip("The local wecam video automatically be started on joining meeting.")]
     private bool autoShareLocalVideo = false;
+    public bool AutoShareLocalVideo
+    {
+        get => autoShareLocalVideo;
+    }
 
     [SerializeField] [Tooltip("Set if remote videos will be received and played locally.")]
     private bool playRemoteVideo = true;
@@ -398,6 +399,17 @@ public class MeetingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// set shared camera
+    /// </summary>
+    public void SetShareCamera(bool enable)
+    {
+        if (enable)
+            ShareCamera();
+        else
+            UnshareCamera();
+    }
+    
     /// <summary>
     /// enable camera
     /// </summary>
