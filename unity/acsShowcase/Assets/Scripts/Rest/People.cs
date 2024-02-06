@@ -57,7 +57,6 @@ namespace Azure.Communication.Calling.Unity.Rest
 
             allEmail += ")";
             string querryStr = "https://graph.microsoft.com/v1.0/users?$filter=mail in " + allEmail;
-            Debug.Log("people get " + querryStr);
             
             QueryBuilder builder = new QueryBuilder(querryStr, maxArguments: 2);
             if (count > 0)

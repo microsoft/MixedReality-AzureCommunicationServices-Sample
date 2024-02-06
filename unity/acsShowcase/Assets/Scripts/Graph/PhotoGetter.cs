@@ -88,7 +88,6 @@ namespace Azure.Communication.Calling.Unity
                     data = await Rest.Photo.Get(token, emails, photoSize);
                     deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
                     Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
-                    Debug.Log(deserializedData + " test");
                 }
                 catch (Exception ex)
                 {

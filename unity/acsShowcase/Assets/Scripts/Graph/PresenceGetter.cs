@@ -159,7 +159,6 @@ namespace Azure.Communication.Calling.Unity
                     data = await Rest.Presence.Get(token, ids);
                     deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPresenceData>(data);
                     Log.Verbose<PhotoGetter>("Request for user presences completed.");
-                    Debug.Log(deserializedData + " test");
                 }
                 catch (Exception ex)
                 {

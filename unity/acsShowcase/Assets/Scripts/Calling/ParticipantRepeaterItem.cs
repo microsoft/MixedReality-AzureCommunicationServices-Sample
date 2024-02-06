@@ -105,7 +105,6 @@ public class ParticipantRepeaterItem : RepeaterItem
         switch (args.Stream.State)
         {
             case VideoStreamState.Available:
-                //Debug.Log("ParticipantRepeaterItem  VideoStreamState.Available " + remoteParticipant.DisplayName );
                 videoStreamPlayer.Stream = args.Stream;
                 break;
             case VideoStreamState.Started:
