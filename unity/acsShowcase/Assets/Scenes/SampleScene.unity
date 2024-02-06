@@ -9721,6 +9721,9 @@ MonoBehaviour:
   isAuthenticatedChanged:
     m_PersistentCalls:
       m_Calls: []
+  mainUserPrefab: {fileID: 2098405344}
+  photoGetter: {fileID: 334879704}
+  presenceGetter: {fileID: 334879703}
   id: 
   profileLoaded:
     m_PersistentCalls:
@@ -32024,7 +32027,6 @@ MonoBehaviour:
   scrollviewBackground: {fileID: 2076190172}
   scrollViewContent: {fileID: 1289841574}
   horizontalUserPrefab: {fileID: 3567217674101987447, guid: 37c7088fde4ee3d4eae12dcdabc1c5eb, type: 3}
-  mainUserPrefab: {fileID: 2098405344}
   noRecentUsersText: {fileID: 900897504}
   loadMoreButton: {fileID: 483451007}
   loadMoreText: {fileID: 483451008}
@@ -42350,8 +42352,6 @@ MonoBehaviour:
   canvasObject: {fileID: 1781802014}
   videoPanel: {fileID: 1801180803}
   mainPanel: {fileID: 2004951155}
-  captionController: {fileID: 0}
-  speakerNameRect: {fileID: 0}
 --- !u!1 &1805871554
 GameObject:
   m_ObjectHideFlags: 0

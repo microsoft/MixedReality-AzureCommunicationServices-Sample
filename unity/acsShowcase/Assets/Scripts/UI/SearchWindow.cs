@@ -82,7 +82,7 @@ public class SearchWindow : MonoBehaviour
 
             foreach (var user in searchResults)
             { 
-                if (user.Id == ProfileGetter.Profile.id)
+                if (user.Email == ProfileGetter.Profile.mail)
                 {
                     mainUserSearched = 1;
                 }

@@ -238,10 +238,10 @@ public class ParticipantVideoController : MonoBehaviour
 
         if (allParticipants.Length > 0)
         {
-            var currentSpeakerID = allParticipants[curActiveSpeakerIndex].RemoteParticipant.Email;
+            var currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
             foreach (var recentUser in UserController.UserProfiles)
             {
-                if (recentUser.Id == currentSpeakerID)
+                if (recentUser.DisplayName == currentSpeakerDisplayName)
                 {
                     if (recentUser.Icon != null)
                     {
