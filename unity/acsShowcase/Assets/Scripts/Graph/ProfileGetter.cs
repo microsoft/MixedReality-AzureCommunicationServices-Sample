@@ -100,8 +100,7 @@ namespace Azure.Communication.Calling.Unity
             SetUpProfileUI();
         }
 
-
-        public void SetUpProfileUI()
+        private void SetUpProfileUI()
         {
             if (Profile != null && photoGetter?.Photo != null && presenceGetter?.Presence != null)
             {
