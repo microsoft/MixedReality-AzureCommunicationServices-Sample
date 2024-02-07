@@ -148,14 +148,7 @@ public class HandleIncomingCall : CallScenario
 
             try
             {
-                if (!isGuest)
-                {
-                    CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
-                }
-                else
-                {
-                    CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
-                }
+                CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
             }
             catch (Exception ex)
             {
