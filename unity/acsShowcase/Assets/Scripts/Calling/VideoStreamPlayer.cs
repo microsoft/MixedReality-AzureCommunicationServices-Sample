@@ -41,7 +41,9 @@ public class VideoStreamPlayer : MonoBehaviour
 
     [SerializeField] [Tooltip("Video size scale. The video object scale will be set to video width/sizeScale video height/sizeScale")]
     private float sizeScale = 1f;
-
+    public delegate void VideoSizeChangeEventDelegate(Vector3 newScale);
+    public static VideoSizeChangeEventDelegate s_VideoSizeChangeEvent;
+    
     public CallVideoStream Stream
     {
         get => stream;
@@ -317,7 +319,8 @@ public class VideoStreamPlayer : MonoBehaviour
         // adjust only ratio has changed, allow it to be resizable 
         if (Mathf.Abs(scaleRatio - videoRatio) > 0.001f)
         {
-            rendererTransform.localScale = new Vector3(transformWidth / sizeScale, transformHeight / sizeScale, rendererTransform.localScale.z);
+            Vector3 wNewScale = new Vector3(transformWidth / sizeScale, transformHeight / sizeScale, rendererTransform.localScale.z);
+            s_VideoSizeChangeEvent?.Invoke(wNewScale);
         }
     }
 
