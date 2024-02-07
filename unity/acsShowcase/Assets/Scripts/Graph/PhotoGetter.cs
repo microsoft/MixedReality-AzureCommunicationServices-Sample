@@ -15,6 +15,9 @@ namespace Azure.Communication.Calling.Unity
 {
     public class PhotoGetter : AuthenticatedOperation
     {
+        private const int httpSuccess = 200;
+        private const int httpNotFound = 404;
+
         #region Serializable Fields
         [Header("User Settings")]
 
@@ -140,12 +143,12 @@ namespace Azure.Communication.Calling.Unity
                     var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
                     var count = response.id - 1;
                     var byteArr = System.Convert.FromBase64String(response.body);
-                    if (response.status == 404)
+                    if (response.status == httpNotFound)
                     {
                         tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("No user photo found.");
                     }
-                    else if (photo.LoadImage(byteArr))
+                    else if (response.status == httpSuccess && photo.LoadImage(byteArr))
                     {
                         tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("User photo loaded."); 
@@ -193,12 +196,12 @@ namespace Azure.Communication.Calling.Unity
                     var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
                     var count = response.id - 1;
                     var byteArr = System.Convert.FromBase64String(response.body);
-                    if (response.status == 404)
+                    if (response.status == httpNotFound)
                     {
                         tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("No user photo found.");
                     }
-                    else if (photo.LoadImage(byteArr))
+                    else if (response.status == httpSuccess && photo.LoadImage(byteArr))
                     {
                         tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
                         Log.Verbose<PhotoGetter>("User photo loaded.");

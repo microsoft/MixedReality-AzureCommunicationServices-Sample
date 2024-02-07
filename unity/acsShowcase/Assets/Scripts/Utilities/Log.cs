@@ -12,7 +12,7 @@ namespace Azure.Communication.Calling.Unity
     public static class Log
     {
         private static LogOption _option = LogOption.NoStacktrace;
-        private static int _level = (int)AppLogLevel.Verbose;
+        private static int _level = (int)AppLogLevel.Warning;
         private static ConcurrentDictionary<Type, string> _names = new ConcurrentDictionary<Type, string>();
 
         public static bool Enabled(AppLogLevel level)

@@ -403,6 +403,7 @@ namespace Azure.Communication.Calling.Unity.Rest
                         response = await webResponse.Content.ReadAsStringAsync();
                         var length = response == null ? 0 : response.Length;
                         Log.Verbose<Client>("HTTP request response length ({0}:{1}) -> {2}", url, method, length);
+                        Log.Verbose<Client>("HTTP request response message: {0}", response);
                     }
                     else
                     {
