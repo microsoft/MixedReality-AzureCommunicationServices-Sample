@@ -239,7 +239,9 @@ public class ParticipantVideoController : MonoBehaviour
         {
             VideoSizeChanged(new Vector3(0.5f,0.4f,0.1f));
         }
-        var currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
+        var currentSpeakerDisplayName = "";
+        if (allParticipants != null && curActiveSpeakerIndex < allParticipants.Length)
+            currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
         bool iconFoundInRecentUsers = false;
         foreach(var recentUser in UserController.UserProfiles)
         {

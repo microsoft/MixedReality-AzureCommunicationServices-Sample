@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 /// <summary>
@@ -82,7 +83,7 @@ public abstract class CallScenario : MonoBehaviour
     private VideoStreamPixelFormat customVideoFormat = VideoStreamPixelFormat.Rgba;
 
     [Header("Base Events")] [SerializeField] [Tooltip("Event fired when status changes.")]
-    private StringChangeEvent statusChanged = new StringChangeEvent();
+    private UnityEvent<CallState> statusChanged = new UnityEvent<CallState>();
 
     [SerializeField] [Tooltip("Event fired when mute status changes.")]
     private StringChangeEvent muteStatusChanged = new StringChangeEvent();
@@ -797,13 +798,13 @@ public abstract class CallScenario : MonoBehaviour
         if (CurrentCall == null)
         {
             status = "No Call";
+            statusChanged?.Invoke(CallState.None);
         }
         else
         {
             status = CurrentCall.State.ToString();
+            statusChanged?.Invoke(CurrentCall.State);
         }
-
-        statusChanged?.Invoke(status);
     }
 
     private void UpdatedMuteStatus()
