@@ -30,6 +30,9 @@ public class ParticipantVideoController : MonoBehaviour
     [SerializeField] [Tooltip("The video panel ")]
     private MeshRenderer videoPanel;
     [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject caption;
+    [SerializeField] private RectTransform speakerNameRect;
+    [SerializeField] private GameObject pinControl;
     
     /// <summary>
     /// all participants 
@@ -95,6 +98,7 @@ public class ParticipantVideoController : MonoBehaviour
     {
         videoPanel.transform.position = mainPanel.transform.position; 
         videoPanel.transform.rotation = mainPanel.transform.rotation;
+        VideoStreamPlayer.s_VideoSizeChangeEvent += VideoSizeChanged;
         StartCoroutine(EnableCanvas());
     }
     
@@ -107,6 +111,7 @@ public class ParticipantVideoController : MonoBehaviour
         speakerName.text = "";
         SetIconVisibility(false);
         activeSpeakerVideoEnabledStatus = -1;
+        VideoStreamPlayer.s_VideoSizeChangeEvent -= VideoSizeChanged;
     }
 
     // Update is called once per frame
@@ -232,29 +237,26 @@ public class ParticipantVideoController : MonoBehaviour
         //reset aspect ratio
         if(visible)
         {
-            this.transform.localScale = new Vector3(0.5f,0.4f,0.1f);
+            VideoSizeChanged(new Vector3(0.5f,0.4f,0.1f));
         }
+        var currentSpeakerDisplayName = "";
+        if (allParticipants != null && curActiveSpeakerIndex < allParticipants.Length)
+            currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
         bool iconFoundInRecentUsers = false;
-
-        if (allParticipants.Length > 0)
+        foreach(var recentUser in UserController.UserProfiles)
         {
-            var currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
-            foreach (var recentUser in UserController.UserProfiles)
-            {
-                if (recentUser.DisplayName == currentSpeakerDisplayName)
+            if(recentUser.DisplayName == currentSpeakerDisplayName)
+            { 
+                if(recentUser.Icon != null)
                 {
-                    if (recentUser.Icon != null)
-                    {
-                        iconFoundInRecentUsers = true;
-                        initials.gameObject.SetActive(false);
-                        profileIcon.color = Color.white;
-                        profileIcon.texture = recentUser.Icon;
-                    }
-                    break;
-                }
+                    iconFoundInRecentUsers = true;
+                    initials.gameObject.SetActive(false);
+                    profileIcon.color = Color.white;
+                    profileIcon.texture = recentUser.Icon; 
+                } 
+                break;
             }
         }
-        
         if (!iconFoundInRecentUsers)
         {
             profileIcon.texture = null;
@@ -284,5 +286,30 @@ public class ParticipantVideoController : MonoBehaviour
         var randomColor = UnityEngine.Random.Range(1, 3);
         backgroundColor = backgroundColorsList[randomColor];
         initials.color = initialsTextColorsList[randomColor];
+    }
+    /// <summary>
+    /// Called when when video size changed
+    /// </summary>
+    /// <param name="newScale"></param>
+    private void VideoSizeChanged(Vector3 newScale)
+    {
+        float xRatio = newScale.x/this.transform.localScale.x;
+        float yRatio = newScale.y/this.transform.localScale.y;
+        float zRatio = newScale.z/this.transform.localScale.z;
+
+        this.transform.localScale = newScale;
+        //adjust the caption and speaker name, and the pin control size so that look good
+        // (not squeeze, not stretched) with the video size
+        caption.transform.localScale = new Vector3(caption.transform.localScale.x / xRatio,
+            caption.transform.localScale.y / yRatio,
+            caption.transform.localScale.z / zRatio);
+        
+        speakerNameRect.localScale = new Vector3(speakerNameRect.localScale.x / xRatio,
+            speakerNameRect.localScale.y / yRatio,
+            speakerNameRect.localScale.z / zRatio);
+        
+        pinControl.transform.localScale = new Vector3(pinControl.transform.localScale.x / xRatio,
+            pinControl.transform.localScale.y / yRatio,
+            pinControl.transform.localScale.z / zRatio);
     }
 }

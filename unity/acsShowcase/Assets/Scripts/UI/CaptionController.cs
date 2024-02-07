@@ -15,14 +15,6 @@ public class CaptionController : MonoBehaviour
     [SerializeField] [Tooltip("The reference to the caption game object to hide/show caption")]
     private GameObject caption;
     
-    /// <summary>
-    /// caption canvas, should be hidden at startup so that the
-    /// bounding box of the caption is calculated properly to be able
-    /// to resize
-    /// </summary>
-    [SerializeField] [Tooltip("The reference to the caption canvas")]
-    private GameObject captionCanvas;
-    
     [SerializeField] [Tooltip("The caption text display")]
     private TextMeshProUGUI captionText;
 
@@ -44,7 +36,6 @@ public class CaptionController : MonoBehaviour
     {
         captionText.text = "";
         caption.SetActive(true);
-        captionCanvas.SetActive(false);
     }
     
     /// <summary>
@@ -53,7 +44,6 @@ public class CaptionController : MonoBehaviour
     public void Disable()
     {
         captionText.text = "";
-        captionCanvas.SetActive(false);
         caption.SetActive(false);
     }
 
@@ -89,8 +79,6 @@ public class CaptionController : MonoBehaviour
         {
             displayText += oneLine + "\n";
         }
-        if (!captionCanvas.activeSelf)
-            captionCanvas.SetActive(true);
         captionText.text = displayText;
     }
     

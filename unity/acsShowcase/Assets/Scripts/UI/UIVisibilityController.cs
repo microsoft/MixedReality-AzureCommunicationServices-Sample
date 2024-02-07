@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using MixedReality.Toolkit.UX;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,9 @@ public class UIVisibilityController : MonoBehaviour
 
     [SerializeField] [Tooltip("camera off button")]
     private GameObject cameraOffButton = null;
+    
+    [SerializeField] [Tooltip("leave button")]
+    private PressableButton leaveButton = null;
 
     [SerializeField] [Tooltip("event raised when showing the main panel")]
     private UnityEvent showMainPanel = new UnityEvent();
@@ -33,7 +37,13 @@ public class UIVisibilityController : MonoBehaviour
 
     [SerializeField] [Tooltip("event raised when hiding in call panel")]
     private UnityEvent hideInCallPanel = new UnityEvent();
-
+    
+    private bool isInCallPanelVisible = false;
+    public bool IsInCallPanelVisible
+    {
+        get => isInCallPanelVisible;
+    }
+    
     /// <summary>
     /// show the main panel 
     /// </summary>
@@ -48,6 +58,7 @@ public class UIVisibilityController : MonoBehaviour
     public void HideMainPanel()
     {
         hideMainPanel.Invoke();
+
     }
 
     /// <summary>
@@ -78,6 +89,7 @@ public class UIVisibilityController : MonoBehaviour
     public void ShowInCallPanel()
     {
         showInCallPanel.Invoke();
+        isInCallPanelVisible = true;
     }
 
     /// <summary>
@@ -86,5 +98,17 @@ public class UIVisibilityController : MonoBehaviour
     public void HideInCallPanel()
     {
         hideInCallPanel.Invoke();
+        isInCallPanelVisible = false;
+    }
+    
+    public void LeftCallEventHandler()
+    {
+        if (isInCallPanelVisible)
+        {
+            // this could happen when the user is removed from a call by the organizer
+            // so we cleanup resource as we click on the leave button
+            if (leaveButton != null) 
+                leaveButton.OnClicked.Invoke();
+        }
     }
 }

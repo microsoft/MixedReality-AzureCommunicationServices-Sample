@@ -56,9 +56,10 @@ public class MeetingManager : MonoBehaviour
 
     [Header("Meeting Settings")] [SerializeField] [Tooltip("The default meeting locator to use during a Join() request.")]
     private MeetingLocator defaultMeetingLocator = null;
-    
+
     [SerializeField] [Tooltip("The local wecam video automatically be started on joining meeting.")]
     private bool autoShareLocalVideo = false;
+
     public bool AutoShareLocalVideo
     {
         get => autoShareLocalVideo;
@@ -69,7 +70,7 @@ public class MeetingManager : MonoBehaviour
 
     [SerializeField] [Tooltip("Set if local camera video will be played locally.")]
     private bool playLocalVideo = true;
-    
+
     [Header("Events")] [SerializeField] [Tooltip("GraphEvent raised when joined a call.")]
     private UnityEvent joinedCall = new UnityEvent();
 
@@ -409,7 +410,7 @@ public class MeetingManager : MonoBehaviour
         else
             UnshareCamera();
     }
-    
+
     /// <summary>
     /// enable camera
     /// </summary>
@@ -910,8 +911,31 @@ public class MeetingManager : MonoBehaviour
         return currentActiveCall == teamMeeting;
     }
 
-   
-    
+    public void OnCallStateChanged(CallState state)
+    {
+        switch (state)
+        {
+            case CallState.Connecting:
+                status = MeetingStatus.LoggedIn(MeetingCallState.Connecting);
+                break;
+            case CallState.Connected:
+                status = MeetingStatus.LoggedIn(MeetingCallState.Connected);
+                break;
+            case CallState.Disconnecting:
+                status = MeetingStatus.LoggedIn(MeetingCallState.Disconnecting);
+                break;
+            case CallState.Disconnected:
+                status = MeetingStatus.LoggedIn(MeetingCallState.Disconnected);
+                break;
+            case CallState.None:
+                status = MeetingStatus.LoggedIn(MeetingCallState.None);
+                break;
+            case CallState.Ringing:
+                status = MeetingStatus.LoggedIn(MeetingCallState.Ringing);
+                break;
+        }
+        ApplyStatus(status);
+    }
 }
 
 [Serializable]

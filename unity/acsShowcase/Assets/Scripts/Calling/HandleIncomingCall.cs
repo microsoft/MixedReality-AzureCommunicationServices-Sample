@@ -108,9 +108,16 @@ public class HandleIncomingCall : CallScenario
     {
         SingleAsyncRunner.QueueAsync(() =>
         {
-            incomingCall = call;
-            IncomingCallFrom = incomingCall?.CallerDetails.DisplayName;
-            return Task.CompletedTask;
+            if (CurrentCall == null)
+            {
+                incomingCall = call;
+                IncomingCallFrom = incomingCall?.CallerDetails.DisplayName;
+                return Task.CompletedTask;
+            }
+            else
+            {
+                return call.RejectAsync();
+            }
         });
     }
 
