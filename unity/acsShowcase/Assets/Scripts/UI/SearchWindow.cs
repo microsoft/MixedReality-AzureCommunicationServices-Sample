@@ -25,8 +25,10 @@ public class SearchWindow : MonoBehaviour
     private GameObject horizontalUserPrefab;
     [SerializeField] [Tooltip("The search type")]
     private PageType searchPageType;
+    [SerializeField] [Tooltip("The main user prefab")]
+    private GameObject mainUserPrefab;
 
-    
+
     /// <summary>
     /// Awake 
     /// </summary>

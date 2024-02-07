@@ -55,6 +55,26 @@ namespace Azure.Communication.Calling.Unity
         {
             UpdatePeopleWorker();
         }
+
+        public async void GetPeopleWorker(List<string> emailList, GetPeopleHandler handler)
+        {
+            IUsers people = null;
+            string token = Token;
+            if (!string.IsNullOrEmpty(token))
+            {
+                Log.Verbose<PeopleGetter>("Requesting for people from the Microsoft Graph...");
+                try
+                {
+                    people = await Rest.People.Get(token, emailList);
+                    Log.Verbose<PeopleGetter>("Requested for people completed.");
+                    handler(people);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<PeopleGetter>("Failed to obtain list of people. Exception: {0}", ex);
+                }
+            }
+        }
         #endregion Public Functions
 
         #region Private Functions
@@ -111,27 +131,6 @@ namespace Azure.Communication.Calling.Unity
             peopleChanged?.Invoke(args);
         }
         #endregion Private Functions
-        
-        public async void GetPeopleWorker(List<string> emailList, GetPeopleHandler handler)
-        {
-            IUsers people = null;
-            string token = Token;
-            if (!string.IsNullOrEmpty(token))
-            {
-                Log.Verbose<PeopleGetter>("Requesting for people from the Microsoft Graph...");
-                try
-                {
-                    people = await Rest.People.Get(token, emailList);
-                    Log.Verbose<PeopleGetter>("Requested for people completed.");
-                    handler(people);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PeopleGetter>("Failed to obtain list of people. Exception: {0}", ex);
-                }
-            }
-        }
-        
     }
 
     [Serializable]

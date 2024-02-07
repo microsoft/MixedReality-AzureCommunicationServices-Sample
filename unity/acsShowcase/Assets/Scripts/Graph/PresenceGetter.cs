@@ -39,7 +39,7 @@ namespace Azure.Communication.Calling.Unity
         private PresenceLoadedEvent presenceLoaded = new PresenceLoadedEvent();
 
         public event Action<PresenceGetter, PresenceLoadedEventArgs> PresenceLoaded;
-        public static event Action<List<StaticUserProfile>> OnProfilesFullyLoaded;
+        public static event Action<List<StaticUserProfile>> OnPresenceFullyLoaded;
         #endregion Public Events
 
         #region Public Properties
@@ -49,6 +49,7 @@ namespace Azure.Communication.Calling.Unity
         #region Protected Functions
         protected override void OnAuthenticated()
         {
+            UpdatePresenceAsyncWorker();
         }
         #endregion Protected Functions
 
@@ -60,14 +61,41 @@ namespace Azure.Communication.Calling.Unity
         #endregion Public Function
 
         #region Private Functions
-        private void OnEnable()
+        private async void UpdatePresenceAsyncWorker()
         {
-            PhotoGetter.OnAllPhotosLoaded += UpdatePresenceAsyncWorker;
+            IPresence presence = null;
+            string token = Token;
+            if (!string.IsNullOrEmpty(token))
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        Log.Verbose<PresenceGetter>("Requesting presence for signed in user.");
+                        presence = await Rest.Presence.Get(token);
+                    }
+                    else
+                    {
+                        Log.Verbose<PresenceGetter>("Requesting presence for user ({0})", id);
+                        presence = await Rest.Presence.Get(token, id);
+                    }
+                    Log.Verbose<PresenceGetter>("Requested for user presence completed.");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
+                }
+            }
+            if (presence != null)
+            {
+                Log.Verbose<PresenceGetter>("Loaded presence");
+                Presence = presence;
+                var args = new PresenceLoadedEventArgs(presence);
+                presenceLoaded?.Invoke(args);
+                PresenceLoaded?.Invoke(this, args);
+            }
         }
-        private void OnDisable()
-        {
-            PhotoGetter.OnAllPhotosLoaded -= UpdatePresenceAsyncWorker;
-        }
+
         private PresenceAvailability GetPresence(string presence)
         {
             switch (presence)
@@ -97,42 +125,7 @@ namespace Azure.Communication.Calling.Unity
         #endregion Private Functions
 
         #region Public Functions
-        public async Task UpdatePresenceAsyncWorker()
-        {
-            IPresence presence = null;
-            string token = Token;  
-            if (!string.IsNullOrEmpty(token))
-            { 
-                try
-                {
-                    if (string.IsNullOrEmpty(id))
-                    {
-                        Log.Verbose<PresenceGetter>("Requesting presence for signed in user.");
-                        presence = await Rest.Presence.Get(token);
-                    }
-                    else
-                    {
-                        Log.Verbose<PresenceGetter>("Requesting presence for user ({0})", id);
-                        presence = await Rest.Presence.Get(token, id);
-                    }
-                    Log.Verbose<PresenceGetter>("Requested for user presence completed.");
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
-                }
-            }  
-            if (presence != null)
-            {
-                Log.Verbose<PresenceGetter>("Loaded presence");
-                Presence = presence;
-                var args = new PresenceLoadedEventArgs(presence);
-                presenceLoaded?.Invoke(args);
-                PresenceLoaded?.Invoke(this, args);
-            }
-        }
-
-        public async void UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
+        public async Task<List<StaticUserProfile>> UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
         {
             string data = null;
             var deserializedData = new ReturnedPresenceData();
@@ -170,8 +163,8 @@ namespace Azure.Communication.Calling.Unity
                         tempUserProfiles.Add(new StaticUserProfile(userProfiles[count].Id, userProfiles[count].DisplayName, userProfiles[count].Email, userProfiles[count].Icon, PresenceAvailability.PresenceUnknown)); 
                 }
             }
-            OnProfilesFullyLoaded?.Invoke(tempUserProfiles);
-
+            OnPresenceFullyLoaded?.Invoke(tempUserProfiles);
+            return tempUserProfiles;
         }
         #endregion Public Functions
     }

@@ -11,18 +11,6 @@ namespace Azure.Communication.Calling.Unity
     public class ProfileGetter : AuthenticatedOperation
     {
         #region Serializable Fields
-        [SerializeField]
-        [Tooltip("The main user prefab")]
-        private GameObject mainUserPrefab;
-
-        [SerializeField]
-        [Tooltip("The PhotoGetter for the app")]
-        private PhotoGetter photoGetter;
-
-        [SerializeField]
-        [Tooltip("The PresenceGetter for the app")]
-        private PresenceGetter presenceGetter;
-
         [Header("User Settings")]
 
         [SerializeField]
@@ -45,7 +33,7 @@ namespace Azure.Communication.Calling.Unity
         [SerializeField]
         private ProfileLoadedEvent profileLoaded = new ProfileLoadedEvent();
 
-        public static event Action<ProfileGetter, ProfileLoadedEventArgs> ProfileLoaded;
+        public event Action<ProfileGetter, ProfileLoadedEventArgs> ProfileLoaded;
         #endregion Public Events
 
         #region Public Properties
@@ -93,24 +81,6 @@ namespace Azure.Communication.Calling.Unity
                 var args = new ProfileLoadedEventArgs(user);
                 profileLoaded?.Invoke(args);
                 ProfileLoaded?.Invoke(this, args);
-            }
-
-            await photoGetter?.UpdateProfileWorkerAsync();
-            await presenceGetter?.UpdatePresenceAsyncWorker();
-            SetUpProfileUI();
-        }
-
-        private void SetUpProfileUI()
-        {
-            if (Profile != null && photoGetter?.Photo != null && presenceGetter?.Presence != null)
-            {
-                GameObject userPrefab = mainUserPrefab;
-                userPrefab.transform.SetAsFirstSibling();
-                var userObject = userPrefab.GetComponent<UserObject>();
-                userObject.SetVariables(Profile.id, Profile.mail, PageType.RelevantContacts);
-                userObject.SetName(Profile.displayName);
-                userObject.SetProfileIcon(photoGetter.Photo);
-                userObject.SetPresenceIcon(presenceGetter.Presence.availability);
             }
         }
         #endregion

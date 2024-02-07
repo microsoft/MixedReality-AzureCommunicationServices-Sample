@@ -57,37 +57,30 @@ namespace Azure.Communication.Calling.Unity
         #region Protected Functions
         protected override void OnAuthenticated()
         {
+            UpdateProfilesWorkerAsync();
         }
         #endregion Protected Functions
 
         #region Private Functions
-        private void OnEnable()
+        private async void UpdateProfilesWorkerAsync()
         {
-            PeopleGetter.PeopleChanged += UpdateProfilesWorkerAsync;
-        }
-        private void OnDisable()
-        {
-            PeopleGetter.PeopleChanged -= UpdateProfilesWorkerAsync;
-        }
-        private async void UpdateProfilesWorkerAsync(PeopleGetter getter, PeopleChangedEventArgs args)
-        {
-            string data = null;
-            var deserializedData = new ReturnedPhotoData();
+            byte[] data = null;
             string token = Token;
-            var tempUserProfiles = new List<StaticUserProfile>();
-            var emails = new List<string>();
-            foreach(var profile in getter.People)
-            {
-                emails.Add(profile.userPrincipalName);
-            }  
             if (!string.IsNullOrEmpty(token))
             {
                 try
-                { 
-                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
-                    data = await Rest.Photo.Get(token, emails, photoSize);
-                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
-                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
+                {
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        Log.Verbose<PhotoGetter>("Requesting photo for signed in user.");
+                        data = await Rest.Photo.Get(token, photoSize);
+                    }
+                    else
+                    {
+                        Log.Verbose<PhotoGetter>("Requesting photo for user ({0})", id);
+                        data = await Rest.Photo.Get(token, id, photoSize);
+                    }
+                    Log.Verbose<PhotoGetter>("Requested for user profile completed.");
                 }
                 catch (Exception ex)
                 {
@@ -95,31 +88,21 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
-            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
-            { 
-                foreach(var response in deserializedData.responses) 
+            if (data != null)
+            {
+                Photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
+                if (Photo.LoadImage(data))
                 {
-                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
-                    var count = response.id - 1;
-                    var byteArr = System.Convert.FromBase64String(response.body);
-                    if (response.status == 404)
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
-                        Log.Verbose<PhotoGetter>("No user photo found.");
-                    }
-                    else if (photo.LoadImage(byteArr))
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
-                        Log.Verbose<PhotoGetter>("User photo loaded."); 
-                    }
-                    else
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
-                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
-                    } 
-                } 
-            }  
-            OnAllPhotosLoaded?.Invoke(tempUserProfiles);
+                    Log.Verbose<PhotoGetter>("User photo loaded.");
+                    var args = new PhotoLoadedEventArgs(Photo);
+                    photoLoaded?.Invoke(args);
+                    PhotoLoaded?.Invoke(this, args);
+                }
+                else
+                {
+                    Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
+                }
+            }
         }
         #endregion Private Functions
 
@@ -176,26 +159,26 @@ namespace Azure.Communication.Calling.Unity
             }  
             handler?.Invoke(tempUserProfiles);
         }
-        
-        public async Task UpdateProfileWorkerAsync()
+
+        public async Task<List<StaticUserProfile>> UpdateProfilesWorkerAsync(PeopleGetter getter, PeopleChangedEventArgs args)
         {
-            byte[] data = null;
+            string data = null;
+            var deserializedData = new ReturnedPhotoData();
             string token = Token;
+            var tempUserProfiles = new List<StaticUserProfile>();
+            var emails = new List<string>();
+            foreach (var profile in getter.People)
+            {
+                emails.Add(profile.userPrincipalName);
+            }
             if (!string.IsNullOrEmpty(token))
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(id))
-                    {
-                        Log.Verbose<PhotoGetter>("Requesting photo for signed in user.");
-                        data = await Rest.Photo.Get(token, photoSize);
-                    }
-                    else
-                    {
-                        Log.Verbose<PhotoGetter>("Requesting photo for user ({0})", id);
-                        data = await Rest.Photo.Get(token, id, photoSize);
-                    }
-                    Log.Verbose<PhotoGetter>("Requested for user profile completed.");
+                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
+                    data = await Rest.Photo.Get(token, emails, photoSize);
+                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
+                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
                 }
                 catch (Exception ex)
                 {
@@ -203,22 +186,32 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
-            if (data != null)
+            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
             {
-                Photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
-                if (Photo.LoadImage(data))
+                foreach (var response in deserializedData.responses)
                 {
-                    Log.Verbose<PhotoGetter>("User photo loaded.");
-                    var args = new PhotoLoadedEventArgs(Photo);
-                    photoLoaded?.Invoke(args);
-                    PhotoLoaded?.Invoke(this, args);
-                }
-                else
-                {
-                    Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
+                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
+                    var count = response.id - 1;
+                    var byteArr = System.Convert.FromBase64String(response.body);
+                    if (response.status == 404)
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("No user photo found.");
+                    }
+                    else if (photo.LoadImage(byteArr))
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("User photo loaded.");
+                    }
+                    else
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
+                    }
                 }
             }
-
+            OnAllPhotosLoaded?.Invoke(tempUserProfiles);
+            return tempUserProfiles;
         }
         #endregion Public Functions
     }
