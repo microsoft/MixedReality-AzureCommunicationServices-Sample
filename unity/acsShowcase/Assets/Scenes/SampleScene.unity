@@ -4100,7 +4100,7 @@ Transform:
   m_GameObject: {fileID: 135935529}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.015, z: 0.9650153}
+  m_LocalPosition: {x: 0, y: 0.015, z: 0.7}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5132,7 +5132,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.006, y: -0.247}
+  m_AnchoredPosition: {x: -0.006, y: -0.159}
   m_SizeDelta: {x: 323.8263, y: 387.7191}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &148370216
@@ -41280,6 +41280,7 @@ MonoBehaviour:
   profileIconParent: {fileID: 1537459944}
   canvasObject: {fileID: 1781802014}
   videoPanel: {fileID: 1801180803}
+  initialPosOffset: {x: 0, y: 0, z: -0.35}
   mainPanel: {fileID: 2004951155}
   caption: {fileID: 1788276008}
   speakerNameRect: {fileID: 799298766}
@@ -41532,7 +41533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 791738712976538213, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.101
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 791738712976538213, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       propertyPath: m_LocalPosition.z
