@@ -4119,8 +4119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0faa3f4cd06e11428e4451d6a2f3a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adjustAngle: 45
-  rotatingSpeed: 100
+  adjustAngle: 30
+  rotatingSpeed: 150
 --- !u!1 &137498096
 GameObject:
   m_ObjectHideFlags: 0
@@ -41928,6 +41928,10 @@ PrefabInstance:
       value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 7057686687854709819, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
+      propertyPath: updateSolvers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7057686687854709819, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       propertyPath: trackedHandedness
       value: -1
       objectReference: {fileID: 0}
@@ -47133,8 +47137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0faa3f4cd06e11428e4451d6a2f3a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adjustAngle: 45
-  rotatingSpeed: 100
+  adjustAngle: 30
+  rotatingSpeed: 150
 --- !u!1 &2009847206
 GameObject:
   m_ObjectHideFlags: 0
