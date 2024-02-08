@@ -4120,7 +4120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adjustAngle: 30
-  rotatingSpeed: 150
+  rotatingSpeed: 125
 --- !u!1 &137498096
 GameObject:
   m_ObjectHideFlags: 0
@@ -47138,7 +47138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adjustAngle: 30
-  rotatingSpeed: 150
+  rotatingSpeed: 125
 --- !u!1 &2009847206
 GameObject:
   m_ObjectHideFlags: 0
