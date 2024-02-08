@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -38,7 +39,7 @@ namespace Azure.Communication.Calling.Unity
         private PresenceLoadedEvent presenceLoaded = new PresenceLoadedEvent();
 
         public event Action<PresenceGetter, PresenceLoadedEventArgs> PresenceLoaded;
-        public static event Action<List<StaticUserProfile>> OnProfilesFullyLoaded;
+        public static event Action<List<StaticUserProfile>> OnPresenceFullyLoaded;
         #endregion Public Events
 
         #region Public Properties
@@ -60,20 +61,12 @@ namespace Azure.Communication.Calling.Unity
         #endregion Public Function
 
         #region Private Functions
-        private void OnEnable()
-        {
-            PhotoGetter.OnAllPhotosLoaded += UpdatePresenceAsyncWorker;
-        }
-        private void OnDisable()
-        {
-            PhotoGetter.OnAllPhotosLoaded -= UpdatePresenceAsyncWorker;
-        }
         private async void UpdatePresenceAsyncWorker()
         {
             IPresence presence = null;
-            string token = Token;  
+            string token = Token;
             if (!string.IsNullOrEmpty(token))
-            { 
+            {
                 try
                 {
                     if (string.IsNullOrEmpty(id))
@@ -92,7 +85,7 @@ namespace Azure.Communication.Calling.Unity
                 {
                     Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
                 }
-            }  
+            }
             if (presence != null)
             {
                 Log.Verbose<PresenceGetter>("Loaded presence");
@@ -101,45 +94,38 @@ namespace Azure.Communication.Calling.Unity
                 presenceLoaded?.Invoke(args);
                 PresenceLoaded?.Invoke(this, args);
             }
-
         }
-        //private async void UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
-        //{
-        //    IPresence presence = null;
-        //    string token = Token;
-        //    if (!string.IsNullOrEmpty(token))
-        //    {
-        //        try
-        //        {
-        //            if (string.IsNullOrEmpty(id))
-        //            {
-        //                Log.Verbose<PresenceGetter>("Requesting presence for signed in user.");
-        //                presence = await Rest.Presence.Get(token);
-        //            }
-        //            else
-        //            {
-        //                Log.Verbose<PresenceGetter>("Requesting presence for user ({0})", id);
-        //                presence = await Rest.Presence.Get(token, id);
-        //            }
-        //            Log.Verbose<PresenceGetter>("Requested for user presence completed.");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
-        //        }
-        //    }
-        //    if (presence != null)
-        //    {
-        //        Log.Verbose<PresenceGetter>("Loaded presence");
-        //        Presence = presence;
-        //        var args = new PresenceLoadedEventArgs(presence);
-        //        presenceLoaded?.Invoke(args);
-        //        PresenceLoaded?.Invoke(this, args);
-        //    }
 
-        //}
+        private PresenceAvailability GetPresence(string presence)
+        {
+            switch (presence)
+            {
+                case "available":
+                    return PresenceAvailability.Available;
+                case "availableidle":
+                    return PresenceAvailability.AvailableIdle;
+                case "away":
+                    return PresenceAvailability.Away;
+                case "berightback":
+                    return PresenceAvailability.BeRightBack;
+                case "busy":
+                    return PresenceAvailability.Busy;
+                case "busyidle":
+                    return PresenceAvailability.BusyIdle;
+                case "donotdisturb":
+                    return PresenceAvailability.DoNotDisturb;
+                case "offline":
+                    return PresenceAvailability.Offline;
+                case "inameeting":
+                    return PresenceAvailability.Busy;
+                default:
+                    return PresenceAvailability.PresenceUnknown;
+            }
+        }
+        #endregion Private Functions
 
-        public async void UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
+        #region Public Functions
+        public async Task<List<StaticUserProfile>> UpdatePresenceAsyncWorker(List<StaticUserProfile> userProfiles)
         {
             string data = null;
             var deserializedData = new ReturnedPresenceData();
@@ -159,7 +145,6 @@ namespace Azure.Communication.Calling.Unity
                     data = await Rest.Presence.Get(token, ids);
                     deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPresenceData>(data);
                     Log.Verbose<PhotoGetter>("Request for user presences completed.");
-                    Debug.Log(deserializedData + " test");
                 }
                 catch (Exception ex)
                 {
@@ -178,36 +163,10 @@ namespace Azure.Communication.Calling.Unity
                         tempUserProfiles.Add(new StaticUserProfile(userProfiles[count].Id, userProfiles[count].DisplayName, userProfiles[count].Email, userProfiles[count].Icon, PresenceAvailability.PresenceUnknown)); 
                 }
             }
-            OnProfilesFullyLoaded?.Invoke(tempUserProfiles);
-
+            OnPresenceFullyLoaded?.Invoke(tempUserProfiles);
+            return tempUserProfiles;
         }
-        private PresenceAvailability GetPresence(string presence)
-        { 
-            switch (presence)
-            {
-                case "available":
-                    return PresenceAvailability.Available; 
-                case "availableidle":
-                    return PresenceAvailability.AvailableIdle; 
-                case "away":
-                    return PresenceAvailability.Away; 
-                case "berightback":
-                    return PresenceAvailability.BeRightBack; 
-                case "busy":
-                    return PresenceAvailability.Busy; 
-                case "busyidle":
-                    return PresenceAvailability.BusyIdle; 
-                case "donotdisturb":
-                    return PresenceAvailability.DoNotDisturb; 
-                case "offline":
-                    return PresenceAvailability.Offline;
-                case "inameeting":
-                    return PresenceAvailability.Busy;
-                default:
-                    return PresenceAvailability.PresenceUnknown; 
-            }
-        }
-        #endregion
+        #endregion Public Functions
     }
 
     [Serializable]

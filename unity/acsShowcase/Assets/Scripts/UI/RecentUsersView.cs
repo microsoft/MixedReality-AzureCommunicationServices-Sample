@@ -18,8 +18,6 @@ public class RecentUsersView : MonoBehaviour
     private Transform scrollViewContent;
     [SerializeField] [Tooltip("The user prefab")]
     private GameObject horizontalUserPrefab;
-    [SerializeField] [Tooltip("The main user prefab")]
-    private GameObject mainUserPrefab;
     [SerializeField] [Tooltip("The no user recent text display")]
     private TextMeshProUGUI noRecentUsersText;
     [SerializeField] [Tooltip("The load more button")]
@@ -82,26 +80,16 @@ public class RecentUsersView : MonoBehaviour
         
         foreach (var user in UserController.UserProfiles)
         {
-            GameObject userPrefab;
+            GameObject userPrefab = GameObject.Instantiate(horizontalUserPrefab, scrollViewContent);
             ++count;
-            
-            if(user.DisplayName == UserController.MainUserName)
-            {
-                userPrefab = mainUserPrefab;
-                userPrefab.transform.SetAsFirstSibling();   
-            }
-            else
-            {
-                userPrefab = GameObject.Instantiate(horizontalUserPrefab, scrollViewContent);
-            } 
             var userObject = userPrefab.GetComponent<UserObject>();
             userObject.SetVariables(user.Id, user.Email, PageType.RelevantContacts);
             userObject.SetName(user.DisplayName);
             userObject.SetProfileIcon(user.Icon);
             userObject.SetPresenceIcon(user.Presence);
-            if(count > 10 && user.DisplayName != UserController.MainUserName)
+            if(count > 10)
                 userObject.gameObject.SetActive(false);
-        } 
+        }
     }
     
     /// <summary>

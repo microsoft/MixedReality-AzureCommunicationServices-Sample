@@ -14,11 +14,11 @@ namespace Azure.Communication.Calling.Unity
         [Header("User Settings")]
 
         [SerializeField]
-        [Tooltip("The user id to load. If null or empty, the signed in user's profile is loade.")]
+        [Tooltip("The user id to load. If null or empty, the signed in user's profile is loaded.")]
         private string id = null;
 
         /// <summary>
-        /// The user id to load. If null or empty, the signed in user's profile is loade.
+        /// The user id to load. If null or empty, the signed in user's profile is loaded.
         /// </summary>
         public string Id
         { 
@@ -37,7 +37,7 @@ namespace Azure.Communication.Calling.Unity
         #endregion Public Events
 
         #region Public Properties
-        public IUser Profile { get; private set; }
+        public static IUser Profile { get; private set; }
         #endregion Public Properties
 
         #region Protected Functions
@@ -74,7 +74,6 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
-
             if (user != null)
             {
                 Log.Verbose<ProfileGetter>("Loaded profile");
@@ -83,7 +82,6 @@ namespace Azure.Communication.Calling.Unity
                 profileLoaded?.Invoke(args);
                 ProfileLoaded?.Invoke(this, args);
             }
-
         }
         #endregion
     }

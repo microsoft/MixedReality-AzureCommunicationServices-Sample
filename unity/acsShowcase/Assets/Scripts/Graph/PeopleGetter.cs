@@ -32,7 +32,6 @@ namespace Azure.Communication.Calling.Unity
         private PeopleChangedEvent peopleChanged = new PeopleChangedEvent();
 
         public static event Action<PeopleGetter, PeopleChangedEventArgs> PeopleChanged;
-        public static event Action<string> SendMainUserName;
         public static event Action<string> SendToken;
         public delegate void GetPeopleHandler(IUsers allUsers);
         
@@ -55,6 +54,26 @@ namespace Azure.Communication.Calling.Unity
         public void RequestUpdate()
         {
             UpdatePeopleWorker();
+        }
+
+        public async void GetPeopleWorker(List<string> emailList, GetPeopleHandler handler)
+        {
+            IUsers people = null;
+            string token = Token;
+            if (!string.IsNullOrEmpty(token))
+            {
+                Log.Verbose<PeopleGetter>("Requesting for people from the Microsoft Graph...");
+                try
+                {
+                    people = await Rest.People.Get(token, emailList);
+                    Log.Verbose<PeopleGetter>("Requested for people completed.");
+                    handler(people);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<PeopleGetter>("Failed to obtain list of people. Exception: {0}", ex);
+                }
+            }
         }
         #endregion Public Functions
 
@@ -110,30 +129,8 @@ namespace Azure.Communication.Calling.Unity
             var args = new PeopleChangedEventArgs(People);
             PeopleChanged?.Invoke(this, args);
             peopleChanged?.Invoke(args);
-            SendMainUserName?.Invoke(people?.value[0].displayName);
         }
         #endregion Private Functions
-        
-        public async void GetPeopleWorker(List<string> emailList, GetPeopleHandler handler)
-        {
-            IUsers people = null;
-            string token = Token;
-            if (!string.IsNullOrEmpty(token))
-            {
-                Log.Verbose<PeopleGetter>("Requesting for people from the Microsoft Graph...");
-                try
-                {
-                    people = await Rest.People.Get(token, emailList);
-                    Log.Verbose<PeopleGetter>("Requested for people completed.");
-                    handler(people);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PeopleGetter>("Failed to obtain list of people. Exception: {0}", ex);
-                }
-            }
-        }
-        
     }
 
     [Serializable]

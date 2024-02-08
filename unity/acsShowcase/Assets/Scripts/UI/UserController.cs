@@ -15,7 +15,7 @@ public class UserController : MonoBehaviour
     /// list of user profiles 
     /// </summary>
     public static List<UserProfile> UserProfiles = new List<UserProfile>();
-    
+
     /// <summary>
     /// list selected user objects 
     /// </summary>
@@ -30,40 +30,166 @@ public class UserController : MonoBehaviour
     /// fired when user profiles is loaded  
     /// </summary>
     public static event Action LoadedStaticUserProfiles;
-    
+
+
+    [SerializeField]
+    [Tooltip("The PhotoGetter object in the scene")]
+    private PhotoGetter photoGetter;
+
+    [SerializeField]
+    [Tooltip("The PresenceGetter object in the scene")]
+    private PresenceGetter presenceGetter;
+
+    [SerializeField]
+    [Tooltip("The ProfileGetter object in the scene")]
+    private ProfileGetter profileGetter;
+
+    [SerializeField]
+    [Tooltip("The PeopleGetter object in the scene")]
+    private PeopleGetter peopleGetter;
+
+    [SerializeField]
+    [Tooltip("The main user prefab")]
+    private GameObject mainUserPrefab;
+
+    private bool isOnPresenceLoadedCalled = false;
+    private bool isOnPhotoLoadedCalled = false;
+    private bool isOnProfileLoadedCalled = false;
+
     /// <summary>
-    /// main user name 
+    /// OnAwake
     /// </summary>
-    public static string MainUserName;
-    
-    /// <summary>
-    /// OnEnable 
-    /// </summary>
+    private void OnAwake()
+    {
+        if (photoGetter == null)
+        {
+            photoGetter = GameObject.FindObjectOfType<PhotoGetter>();
+        }
+
+        if (presenceGetter == null)
+        {
+            presenceGetter = GameObject.FindObjectOfType<PresenceGetter>();
+        }
+
+        if (profileGetter == null)
+        {
+            profileGetter = GameObject.FindObjectOfType<ProfileGetter>();
+        }
+
+        if (peopleGetter == null)
+        {
+            peopleGetter = GameObject.FindObjectOfType<PeopleGetter>();
+        }
+    }
+
     private void OnEnable()
     {
-        PresenceGetter.OnProfilesFullyLoaded += OnProfilesFullyLoaded;
-        PeopleGetter.SendMainUserName += SendMainUserName;
+        if (presenceGetter != null)
+        {
+            presenceGetter.PresenceLoaded += OnPresenceLoaded;
+        }
+
+        if (photoGetter != null)
+        {
+            photoGetter.PhotoLoaded += OnPhotoLoaded;
+        }
+
+        if (profileGetter != null)
+        {
+            profileGetter.ProfileLoaded += OnProfileLoaded;
+        }
+
+        PeopleGetter.PeopleChanged += OnPeopleChanged;
+
     }
 
-    /// <summary>
-    /// OnDisable 
-    /// </summary>
     private void OnDisable()
     {
-        PresenceGetter.OnProfilesFullyLoaded -= OnProfilesFullyLoaded;
-        PeopleGetter.SendMainUserName -= SendMainUserName;
+        if (presenceGetter != null)
+        {
+            presenceGetter.PresenceLoaded -= OnPresenceLoaded;
+        }
+
+        if (photoGetter != null)
+        {
+            photoGetter.PhotoLoaded -= OnPhotoLoaded;
+        }
+
+        if (profileGetter != null)
+        {
+            profileGetter.ProfileLoaded -= OnProfileLoaded;
+        }
+
+        PeopleGetter.PeopleChanged -= OnPeopleChanged;
     }
 
     /// <summary>
-    /// set user name 
+    /// Fired when the signed in user's presence is loaded 
     /// </summary>
-    /// <param name="name"></param>
-    private void SendMainUserName(string name)
+    private void OnPresenceLoaded(PresenceGetter getter, PresenceLoadedEventArgs args)
     {
-        MainUserName = name;
+        isOnPresenceLoadedCalled = true;
+        CheckAllElementsLoaded();
     }
+
     /// <summary>
-    /// Fires when all the recent users have their photos, precenses and names sent to the app.
+    /// Fired when the signed in user's photo is loaded 
+    /// </summary>
+    private void OnPhotoLoaded(PhotoGetter getter, PhotoLoadedEventArgs args)
+    {
+        isOnPhotoLoadedCalled = true;
+        CheckAllElementsLoaded();
+    }
+
+    /// <summary>
+    /// Fired when the signed in user's profile is loaded 
+    /// </summary>
+    private void OnProfileLoaded(ProfileGetter getter, ProfileLoadedEventArgs args)
+    {
+        isOnProfileLoadedCalled = true;
+        CheckAllElementsLoaded();
+    }
+
+    /// <summary>
+    /// Wait to load the UI all at once the first time. 
+    /// </summary>
+    private void CheckAllElementsLoaded()
+    {
+        if (isOnPresenceLoadedCalled && isOnPhotoLoadedCalled && isOnProfileLoadedCalled)
+        {
+            SetUI();
+        }
+    }
+
+    /// <summary>
+    /// Set up the UI for the signed in user.
+    /// </summary>
+    private void SetUI()
+    {
+        if (ProfileGetter.Profile != null && photoGetter?.Photo != null && presenceGetter?.Presence != null)
+        {
+            GameObject userPrefab = mainUserPrefab;
+            userPrefab.transform.SetAsFirstSibling();
+            var userObject = userPrefab.GetComponent<UserObject>();
+            userObject.SetVariables(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts);
+            userObject.SetName(ProfileGetter.Profile.displayName);
+            userObject.SetProfileIcon(photoGetter.Photo);
+            userObject.SetPresenceIcon(presenceGetter.Presence.availability);
+        }
+    }
+
+    /// <summary>
+    /// Fires when the list of relevant contacts has changed.
+    /// </summary>
+    private async void OnPeopleChanged(PeopleGetter getter, PeopleChangedEventArgs args)
+    {
+        List<StaticUserProfile> users = await photoGetter.UpdateProfilesWorkerAsync(getter, args);
+        List<StaticUserProfile> fullyLoadedUsers = await presenceGetter.UpdatePresenceAsyncWorker(users);
+        OnProfilesFullyLoaded(fullyLoadedUsers);
+    }
+
+    /// <summary>
+    /// Fires when all the recent users have their photos, presences and names sent to the app.
     /// </summary>
     /// <param name="users">temporary list of recent users sent to the app</param>
     private void OnProfilesFullyLoaded(List<StaticUserProfile> users)
@@ -75,6 +201,7 @@ public class UserController : MonoBehaviour
         Debug.Log("user profiles stored internally: "+UserProfiles.Count);
         LoadedStaticUserProfiles?.Invoke();
     }
+    
     /// <summary>
     /// Returns a profile in Recent users via their email
     /// </summary>

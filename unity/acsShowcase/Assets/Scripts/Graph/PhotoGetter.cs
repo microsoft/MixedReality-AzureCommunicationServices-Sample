@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,9 @@ namespace Azure.Communication.Calling.Unity
 {
     public class PhotoGetter : AuthenticatedOperation
     {
+        private const int httpSuccess = 200;
+        private const int httpNotFound = 404;
+
         #region Serializable Fields
         [Header("User Settings")]
 
@@ -56,120 +60,12 @@ namespace Azure.Communication.Calling.Unity
         #region Protected Functions
         protected override void OnAuthenticated()
         {
-            UpdateProfileWorkerAsync();
+            UpdateProfilesWorkerAsync();
         }
         #endregion Protected Functions
 
         #region Private Functions
-        private void OnEnable()
-        {
-            PeopleGetter.PeopleChanged += UpdateProfilesWorkerAsync;
-        }
-        private void OnDisable()
-        {
-            PeopleGetter.PeopleChanged -= UpdateProfilesWorkerAsync;
-        }
-        private async void UpdateProfilesWorkerAsync(PeopleGetter getter, PeopleChangedEventArgs args)
-        {
-            string data = null;
-            var deserializedData = new ReturnedPhotoData();
-            string token = Token;
-            var tempUserProfiles = new List<StaticUserProfile>();
-            var emails = new List<string>();
-            foreach(var profile in getter.People)
-            {
-                emails.Add(profile.userPrincipalName);
-            }  
-            if (!string.IsNullOrEmpty(token))
-            {
-                try
-                { 
-                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
-                    data = await Rest.Photo.Get(token, emails, photoSize);
-                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
-                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
-                    Debug.Log(deserializedData + " test");
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PhotoGetter>("Failed to obtain user photo. Exception: {0}", ex);
-                }
-            }
-
-            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
-            { 
-                foreach(var response in deserializedData.responses) 
-                {
-                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
-                    var count = response.id - 1;
-                    var byteArr = System.Convert.FromBase64String(response.body);
-                    if (photo.LoadImage(byteArr))
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
-                        Log.Verbose<PhotoGetter>("User photo loaded."); 
-                    }
-                    else
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
-                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
-                    } 
-                } 
-            }  
-            OnAllPhotosLoaded?.Invoke(tempUserProfiles);
-        }
-
-
-        public async void UpdateProfilesWorkerAsync(IUsers userList, OnAllPhotosLoadedHanlder handler)
-        {
-            string data = null;
-            var deserializedData = new ReturnedPhotoData();
-            string token = Token;
-            var tempUserProfiles = new List<StaticUserProfile>();
-            var emails = new List<string>();
-            foreach(var user in userList.value)
-            {
-                emails.Add(user.mail);
-            }  
-            if (!string.IsNullOrEmpty(token))
-            {
-                try
-                { 
-                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
-                    data = await Rest.Photo.Get(token, emails, photoSize);
-                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
-                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PhotoGetter>("Failed to obtain user photo. Exception: {0}", ex);
-                }
-            }
-            
-            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
-            { 
-                foreach(var response in deserializedData.responses) 
-                {
-                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
-                    var count = response.id - 1;
-                    var byteArr = System.Convert.FromBase64String(response.body);
-                    if (photo.LoadImage(byteArr))
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
-                        Log.Verbose<PhotoGetter>("User photo loaded."); 
-                    }
-                    else
-                    {
-                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
-                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
-                    } 
-                } 
-            }  
-            handler?.Invoke(tempUserProfiles);
-        }
-        
-        
-
-        private async void UpdateProfileWorkerAsync()
+        private async void UpdateProfilesWorkerAsync()
         {
             byte[] data = null;
             string token = Token;
@@ -210,9 +106,117 @@ namespace Azure.Communication.Calling.Unity
                     Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
                 }
             }
-
         }
-        #endregion
+        #endregion Private Functions
+
+        #region Public Functions
+        public async void UpdateProfilesWorkerAsync(IUsers userList, OnAllPhotosLoadedHanlder handler)
+        {
+            string data = null;
+            var deserializedData = new ReturnedPhotoData();
+            string token = Token;
+            var tempUserProfiles = new List<StaticUserProfile>();
+            var emails = new List<string>();
+            foreach(var user in userList.value)
+            {
+                emails.Add(user.mail);
+            }  
+            if (!string.IsNullOrEmpty(token))
+            {
+                try
+                { 
+                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
+                    data = await Rest.Photo.Get(token, emails, photoSize);
+                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
+                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<PhotoGetter>("Failed to obtain user photo. Exception: {0}", ex);
+                }
+            }
+            
+            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
+            { 
+                foreach(var response in deserializedData.responses) 
+                {
+                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
+                    var count = response.id - 1;
+                    var byteArr = System.Convert.FromBase64String(response.body);
+                    if (response.status == httpNotFound)
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("No user photo found.");
+                    }
+                    else if (response.status == httpSuccess && photo.LoadImage(byteArr))
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("User photo loaded."); 
+                    }
+                    else
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(userList.value[count].id, userList.value[count].displayName, userList.value[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
+                    } 
+                } 
+            }  
+            handler?.Invoke(tempUserProfiles);
+        }
+
+        public async Task<List<StaticUserProfile>> UpdateProfilesWorkerAsync(PeopleGetter getter, PeopleChangedEventArgs args)
+        {
+            string data = null;
+            var deserializedData = new ReturnedPhotoData();
+            string token = Token;
+            var tempUserProfiles = new List<StaticUserProfile>();
+            var emails = new List<string>();
+            foreach (var profile in getter.People)
+            {
+                emails.Add(profile.userPrincipalName);
+            }
+            if (!string.IsNullOrEmpty(token))
+            {
+                try
+                {
+                    Log.Verbose<PhotoGetter>("Requesting photos for all users");
+                    data = await Rest.Photo.Get(token, emails, photoSize);
+                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<ReturnedPhotoData>(data);
+                    Log.Verbose<PhotoGetter>("Request for user profile photos completed.");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<PhotoGetter>("Failed to obtain user photo. Exception: {0}", ex);
+                }
+            }
+
+            if (deserializedData.responses != null && deserializedData.responses.Count() > 0)
+            {
+                foreach (var response in deserializedData.responses)
+                {
+                    var photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
+                    var count = response.id - 1;
+                    var byteArr = System.Convert.FromBase64String(response.body);
+                    if (response.status == httpNotFound)
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("No user photo found.");
+                    }
+                    else if (response.status == httpSuccess && photo.LoadImage(byteArr))
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, photo, PresenceAvailability.PresenceUnknown));
+                        Log.Verbose<PhotoGetter>("User photo loaded.");
+                    }
+                    else
+                    {
+                        tempUserProfiles.Add(new StaticUserProfile(getter.People[count].id, getter.People[count].displayName, getter.People[count].userPrincipalName, null, PresenceAvailability.PresenceUnknown));
+                        Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
+                    }
+                }
+            }
+            OnAllPhotosLoaded?.Invoke(tempUserProfiles);
+            return tempUserProfiles;
+        }
+        #endregion Public Functions
     }
 
     [Serializable]
@@ -259,6 +263,8 @@ namespace Azure.Communication.Calling.Unity
         public int id { get; set; }
         [JsonProperty(PropertyName = "body")]
         public string body { get; set; }
+        [JsonProperty(PropertyName = "status")]
+        public int status { get; set; }
     }
     public struct ReturnedPhotoData
     {

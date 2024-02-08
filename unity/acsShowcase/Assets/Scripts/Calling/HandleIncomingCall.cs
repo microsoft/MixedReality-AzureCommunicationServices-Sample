@@ -54,9 +54,9 @@ public class HandleIncomingCall : CallScenario
         DestroyCallAgent();
     }
 
-    public void StartListening(string displayName)
+    public void StartListening(string displayName, bool isGuest)
     {
-        CreateCallAgent(displayName);
+        CreateCallAgent(displayName, isGuest);
     }
 
     public void StopListening()
@@ -121,7 +121,7 @@ public class HandleIncomingCall : CallScenario
         });
     }
 
-    private void CreateCallAgent(string displayName)
+    private void CreateCallAgent(string displayName, bool isGuest)
     {
         SingleAsyncRunner.QueueAsync(async () =>
         {
