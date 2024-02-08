@@ -29,6 +29,8 @@ public class ParticipantVideoController : MonoBehaviour
     private GameObject canvasObject;
     [SerializeField] [Tooltip("The video panel ")]
     private MeshRenderer videoPanel;
+    [SerializeField] [Tooltip("initial position offset ")]
+    private Vector3 initialPosOffset;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject caption;
     [SerializeField] private RectTransform speakerNameRect;
@@ -96,7 +98,7 @@ public class ParticipantVideoController : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
-        videoPanel.transform.position = mainPanel.transform.position; 
+        videoPanel.transform.position = mainPanel.transform.position + initialPosOffset; 
         videoPanel.transform.rotation = mainPanel.transform.rotation;
         VideoStreamPlayer.s_VideoSizeChangeEvent += VideoSizeChanged;
         StartCoroutine(EnableCanvas());
