@@ -5880,8 +5880,9 @@ GameObject:
   - component: {fileID: 211196651}
   - component: {fileID: 211196649}
   - component: {fileID: 211196648}
+  - component: {fileID: 211196659}
   m_Layer: 5
-  m_Name: ManipulationBarTopControlBar
+  m_Name: CallControlManipulationBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6377,6 +6378,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 211196646}
   m_CullTransparentMesh: 1
+--- !u!114 &211196659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211196646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4461cef9324cf904299f3d04a3861659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: -1
+  proximityType: -1
+  executionOrder: 0
+  constraintOnRotation: 1
+  useLocalSpaceForConstraint: 0
 --- !u!1 &216367315
 GameObject:
   m_ObjectHideFlags: 0
@@ -27811,8 +27829,9 @@ GameObject:
   - component: {fileID: 1172529123}
   - component: {fileID: 1172529121}
   - component: {fileID: 1172529120}
+  - component: {fileID: 1172529131}
   m_Layer: 5
-  m_Name: ManipulationBarTop
+  m_Name: MainPanelManipulationBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28308,6 +28327,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1172529118}
   m_CullTransparentMesh: 1
+--- !u!114 &1172529131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172529118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4461cef9324cf904299f3d04a3861659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 3
+  proximityType: 3
+  executionOrder: 0
+  constraintOnRotation: 1
+  useLocalSpaceForConstraint: 0
 --- !u!114 &1195915306 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8493469810320727241, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
