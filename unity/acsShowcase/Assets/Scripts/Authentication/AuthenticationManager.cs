@@ -21,17 +21,17 @@ namespace Azure.Communication.Calling.Unity
         None = 0,
         //
         // Summary:
-        //     Users with a Microsoft work or school account in my organization�s Azure AD tenant
+        //     Users with a Microsoft work or school account in my organization's Azure AD tenant
         //     (i.e. single tenant). Maps to https://[instance]/[tenantId]
         AzureAdMyOrg = 1,
         //
         // Summary:
-        //     Users with a personal Microsoft account, or a work or school account in any organization�s
+        //     Users with a personal Microsoft account, or a work or school account in any organization's
         //     Azure AD tenant Maps to https://[instance]/common/
         AzureAdAndPersonalMicrosoftAccount = 2,
         //
         // Summary:
-        //     Users with a Microsoft work or school account in any organization�s Azure AD
+        //     Users with a Microsoft work or school account in any organization's Azure AD
         //     tenant (i.e. multi-tenant). Maps to https://[instance]/organizations/
         AzureAdMultipleOrgs = 3,
         //
