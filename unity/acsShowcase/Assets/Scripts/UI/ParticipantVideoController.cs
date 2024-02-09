@@ -241,13 +241,15 @@ public class ParticipantVideoController : MonoBehaviour
         {
             VideoSizeChanged(new Vector3(0.5f,0.4f,0.1f));
         }
-        var currentSpeakerDisplayName = "";
+        var currentSpeakerID = "";
         if (allParticipants != null && curActiveSpeakerIndex < allParticipants.Length)
-            currentSpeakerDisplayName = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
+        {
+            currentSpeakerID = allParticipants[curActiveSpeakerIndex].RemoteParticipant.Identifier.RawId;
+        }
         bool iconFoundInRecentUsers = false;
         foreach(var recentUser in UserController.UserProfiles)
         {
-            if(recentUser.DisplayName == currentSpeakerDisplayName)
+            if(recentUser.Id == currentSpeakerID)
             { 
                 if(recentUser.Icon != null)
                 {
