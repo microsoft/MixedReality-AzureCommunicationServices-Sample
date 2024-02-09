@@ -44,7 +44,10 @@ public class MeetingManager : MonoBehaviour
 
     [SerializeField] [Tooltip("The request for an access token containing the Microsoft Graph scopes.")]
     private AuthenticationRequest graphAccess = null;
-    
+
+    [Header("Login Settings")] [SerializeField] [Tooltip("Should log occur at start up.")]
+    private bool autoLogin = false;
+
     [SerializeField] [Tooltip("Should the user sign into Teams as a guest.")]
     private bool forceSignInAsGuest = false;
 
@@ -61,7 +64,7 @@ public class MeetingManager : MonoBehaviour
     {
         get => autoShareLocalVideo;
     }
-    
+
     [Header("Events")] [SerializeField] [Tooltip("GraphEvent raised when joined a call.")]
     private UnityEvent joinedCall = new UnityEvent();
 
@@ -240,7 +243,10 @@ public class MeetingManager : MonoBehaviour
 
         started = true;
         displayName = "";
-        LogInAndJoinOrCreateMeetingIfPossible(pendingJoin, createCallWithUser: null);
+        if (autoLogin)
+        {
+            LogInAndJoinOrCreateMeetingIfPossible(pendingJoin, createCallWithUser: null);
+        }
     }
 
     /// <summary>
