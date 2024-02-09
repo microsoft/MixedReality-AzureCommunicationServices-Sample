@@ -65,12 +65,6 @@ public class MeetingManager : MonoBehaviour
         get => autoShareLocalVideo;
     }
 
-    [SerializeField] [Tooltip("Set if remote videos will be received and played locally.")]
-    private bool playRemoteVideo = true;
-
-    [SerializeField] [Tooltip("Set if local camera video will be played locally.")]
-    private bool playLocalVideo = true;
-
     [Header("Events")] [SerializeField] [Tooltip("GraphEvent raised when joined a call.")]
     private UnityEvent joinedCall = new UnityEvent();
 

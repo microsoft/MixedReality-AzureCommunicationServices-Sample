@@ -21,17 +21,17 @@ namespace Azure.Communication.Calling.Unity
         None = 0,
         //
         // Summary:
-        //     Users with a Microsoft work or school account in my organization’s Azure AD tenant
+        //     Users with a Microsoft work or school account in my organization's Azure AD tenant
         //     (i.e. single tenant). Maps to https://[instance]/[tenantId]
         AzureAdMyOrg = 1,
         //
         // Summary:
-        //     Users with a personal Microsoft account, or a work or school account in any organization’s
+        //     Users with a personal Microsoft account, or a work or school account in any organization's
         //     Azure AD tenant Maps to https://[instance]/common/
         AzureAdAndPersonalMicrosoftAccount = 2,
         //
         // Summary:
-        //     Users with a Microsoft work or school account in any organization’s Azure AD
+        //     Users with a Microsoft work or school account in any organization's Azure AD
         //     tenant (i.e. multi-tenant). Maps to https://[instance]/organizations/
         AzureAdMultipleOrgs = 3,
         //
@@ -113,11 +113,7 @@ namespace Azure.Communication.Calling.Unity
         private bool useTenant = false;
 
         [Header("General Settings")]
-
-        [SerializeField]
-        [Tooltip("Should behaviour auto sign-in")]
-        private bool autoSignin = false;
-
+        
         #endregion serialized fields
 
         #region events
@@ -166,15 +162,6 @@ namespace Azure.Communication.Calling.Unity
         {
             get => useTenant;
             set => useTenant = value;
-        }
-
-        /// <summary>
-        /// Should manager auto sign-in at start
-        /// </summary>
-        public bool AutoSignin
-        {
-            get => autoSignin;
-            set => autoSignin = value;
         }
 
         public AuthenticationRequest[] Requests
@@ -344,14 +331,6 @@ namespace Azure.Communication.Calling.Unity
         {
             InitializeSignIn();
             OnAuthenticationEvent += InvokeAuthenticationUnityEvent;
-        }
-
-        private void Start()
-        {
-            if (autoSignin)
-            {
-                _ = AuthenticateAsync(CancellationToken.None);
-            }
         }
 
         #endregion
