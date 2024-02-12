@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2045079351206169189}
   - component: {fileID: 4727418001493205723}
-  - component: {fileID: 801036327281740591}
-  - component: {fileID: 3711284811622973838}
+  - component: {fileID: 2768412582368646827}
   m_Layer: 0
   m_Name: Viewport
   m_TagString: Untagged
@@ -47,7 +46,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 859087630959708224}
   m_CullTransparentMesh: 1
---- !u!114 &801036327281740591
+--- !u!114 &2768412582368646827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,40 +55,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 859087630959708224}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: aa891da5b881eaf438fcf2d8e2958a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &3711284811622973838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 859087630959708224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 0
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
+  independentRadii: 0
+  radii: {x: 10, y: 10, z: 10, w: 10}
 --- !u!1 &1948030144782610236
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,12 +565,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9aea56bccf7ec41ae60624b18ae6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attendeeContainer: {fileID: 2034856708945114494}
-  _attendeePrefab: {fileID: 3567217674101987447, guid: 22bc68769c4333547b64bcd7f8544330, type: 3}
-  _meetingTitle: {fileID: 0}
-  _attendeeStatus: {fileID: 3241110989715762967}
+  attendeeContainer: {fileID: 0}
+  attendeePrefab: {fileID: 0}
+  meetingTitle: {fileID: 0}
+  attendeeStatus: {fileID: 0}
   removeAttendeeButton: {fileID: 0}
-  _callPreivewPanel: {fileID: 0}
+  callPreviewPanel: {fileID: 0}
 --- !u!1 &6026297930526495678
 GameObject:
   m_ObjectHideFlags: 0
