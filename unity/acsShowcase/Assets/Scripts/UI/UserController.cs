@@ -183,7 +183,6 @@ public class UserController : MonoBehaviour
     /// </summary>
     private async void OnPeopleChanged(PeopleGetter getter, PeopleChangedEventArgs args)
     {
-        ClearAll();
         List<StaticUserProfile> users = await photoGetter.UpdateProfilesWorkerAsync(getter, args);
         List<StaticUserProfile> fullyLoadedUsers = await presenceGetter.UpdatePresenceAsyncWorker(users);
         OnProfilesFullyLoaded(fullyLoadedUsers);
@@ -195,6 +194,7 @@ public class UserController : MonoBehaviour
     /// <param name="users">temporary list of recent users sent to the app</param>
     private void OnProfilesFullyLoaded(List<StaticUserProfile> users)
     {
+        ClearAll();
         foreach (var user in users)
         {
             UserProfiles.Add(new UserProfile(user.Id, user.DisplayName, user.Icon, user.Presence, user.Email));
