@@ -183,6 +183,7 @@ public class UserController : MonoBehaviour
     /// </summary>
     private async void OnPeopleChanged(PeopleGetter getter, PeopleChangedEventArgs args)
     {
+        ClearAll();
         List<StaticUserProfile> users = await photoGetter.UpdateProfilesWorkerAsync(getter, args);
         List<StaticUserProfile> fullyLoadedUsers = await presenceGetter.UpdatePresenceAsyncWorker(users);
         OnProfilesFullyLoaded(fullyLoadedUsers);
