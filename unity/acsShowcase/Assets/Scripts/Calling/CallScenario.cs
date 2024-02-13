@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,6 +20,12 @@ using UnityEngine.Events;
 /// </summary>
 public abstract class CallScenario : MonoBehaviour
 {
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+    public static extern uint GetThreadId(IntPtr hThread);
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+    public static extern IntPtr GetCurrentThread();
     private List<OutgoingVideoStream> outgoingVideoStreamsAtStart = new List<OutgoingVideoStream>();
 
     private VirtualOutgoingVideoStream rawOutgoingVideoStream = null;
@@ -36,8 +43,8 @@ public abstract class CallScenario : MonoBehaviour
 
     private SingleAsyncRunner singleAsyncRunner = null;
     private DeviceManager currentDeviceManager = null;
-    private CallAgent currentCallAgent = null;
-    private CommunicationCall currentCall = null;
+    private CommonCallAgent currentCallAgent = null;
+    private CommonCommunicationCall currentCall = null;
 
     private bool updateStatus = false;
     private bool updateRemoteParticipants = false;
@@ -167,7 +174,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    public CallAgent CurrentCallAgent
+    public CommonCallAgent CurrentCallAgent
     {
         get => currentCallAgent;
 
@@ -177,7 +184,14 @@ public abstract class CallScenario : MonoBehaviour
             {
                 if (currentCallAgent != null)
                 {
-                    currentCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+                    if (currentCallAgent is TeamsCallAgent teamsCallAgent)
+                    {
+                        teamsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+                    }
+                    else if (currentCallAgent is CallAgent acsCallAgent)
+                    {
+                        acsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+                    }
                     currentCallAgent.Dispose();
                 }
 
@@ -185,7 +199,14 @@ public abstract class CallScenario : MonoBehaviour
 
                 if (currentCallAgent != null)
                 {
-                    currentCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+                    if (currentCallAgent is TeamsCallAgent teamsCallAgent)
+                    {
+                        teamsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+                    }
+                    else if (currentCallAgent is CallAgent acsCallAgent)
+                    {
+                        acsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+                    }
                 }
 
                 InvalidateListeningStatus();
@@ -199,7 +220,7 @@ public abstract class CallScenario : MonoBehaviour
 
     protected IReadOnlyList<OutgoingVideoStream> OutgoingVideoStreamsAtStart => outgoingVideoStreamsAtStart.AsReadOnly();
 
-    protected CommunicationCall CurrentCall
+    protected CommonCommunicationCall CurrentCall
     {
         get => currentCall;
         set
@@ -468,7 +489,17 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            return CurrentCall?.AddParticipant(personID);
+            if (CurrentCall is TeamsCall teamsCall)
+            {
+                IntPtr hThread = GetCurrentThread();
+                string threadId = GetThreadId(hThread).ToString();
+                return teamsCall?.AddParticipant(personID, new AddTeamsParticipantOptions(threadId));
+            }
+            else if (CurrentCall is CommunicationCall acsCall)
+            {
+                return acsCall?.AddParticipant(personID);
+            }
+            return null;
         }
         else
         {
@@ -529,7 +560,7 @@ public abstract class CallScenario : MonoBehaviour
         InvalidateStatus();
     }
 
-    protected virtual void IncomingCall(IncomingCall call)
+    protected virtual void IncomingCall(CommonIncomingCall call)
     {
     }
 
@@ -698,6 +729,11 @@ public abstract class CallScenario : MonoBehaviour
     }
 
     private void OnCurrentCallAgentIncomingCall(object sender, IncomingCallReceivedEventArgs args)
+    {
+        IncomingCall(args.IncomingCall);
+    }
+
+    private void OnCurrentCallAgentIncomingCall(object sender, TeamsIncomingCallReceivedEventArgs args)
     {
         IncomingCall(args.IncomingCall);
     }

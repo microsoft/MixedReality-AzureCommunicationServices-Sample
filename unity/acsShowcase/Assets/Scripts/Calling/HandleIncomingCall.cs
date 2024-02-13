@@ -13,7 +13,7 @@ using UnityEngine;
 /// </summary>
 public class HandleIncomingCall : CallScenario
 {
-    private IncomingCall incomingCall = null;
+    private CommonIncomingCall incomingCall = null;
     
     private string caller = null;
 
@@ -83,7 +83,14 @@ public class HandleIncomingCall : CallScenario
                 };
 
                 await HangUpCurrentCall();
-                CurrentCall = await acceptCall.AcceptAsync(acceptCallOptions);
+                if (acceptCall is TeamsIncomingCall teamsCall)
+                {
+                    CurrentCall = await teamsCall.AcceptAsync(acceptCallOptions);
+                }
+                else if (acceptCall is IncomingCall acsCall)
+                {
+                    CurrentCall = await acsCall.AcceptAsync(acceptCallOptions);
+                }
             }
         });
     }
@@ -104,7 +111,7 @@ public class HandleIncomingCall : CallScenario
     }
 
     
-    protected override void IncomingCall(IncomingCall call)
+    protected override void IncomingCall(CommonIncomingCall call)
     {
         SingleAsyncRunner.QueueAsync(() =>
         {
@@ -148,7 +155,14 @@ public class HandleIncomingCall : CallScenario
 
             try
             {
-                CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
+                if (isGuest)
+                {
+                    CurrentCallAgent = await callClient.CreateCallAgentAsync(credential, callAgentOptions);
+                }
+                else
+                {
+                    CurrentCallAgent = await callClient.CreateTeamsCallAgentAsync(credential);
+                }
             }
             catch (Exception ex)
             {

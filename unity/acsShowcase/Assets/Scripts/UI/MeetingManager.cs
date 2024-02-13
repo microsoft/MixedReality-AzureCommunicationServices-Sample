@@ -326,7 +326,7 @@ public class MeetingManager : MonoBehaviour
                 Log.Verbose<MeetingManager>("Token: {0}", teamMeeting.Token);
                 Log.Verbose<MeetingManager>("Team URL: {0}", teamLocator.Url);
                 teamMeeting.JoinUrl = teamLocator.Url;
-                teamMeeting.Join(DisplayName);
+                teamMeeting.Join(displayName, forceSignInAsGuest);
             }
 
             SetCurrentActiveCall(teamMeeting);

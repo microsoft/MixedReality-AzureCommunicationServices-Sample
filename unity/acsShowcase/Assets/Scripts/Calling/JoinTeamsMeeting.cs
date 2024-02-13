@@ -35,7 +35,7 @@ public class JoinTeamsMeeting : CallScenario
 
 
 
-    public void Join(string displayName)
+    public void Join(string displayName, bool isGuest)
     {
         if (CurrentCall != null)
         {
@@ -70,7 +70,14 @@ public class JoinTeamsMeeting : CallScenario
             {
                 try
                 {
-                    CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
+                    if (isGuest)
+                    {
+                        CurrentCallAgent = await callClient.CreateCallAgentAsync(credential, callAgentOptions);
+                    }
+                    else
+                    {
+                        CurrentCallAgent = await callClient.CreateTeamsCallAgentAsync(credential);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -82,7 +89,14 @@ public class JoinTeamsMeeting : CallScenario
             {
                 try
                 {
-                    CurrentCall = await CurrentCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    if (CurrentCallAgent is TeamsCallAgent teamsCallAgent)
+                    {
+                        CurrentCall = await teamsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
+                    else if (CurrentCallAgent is CallAgent acsCallAgent)
+                    {
+                        CurrentCall = await acsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
                 }
                 catch (Exception ex)
                 {
