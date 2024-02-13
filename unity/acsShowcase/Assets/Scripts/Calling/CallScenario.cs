@@ -609,7 +609,11 @@ public abstract class CallScenario : MonoBehaviour
 
         var result = new OutgoingAudioOptions()
         {
-            IsMuted = MuteAtStart
+            IsMuted = MuteAtStart,
+            Filters = new OutgoingAudioFilters()
+            {
+                NoiseSuppressionMode = NoiseSuppressionMode.Low
+            }
         };
 
         if (rawOutgoingAudioStream != null)
