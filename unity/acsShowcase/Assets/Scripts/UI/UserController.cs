@@ -194,6 +194,7 @@ public class UserController : MonoBehaviour
     /// <param name="users">temporary list of recent users sent to the app</param>
     private void OnProfilesFullyLoaded(List<StaticUserProfile> users)
     {
+        ClearAll();
         foreach (var user in users)
         {
             UserProfiles.Add(new UserProfile(user.Id, user.DisplayName, user.Icon, user.Presence, user.Email));

@@ -748,13 +748,17 @@ MonoBehaviour:
   callPreviewManager: {fileID: 0}
   videoController: {fileID: 0}
   allParticipantListItem: {fileID: 8780164928994799600}
+  inMeetingHeaderText: {fileID: 0}
   inMeetingPanel: {fileID: 5431716909274800240}
+  notInMeetingHeaderText: {fileID: 0}
   notInMeetingPanel: {fileID: 420325966292102343}
   attendeePrefab: {fileID: 3567217674101987447, guid: 22bc68769c4333547b64bcd7f8544330, type: 3}
   contentFitter: {fileID: 9187263109363146079}
   attendeeStatus: {fileID: 0}
   participantStatus: {fileID: 2713262135141344400}
   removeParticipantButton: {fileID: 0}
+  participantsPanelView: {fileID: 0}
+  meetingManager: {fileID: 0}
 --- !u!1 &4678017046879850838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,8 +1165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5882664164191812881}
   - component: {fileID: 6545645310994932098}
-  - component: {fileID: 3007122945793013872}
-  - component: {fileID: 8051484688485839662}
+  - component: {fileID: 4551172440963369256}
   m_Layer: 0
   m_Name: Viewport
   m_TagString: Untagged
@@ -1198,7 +1201,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5500371375846587815}
   m_CullTransparentMesh: 1
---- !u!114 &3007122945793013872
+--- !u!114 &4551172440963369256
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1207,40 +1210,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5500371375846587815}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: aa891da5b881eaf438fcf2d8e2958a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &8051484688485839662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5500371375846587815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 0
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
+  independentRadii: 0
+  radii: {x: 10, y: 10, z: 10, w: 10}
 --- !u!1 &5535591950169506744
 GameObject:
   m_ObjectHideFlags: 0
