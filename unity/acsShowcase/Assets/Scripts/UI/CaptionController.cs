@@ -61,13 +61,10 @@ public class CaptionController : MonoBehaviour
             multiLineText.RemoveAt(0);
         }
 
-        // remove previous text if this new text is the continuation of the previous one 
+        // remove previous text 
         if (multiLineText.Count > 0)
         {
-            var lastLine = multiLineText[multiLineText.Count - 1].ToLower().Replace(',', ' '); 
-            var lineTextEdit = lineText.ToLower().Replace(',', ' ');
-            if (lineTextEdit.Contains(lastLine));
-                multiLineText.RemoveAt(multiLineText.Count - 1);
+            multiLineText.RemoveAt(multiLineText.Count - 1);
         }
 
         multiLineText.Add(lineText);

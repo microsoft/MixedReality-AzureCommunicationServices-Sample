@@ -111,7 +111,7 @@ public class SearchWindow : MonoBehaviour
     /// <returns></returns>
     private char ValidateInput(string text, int charIndex, char addedChar)
     {
-        peopleSearcher.SearchForUsers(text + addedChar);
+        peopleSearcher.Query = text + addedChar;
         return addedChar;
     }  
     
@@ -120,7 +120,7 @@ public class SearchWindow : MonoBehaviour
     /// </summary>
     public void PerformSearch()
     {
-        peopleSearcher.SearchForUsers(searchInput.text); 
+        peopleSearcher.Query = searchInput.text; 
     } 
     
     /// <summary>

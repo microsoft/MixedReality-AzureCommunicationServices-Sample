@@ -16,8 +16,11 @@ public class JoinTeamsMeeting : CallScenario
 
     public string JoinUrl { get; set; }
     
-    [SerializeField] [Tooltip("event occures when receiving new caption text")]
+    [SerializeField] [Tooltip("Event occures when receiving new caption text")]
     private UnityEvent<string> onCaptionReceived = null;
+
+    [SerializeField] [Tooltip("Configure your caption language")]
+    private string captionLanguage = "en-us";
 
     private TeamsCaptions teamsCaptions = null;
 
@@ -114,7 +117,7 @@ public class JoinTeamsMeeting : CallScenario
 
                 var options = new StartCaptionsOptions
                 {
-                    SpokenLanguage = "en-us"
+                    SpokenLanguage = captionLanguage
                 };
                 try
                 {

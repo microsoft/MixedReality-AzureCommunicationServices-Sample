@@ -261,7 +261,7 @@ public class MeetingManager : MonoBehaviour
     /// <summary>
     /// OnDestroy
     /// </summary>
-    private async void OnDestroy()
+    private void OnDestroy()
     {
         ParticipantPanelController.OnAddParticipant -= ParticipantPanelControllerOnAddParticipant;
         ParticipantPanelController.OnRemoveParticipant -= ParticipantPanelControllerOnRemoveParticipant;
@@ -589,7 +589,6 @@ public class MeetingManager : MonoBehaviour
             IsLoggedIn = true;
             if (string.IsNullOrEmpty(displayName) || (displayName.Equals(SystemUser.UNKNOWN_USER) || displayName.ToLower() == "unknown user"))
             {
-                displayName = displayName;
                 if (ProfileGetter.Profile != null)
                     displayName = ProfileGetter.Profile.displayName;
             }

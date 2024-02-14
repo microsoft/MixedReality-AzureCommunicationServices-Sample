@@ -355,7 +355,7 @@ public class UserObject : MonoBehaviour
     /// <param name="texture"></param>
     public void SetProfileIcon(Texture2D texture)
     {
-        if (texture != null && texture.name != "Ellipse 8")
+        if (texture != null)
         {
             SetForIcon();
             profileIcon.texture = texture;

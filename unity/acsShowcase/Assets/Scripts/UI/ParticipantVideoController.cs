@@ -42,11 +42,6 @@ public class ParticipantVideoController : MonoBehaviour
     private ParticipantRepeaterItem[] allParticipants = null;
     
     /// <summary>
-    /// current spekaer 
-    /// </summary>
-    private ParticipantRepeaterItem currentSpeaker = null;
-    
-    /// <summary>
     /// current speaker initial 
     /// </summary>
     private string currentSpeakerInitials = null;

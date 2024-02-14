@@ -51,6 +51,7 @@ public abstract class CallScenario : MonoBehaviour
     private List<VideoDeviceControls> videoDeviceControlList = new List<VideoDeviceControls>();
     protected bool isSharedCamera = true;
 
+    const string defaultCameraName = "QC Back Camera";
     const string labelRaw = "Raw";
     const string labelStandard = "Std";
     protected ConcurrentQueue<Action> pendingActions = new ConcurrentQueue<Action>();
@@ -401,15 +402,18 @@ public abstract class CallScenario : MonoBehaviour
     {
         isSharedCamera = true;
         if (videoDeviceControlList.Count > 0)
+        {
             videoDeviceControlList[defaultCamIndex].StartCapture();
-        
+        }
     }
 
     public void UnShareCamera()
     {
         isSharedCamera = false;
         if (videoDeviceControlList.Count > 0)
+        {
             videoDeviceControlList[defaultCamIndex].StopCapture();
+        }
     }
     
     /// <summary>
@@ -422,7 +426,9 @@ public abstract class CallScenario : MonoBehaviour
             return CurrentCall?.AddParticipant(personID);
         }
         else
+        {
             return null;
+        }
     }
 
     /// <summary>
@@ -433,7 +439,9 @@ public abstract class CallScenario : MonoBehaviour
         if (CurrentCall is not null)
         {
             if (CurrentCall != null && identifier != null)
+            {
                 await CurrentCall.RemoveParticipantAsync(identifier);
+            }
         }
     }
 
@@ -444,7 +452,9 @@ public abstract class CallScenario : MonoBehaviour
     public virtual void Leave()
     {
         if (isSharedCamera)
+        {
             UnShareCamera();
+        }
         
         CurrentCallAgent = null;
         SingleAsyncRunner.QueueAsync(async () =>
@@ -1022,7 +1032,7 @@ public abstract class CallScenario : MonoBehaviour
                 videoDeviceControlList.Add(videoDevCtrl);
                 videoDeviceControls.Add(videoDevCtrl);
                 // default camera for HoloLens2
-                if (item.Name.Contains("QC Back Camera"))
+                if (item.Name.Contains(defaultCameraName))
                 {
                     defaultCamIndex = videoDeviceControlList.Count - 1;
                 }

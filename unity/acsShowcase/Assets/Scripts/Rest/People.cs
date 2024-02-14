@@ -35,8 +35,8 @@ namespace Azure.Communication.Calling.Unity.Rest
                 AuthenticationType.Token,
                 authenticationToken);
         }
-        
-        
+
+
         /// <summary>
         /// Get people with their email addresses 
         /// </summary>
@@ -57,42 +57,8 @@ namespace Azure.Communication.Calling.Unity.Rest
 
             allEmail += ")";
             string querryStr = "https://graph.microsoft.com/v1.0/users?$filter=mail in " + allEmail;
-            
+
             QueryBuilder builder = new QueryBuilder(querryStr, maxArguments: 2);
-            if (count > 0)
-            {
-                builder.InsertArgument("$top", count.ToString());
-            }
-
-            if (skip > 0)
-            {
-                builder.InsertArgument("$skip", skip.ToString());
-            }
-
-            return Client.Get<IUsers, GraphPeople>(
-                builder.ToString(),
-                AuthenticationType.Token,
-                authenticationToken);
-        }
-        
-
-        /// <summary>
-        /// Search for people starting with the given prefix.
-        /// </summary>
-        public static Task<IUsers> Search(
-            string authenticationToken,
-            string query,
-            int count = -1,
-            int skip = -1)
-        {
-            if (string.IsNullOrEmpty(query))
-            {
-                return Task.FromResult<IUsers>(new GraphPeople());
-            }
-
-            QueryBuilder builder = new QueryBuilder("https://graph.microsoft.com/v1.0/me/people", maxArguments: 3);
-            builder.InsertArgument("$search", query);
-
             if (count > 0)
             {
                 builder.InsertArgument("$top", count.ToString());
@@ -110,7 +76,7 @@ namespace Azure.Communication.Calling.Unity.Rest
         }
 
         //Search via Search endpoint
-        public static Task<string> Search2(
+        public static Task<string> Search(
                 string authenticationToken,
                 string query )
         {

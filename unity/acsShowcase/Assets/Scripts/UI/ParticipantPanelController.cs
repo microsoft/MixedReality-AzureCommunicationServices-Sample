@@ -251,7 +251,6 @@ public class ParticipantPanelController : MonoBehaviour
             allInMeetingParticipants = inMeetingPanel.GetComponentsInChildren<ParticipantRepeaterItem>().ToList();
         }
 
-        RemoteParticipant remoteParticipant = null;
         foreach (var user in UserController.SelectedUserObjects)
         {
             var attendeeInfo = user.gameObject.GetComponent<AttendeeInfo>();

@@ -8,7 +8,7 @@ namespace Azure.Communication.Calling.Unity
     public class AuthenticationRequest : MonoBehaviour, IAuthenticationRequest
     {
         [SerializeField]
-        [Tooltip("An app specfic name of the request")]
+        [Tooltip("An app specific name of the request")]
         private string name;
 
         public string Name
