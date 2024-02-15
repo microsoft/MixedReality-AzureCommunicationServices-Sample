@@ -22,7 +22,7 @@ public class ManipulationController : MonoBehaviour
     /// </summary>
     public void StartManipulating()
     {
-        if (horizontalCenterView is not null)
+        if (horizontalCenterView != null)
         {
             horizontalCenterViewEnabled = horizontalCenterView.enabled;
             horizontalCenterView.enabled = false;
@@ -34,7 +34,7 @@ public class ManipulationController : MonoBehaviour
     /// </summary>
     public void EndManipulating()
     {
-        if (horizontalCenterView is not null)
+        if (horizontalCenterView != null)
         {
             horizontalCenterView.enabled = horizontalCenterViewEnabled;
         }

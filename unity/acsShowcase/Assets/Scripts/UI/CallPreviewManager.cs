@@ -384,7 +384,7 @@ public class CallPreviewManager : MonoBehaviour
     /// </summary>
     public void JoinMeeting()
     {
-        if (curMeeting is not null) 
+        if (curMeeting != null) 
             curMeeting.JoinMeeting();
     }
 

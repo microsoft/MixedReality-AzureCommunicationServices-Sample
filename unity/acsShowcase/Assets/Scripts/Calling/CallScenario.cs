@@ -421,7 +421,7 @@ public abstract class CallScenario : MonoBehaviour
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
-        if (CurrentCall is not null)
+        if (CurrentCall != null)
         {
             return CurrentCall?.AddParticipant(personID);
         }
@@ -432,11 +432,11 @@ public abstract class CallScenario : MonoBehaviour
     }
 
     /// <summary>
-    /// remove a participant from this call 
+    /// Remove a participant from this call 
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
-        if (CurrentCall is not null)
+        if (CurrentCall != null)
         {
             if (CurrentCall != null && identifier != null)
             {

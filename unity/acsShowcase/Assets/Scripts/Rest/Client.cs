@@ -91,7 +91,7 @@ namespace Azure.Communication.Calling.Unity.Rest
         {
             if (value == null)
             {
-                throw new ArgumentNullException($"The {name} parameter is null");
+                throw new ArgumentNullException($"The {name} parameter == null");
             }
         }
 

@@ -106,7 +106,7 @@ public class JoinTeamsMeeting : CallScenario
     {
         CaptionsCallFeature captionsCallFeature = CurrentCall.Features.Captions;
         
-        if (captionsCallFeature is not null)
+        if (captionsCallFeature != null)
         {
             CallCaptions callCaptions = await captionsCallFeature.GetCaptionsAsync();
             if (callCaptions.CaptionsKind == CaptionsType.TeamsCaptions)
@@ -131,7 +131,7 @@ public class JoinTeamsMeeting : CallScenario
         }
         else
         {
-            Debug.LogError("captionsCallFeature is null");
+            Debug.LogError("captionsCallFeature == null");
         }
 
     }

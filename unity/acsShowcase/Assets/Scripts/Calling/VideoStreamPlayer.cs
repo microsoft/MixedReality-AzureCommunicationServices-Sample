@@ -70,7 +70,7 @@ public class VideoStreamPlayer : MonoBehaviour
 
     public void StartStreaming()
     {
-        if (rawIncomingStream is not null)
+        if (rawIncomingStream != null)
         {
             ClearTextures();
             rawIncomingStream.Start();
@@ -80,7 +80,7 @@ public class VideoStreamPlayer : MonoBehaviour
 
     public void StopStreaming()
     {
-        if (rawIncomingStream is not null)
+        if (rawIncomingStream != null)
         {
             ClearTextures();
             if (rawIncomingStream.State == VideoStreamState.Started)

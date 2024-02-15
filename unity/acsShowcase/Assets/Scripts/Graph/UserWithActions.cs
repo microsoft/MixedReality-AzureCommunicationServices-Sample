@@ -62,12 +62,12 @@ namespace Azure.Communication.Calling.Unity
         {
             if (user == null)
             {
-                Log.Error<UserWithActions>("Unable to call user, user is null ({0})", displayName);
+                Log.Error<UserWithActions>("Unable to call user, user == null ({0})", displayName);
 
             }
             else if (_meetingManager == null)
             {
-                Log.Error<UserWithActions>("Unable to call user, meeting manager is null ({0})", displayName);
+                Log.Error<UserWithActions>("Unable to call user, meeting manager == null ({0})", displayName);
             }
             else if (user.internalType == InternalUserType.CommunicationServices)
             {

@@ -120,7 +120,7 @@ public class EventView : RepeaterItem
     /// </summary>
     private void UpdateFields()
     {
-        if (data is null) return;
+        if (data == null) return;
 
         // ignore if this event is not Teams meeting 
         if (data.onlineMeetingProvider != EventOnlineMeetingProviderType.teamsForBusiness)
