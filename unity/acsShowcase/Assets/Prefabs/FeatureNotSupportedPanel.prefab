@@ -97,7 +97,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1351233988266215525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -114,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.7299957, y: 23.67}
-  m_SizeDelta: {x: -19.77, y: -68.02}
+  m_AnchoredPosition: {x: 0, y: 17.5}
+  m_SizeDelta: {x: -10.000003, y: -45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &760725298261915132
 CanvasRenderer:
@@ -229,7 +229,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This feature is currently not supported by ACS.
+  m_text: This feature is currently not supported by Azure Communication Services
+    for Unity.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}
   m_sharedMaterial: {fileID: 3494153625042623378, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}
@@ -262,9 +263,9 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
