@@ -171,10 +171,7 @@ public class UserObject : MonoBehaviour
     /// <param name="userObject"></param>
     public void Copy(UserObject userObject)
     {
-        SetVariables(userObject.Id, userObject.Email, userObject.UserObjectPageType);
-        SetName(userObject.DisplayName);
-        SetProfileIcon((Texture2D)userObject.profileIcon.texture);
-        SetPresenceIcon(userObject.presenceAvail);
+        SetVariablesAndUI(userObject.Id, userObject.Email, userObject.UserObjectPageType, userObject.DisplayName, (Texture2D)userObject.profileIcon.texture, userObject.presenceAvail);
     }
 
     
@@ -322,12 +319,29 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// set info 
+    /// set info and update UI 
     /// </summary>
     /// <param name="id"></param>
     /// <param name="email"></param>
     /// <param name="pageType"></param>
-    public void SetVariables(string id, string email, PageType pageType)
+    /// <param name="name"></param>
+    /// <param name="texture"></param>
+    /// <param name="presenceRecieved"></param>
+    public void SetVariablesAndUI(string id, string email, PageType pageType, string name, Texture2D texture, PresenceAvailability presenceRecieved)
+    {
+        SetVariables(id, email, pageType);
+        SetName(name);
+        SetProfileIcon(texture);
+        SetPresenceIcon(presenceRecieved);
+    }
+
+/// <summary>
+/// set info 
+/// </summary>
+/// <param name="id"></param>
+/// <param name="email"></param>
+/// <param name="pageType"></param>
+public void SetVariables(string id, string email, PageType pageType)
     {
         this.id = id;
         this.email = email;

@@ -169,10 +169,7 @@ public class UserController : MonoBehaviour
         GameObject userPrefab = mainUserPrefab;
         userPrefab.transform.SetAsFirstSibling();
         var userObject = userPrefab.GetComponent<UserObject>();
-        userObject.SetVariables(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts);
-        userObject.SetName(ProfileGetter.Profile.displayName);
-        userObject.SetProfileIcon(photoGetter.Photo);
-        userObject.SetPresenceIcon(presenceGetter.Presence.availability);
+        userObject.SetVariablesAndUI(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts, ProfileGetter.Profile.displayName, photoGetter.Photo, presenceGetter.Presence.availability);
     }
 
     /// <summary>

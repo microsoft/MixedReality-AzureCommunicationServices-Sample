@@ -11,10 +11,10 @@ using UnityEngine;
 public class AttendeeInfo : MonoBehaviour
 {
 
-    [SerializeField] [Tooltip("attendee name text display")] 
+    [SerializeField] [Tooltip("Attendee name text display")] 
     private TextMeshProUGUI name;
 
-    [SerializeField] [Tooltip("attendee status display")]
+    [SerializeField] [Tooltip("Attendee status display")]
     private TextMeshProUGUI status;
 
     /// <summary>

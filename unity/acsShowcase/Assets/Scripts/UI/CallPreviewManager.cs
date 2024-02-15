@@ -190,10 +190,7 @@ public class CallPreviewManager : MonoBehaviour
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariables("", "", PageType.Participants);
-                    userObject.SetName(attendee.emailAddress.address);
-                    userObject.SetProfileIcon(null);
-                    userObject.SetPresenceIcon(PresenceAvailability.Offline);
+                    userObject.SetVariablesAndUI("", "", PageType.Participants, attendee.emailAddress.address, null, PresenceAvailability.Offline);
                 }
             }
             else
@@ -202,10 +199,7 @@ public class CallPreviewManager : MonoBehaviour
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                    userObject.SetName(profile.DisplayName);
-                    userObject.SetProfileIcon(profile.Icon);
-                    userObject.SetPresenceIcon(profile.Presence);
+                    userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                     attendeeInfo.ID = profile.Id;
                 }
             }
@@ -245,10 +239,7 @@ public class CallPreviewManager : MonoBehaviour
                     var userObject = attendee.GetComponent<UserObject>();
                     if (userObject != null)
                     {
-                        userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                        userObject.SetName(profile.DisplayName);
-                        userObject.SetProfileIcon(profile.Icon);
-                        userObject.SetPresenceIcon(profile.Presence);
+                        userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                         attendee.ID = profile.Id;
                     }   
                 }
@@ -366,11 +357,7 @@ public class CallPreviewManager : MonoBehaviour
             var newAttendeeInfo = newAttendee.GetComponent<AttendeeInfo>();
             if (userObject != null)
             {
-                userObject.SetVariables(UserController.SelectedUserObject.Id, UserController.SelectedUserObject.Email, PageType.Participants);
-                userObject.SetName(UserController.SelectedUserObject.DisplayName);
-                userObject.SetProfileIcon(null);
-                userObject.SetPresenceIcon(UserController.SelectedUserObject.Presence);
-
+                userObject.SetVariablesAndUI(UserController.SelectedUserObject.Id, UserController.SelectedUserObject.Email, PageType.Participants, UserController.SelectedUserObject.DisplayName, null, UserController.SelectedUserObject.Presence);
                 newAttendeeInfo.Email = UserController.SelectedUserObject.Email;
                 newAttendeeInfo.ID = UserController.SelectedUserObject.Id;
                 newAttendeeInfo.ParentGameObject = newAttendee;

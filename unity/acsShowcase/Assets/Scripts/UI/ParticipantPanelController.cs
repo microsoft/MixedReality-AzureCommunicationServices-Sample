@@ -167,10 +167,7 @@ public class ParticipantPanelController : MonoBehaviour
                     UserProfile profile = userControler.GetUserProfileFromID(participantItem.RemoteParticipant.Identifier.RawId);
                     if (profile != null)
                     {
-                        userObjectParticipant.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                        userObjectParticipant.SetName(profile.DisplayName);
-                        userObjectParticipant.SetProfileIcon(profile.Icon);
-                        userObjectParticipant.SetPresenceIcon(profile.Presence);
+                        userObjectParticipant.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                         userObjectParticipant.UserObjectPageType = PageType.Participants;
                     }
                     else

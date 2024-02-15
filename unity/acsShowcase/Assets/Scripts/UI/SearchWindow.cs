@@ -92,10 +92,7 @@ public class SearchWindow : MonoBehaviour
                 {
                     var userPrefab = GameObject.Instantiate(horizontalUserPrefab, viewportContent);
                     var userObject = userPrefab.GetComponent<UserObject>();
-                    userObject.SetVariables(user.Id, user.Email, searchPageType); 
-                    userObject.SetName(user.DisplayName);
-                    userObject.SetProfileIcon(user.Icon);
-                    userObject.SetPresenceIcon(user.Presence);
+                    userObject.SetVariablesAndUI(user.Id, user.Email, searchPageType, user.DisplayName, user.Icon, user.Presence);
                 }
             }
             searchResultsCount.text = $"{searchResults.Count - mainUserSearched} Search Results";

@@ -83,10 +83,7 @@ public class RecentUsersView : MonoBehaviour
             GameObject userPrefab = GameObject.Instantiate(horizontalUserPrefab, scrollViewContent);
             ++count;
             var userObject = userPrefab.GetComponent<UserObject>();
-            userObject.SetVariables(user.Id, user.Email, PageType.RelevantContacts);
-            userObject.SetName(user.DisplayName);
-            userObject.SetProfileIcon(user.Icon);
-            userObject.SetPresenceIcon(user.Presence);
+            userObject.SetVariablesAndUI(user.Id, user.Email, PageType.RelevantContacts, user.DisplayName, user.Icon, user.Presence);
             if(count > 10)
                 userObject.gameObject.SetActive(false);
         }
