@@ -35,8 +35,8 @@ namespace Azure.Communication.Calling.Unity.Rest
                 AuthenticationType.Token,
                 authenticationToken);
         }
-
-
+        
+        
         /// <summary>
         /// Get people with their email addresses 
         /// </summary>
@@ -57,7 +57,7 @@ namespace Azure.Communication.Calling.Unity.Rest
 
             allEmail += ")";
             string querryStr = "https://graph.microsoft.com/v1.0/users?$filter=mail in " + allEmail;
-
+            
             QueryBuilder builder = new QueryBuilder(querryStr, maxArguments: 2);
             if (count > 0)
             {
@@ -74,6 +74,7 @@ namespace Azure.Communication.Calling.Unity.Rest
                 AuthenticationType.Token,
                 authenticationToken);
         }
+        
 
         //Search via Search endpoint
         public static Task<string> Search(

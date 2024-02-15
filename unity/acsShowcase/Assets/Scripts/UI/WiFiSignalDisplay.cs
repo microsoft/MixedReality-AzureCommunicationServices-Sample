@@ -15,8 +15,17 @@ using Windows.Devices;
 /// </summary>
 public class WiFiSignalDisplay : MonoBehaviour
 {
+  
+    [SerializeField] [Tooltip("how often to update the display")]
+    private float updateInterval = 1.0f;
+    
     [SerializeField] [Tooltip("reference images to show different strengths")]
     private List<GameObject> imageSignalList;
+    
+    /// <summary>
+    /// last updated time 
+    /// </summary>
+    private float lastUpdatedTime = 0;
     
 #if ENABLE_WINMD_SUPPORT        
     Windows.Networking.Connectivity.ConnectionProfile connectedProfile = null;  

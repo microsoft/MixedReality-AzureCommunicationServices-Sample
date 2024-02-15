@@ -12,6 +12,10 @@ public class ToneAudioSource : CustomAudioSource
     private BackgroundWorker backgroundWorker = null;
     private System.Random random = new System.Random();
 
+    [SerializeField]
+    [Tooltip("The maximum number of frames to save in buffer")]
+    private int maxFrameBuffer = 5;
+
     public override bool IsCapturing => backgroundWorker != null;
 
     protected override void StartGenerating(CustomAudioSourceSettings settings)
