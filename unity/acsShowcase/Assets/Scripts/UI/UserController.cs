@@ -166,16 +166,13 @@ public class UserController : MonoBehaviour
     /// </summary>
     private void SetUI()
     {
-        if (ProfileGetter.Profile != null && photoGetter?.Photo != null && presenceGetter?.Presence != null)
-        {
-            GameObject userPrefab = mainUserPrefab;
-            userPrefab.transform.SetAsFirstSibling();
-            var userObject = userPrefab.GetComponent<UserObject>();
-            userObject.SetVariables(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts);
-            userObject.SetName(ProfileGetter.Profile.displayName);
-            userObject.SetProfileIcon(photoGetter.Photo);
-            userObject.SetPresenceIcon(presenceGetter.Presence.availability);
-        }
+        GameObject userPrefab = mainUserPrefab;
+        userPrefab.transform.SetAsFirstSibling();
+        var userObject = userPrefab.GetComponent<UserObject>();
+        userObject.SetVariables(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts);
+        userObject.SetName(ProfileGetter.Profile.displayName);
+        userObject.SetProfileIcon(photoGetter.Photo);
+        userObject.SetPresenceIcon(presenceGetter.Presence.availability);
     }
 
     /// <summary>

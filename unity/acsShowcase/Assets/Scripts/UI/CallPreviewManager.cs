@@ -262,9 +262,13 @@ public class CallPreviewManager : MonoBehaviour
     private void OnSelectedAttendeesChanged()
     {
         if (UserController.SelectedUserObjects.Count > 0 && callPreviewPanel.activeSelf)
+        {
             removeAttendeeButton.SetActive(true);
+        }
         else
+        {
             removeAttendeeButton.SetActive(false);
+        }
     }
     
     /// <summary>

@@ -47,7 +47,6 @@ public class BatteryLevelDisplay : MonoBehaviour
             lastUpdatedTime = Time.time;
 
             BatteryLevel = SystemInfo.batteryLevel;
-            //Debug.Log("SystemInfo.batteryLevel " + SystemInfo.batteryLevel);
             float newBatteryLevelWidth = BatteryLevel * initWidth;
             float redWidth = initWidth - newBatteryLevelWidth;
             // show the battery status according to the level

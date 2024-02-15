@@ -91,13 +91,14 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
+            var args = new PhotoLoadedEventArgs(null);
             if (data != null)
             {
                 Photo = new Texture2D(photoSize.GetWidth(), photoSize.GetHeight());
                 if (Photo.LoadImage(data))
                 {
                     Log.Verbose<PhotoGetter>("User photo loaded.");
-                    var args = new PhotoLoadedEventArgs(Photo);
+                    args = new PhotoLoadedEventArgs(Photo);
                     photoLoaded?.Invoke(args);
                     PhotoLoaded?.Invoke(this, args);
                 }
@@ -106,6 +107,8 @@ namespace Azure.Communication.Calling.Unity
                     Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
                 }
             }
+            photoLoaded?.Invoke(args);
+            PhotoLoaded?.Invoke(this, args);
         }
         #endregion Private Functions
 
