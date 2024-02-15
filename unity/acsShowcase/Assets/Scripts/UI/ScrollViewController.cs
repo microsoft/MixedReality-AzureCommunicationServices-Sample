@@ -25,12 +25,12 @@ public class ScrollViewController : MonoBehaviour
     private RectTransform contentRect = null;
 
     /// <summary>
-    /// content initial position 
+    /// Content initial position 
     /// </summary>
     private Vector2 contentInitPosition;
     
     /// <summary>
-    /// is it scrolling? 
+    /// Is it scrolling? 
     /// </summary>
     private bool isScrolling = false;
 
@@ -67,7 +67,7 @@ public class ScrollViewController : MonoBehaviour
     }
 
     /// <summary>
-    /// called when scroll rect value has changed 
+    /// Called when scroll rect value has changed 
     /// </summary>
     /// <param name="arg0"></param>
     private void ScrollRectValueChanged(Vector2 arg0)
@@ -76,7 +76,7 @@ public class ScrollViewController : MonoBehaviour
     }
 
     /// <summary>
-    /// scroll up 
+    /// Scroll up 
     /// </summary>
     public void ScrollUp()
     {
@@ -85,7 +85,7 @@ public class ScrollViewController : MonoBehaviour
 
     
     /// <summary>
-    /// scroll down 
+    /// Scroll down 
     /// </summary>
     public void ScrollDown()
     {
@@ -116,7 +116,7 @@ public class ScrollViewController : MonoBehaviour
     }
 
     /// <summary>
-    /// called when start scrolling with finger 
+    /// Called when start scrolling with finger 
     /// </summary>
     public void StartScrollable()
     {
@@ -124,7 +124,7 @@ public class ScrollViewController : MonoBehaviour
     }
 
     /// <summary>
-    /// called when end scrolling with finger 
+    /// Called when end scrolling with finger 
     /// do not allow to scroll horizontally
     /// </summary>
     public void EndScrollable()

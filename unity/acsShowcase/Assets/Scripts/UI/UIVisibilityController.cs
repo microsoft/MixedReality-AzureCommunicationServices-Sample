@@ -45,7 +45,7 @@ public class UIVisibilityController : MonoBehaviour
     }
     
     /// <summary>
-    /// show the main panel 
+    /// Show the main panel 
     /// </summary>
     public void ShowMainPanel()
     {
@@ -84,7 +84,7 @@ public class UIVisibilityController : MonoBehaviour
     }
 
     /// <summary>
-    /// show the the in-call panel 
+    /// Show the the in-call panel 
     /// </summary>
     public void ShowInCallPanel()
     {

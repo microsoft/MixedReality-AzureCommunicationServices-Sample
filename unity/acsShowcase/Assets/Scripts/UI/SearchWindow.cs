@@ -100,7 +100,7 @@ public class SearchWindow : MonoBehaviour
         }
     }
     /// <summary>
-    /// validate search input 
+    /// Validate search input 
     /// </summary>
     /// <param name="text"></param>
     /// <param name="charIndex"></param>
@@ -113,7 +113,7 @@ public class SearchWindow : MonoBehaviour
     }  
     
     /// <summary>
-    /// perform the search
+    /// Perform the search
     /// </summary>
     public void PerformSearch()
     {
@@ -121,7 +121,7 @@ public class SearchWindow : MonoBehaviour
     } 
     
     /// <summary>
-    /// clear the search result 
+    /// Clear the search result 
     /// </summary>
     public void ClearSearch()
     {
@@ -135,7 +135,7 @@ public class SearchWindow : MonoBehaviour
     }
     
     /// <summary>
-    /// set search type 
+    /// Set search type 
     /// </summary>
     /// <param name="isMainWindow"></param>
     public void SetSearchPageType(bool isMainWindow)

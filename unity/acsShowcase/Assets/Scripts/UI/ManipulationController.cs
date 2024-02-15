@@ -13,12 +13,12 @@ public class ManipulationController : MonoBehaviour
     private HorizontalCenterView horizontalCenterView;
 
     /// <summary>
-    /// remember the status of the view 
+    /// Remember the status of the view 
     /// </summary>
     private bool horizontalCenterViewEnabled = true;
 
     /// <summary>
-    /// start manipulating 
+    /// Start manipulating 
     /// </summary>
     public void StartManipulating()
     {
@@ -30,7 +30,7 @@ public class ManipulationController : MonoBehaviour
     }
 
     /// <summary>
-    /// end manipulating 
+    /// End manipulating 
     /// </summary>
     public void EndManipulating()
     {

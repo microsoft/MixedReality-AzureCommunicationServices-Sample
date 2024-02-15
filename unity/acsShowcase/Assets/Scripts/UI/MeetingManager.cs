@@ -96,37 +96,37 @@ public class MeetingManager : MonoBehaviour
     private HandleIncomingCall handleIncomingCall;
 
     /// <summary>
-    /// is mute changed event 
+    /// Is mute changed event 
     /// </summary>
     public event Action<MeetingManager, bool> IsMutedChanged;
 
     /// <summary>
-    /// is loggedIn change event 
+    /// Is loggedIn change event 
     /// </summary>
     public event Action<MeetingManager, bool> IsLoggedInChanged;
 
     /// <summary>
-    /// meeting status changed event 
+    /// Meeting status changed event 
     /// </summary>
     public event Action<MeetingManager, MeetingStatus> StatusChanged;
 
     /// <summary>
-    /// started 
+    /// Started 
     /// </summary>
     private bool started = false;
 
     /// <summary>
-    /// meeting last call state 
+    /// Meeting last call state 
     /// </summary>
     private MeetingCallState lastCallState = MeetingCallState.Disconnecting;
 
     /// <summary>
-    /// logged in task 
+    /// Logged in task 
     /// </summary>
     private Task<bool> loggedInTask = null;
 
     /// <summary>
-    /// is logged in?
+    /// Is logged in?
     /// </summary>
     private bool loggedIn;
 
@@ -145,72 +145,72 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// pending join 
+    /// Pending join 
     /// </summary>
     private MeetingLocator pendingJoin = null;
 
     /// <summary>
-    /// pending action 
+    /// Pending action 
     /// </summary>
     private ConcurrentQueue<Action> pendingActions = new ConcurrentQueue<Action>();
 
     /// <summary>
-    /// authetication cancel
+    /// Authetication cancel
     /// </summary>
     private CancellationTokenSource autheticationCancel;
 
     /// <summary>
-    /// service identity provider 
+    /// Service identity provider 
     /// </summary>
     private MeetingServiceIdentityProvider serviceIdentityProvider = new MeetingServiceIdentityProvider();
 
     /// <summary>
-    /// service identity
+    /// Service identity
     /// </summary>
     MeetingServiceIdentity serviceIdentity = null;
 
     /// <summary>
-    /// communication azure active directory access token response
+    /// Communication azure active directory access token response
     /// </summary>
     private TokenResponse communicationAzureActiveDirectoryAccessTokenResponse = TokenResponse.Invalid;
 
     /// <summary>
-    /// functionApp access token response
+    /// FunctionApp access token response
     /// </summary>
     private TokenResponse functionAppAccessTokenResponse = TokenResponse.Invalid;
 
     /// <summary>
-    /// graph access token response
+    /// Graph access token response
     /// </summary>
     private TokenResponse graphAccessTokenResponse = TokenResponse.Invalid;
 
     /// <summary>
-    /// keep track of the current active call 
+    /// Keep track of the current active call 
     /// </summary>
     private CallScenario currentActiveCall = null;
 
     /// <summary>
-    /// enable to start listening to the incoming call 
+    /// Enable to start listening to the incoming call 
     /// </summary>
     private bool startListeningComingCall = false;
 
     /// <summary>
-    /// is camera enabled?
+    /// Is camera enabled?
     /// </summary>
     private bool isSharedCamera = true;
 
     /// <summary>
-    /// is microphone muted?
+    /// Is microphone muted?
     /// </summary>
     private bool isMute = false;
 
     /// <summary>
-    /// is speaker muted?
+    /// Is speaker muted?
     /// </summary>
     private bool isSpeakerOff = false;
 
     /// <summary>
-    /// current meeting status
+    /// Current meeting status
     /// </summary>
     private MeetingStatus status = new MeetingStatus();
 
@@ -299,7 +299,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// join a meeting 
+    /// Join a meeting 
     /// </summary>
     /// <param name="locator"></param>
     public void Join(MeetingLocator locator)
@@ -350,7 +350,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// remove a participant from current team call
+    /// Remove a participant from current team call
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
@@ -359,7 +359,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// get called when removing participant 
+    /// Get called when removing participant 
     /// </summary>
     /// <param name="participant"></param>
     private void ParticipantPanelControllerOnRemoveParticipant(RemoteParticipant participant)
@@ -368,7 +368,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// get called when adding participant 
+    /// Get called when adding participant 
     /// </summary>
     /// <param name="participant"></param>
     private void ParticipantPanelControllerOnAddParticipant(GraphUser person)
@@ -378,7 +378,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// use for 1-1 calling, ACS SDK not yet supporting calling to Teams user. 
+    /// Use for 1-1 calling, ACS SDK not yet supporting calling to Teams user. 
     /// </summary>
     /// <param name="user"></param>
     public void Create(UserIdentity user)
@@ -395,7 +395,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// set shared camera
+    /// Set shared camera
     /// </summary>
     public void SetShareCamera(bool enable)
     {
@@ -406,7 +406,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// enable camera
+    /// Enable camera
     /// </summary>
     public void ShareCamera()
     {
@@ -415,7 +415,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// disable camera 
+    /// Disable camera 
     /// </summary>
     public void UnshareCamera()
     {
@@ -424,7 +424,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// update camera 
+    /// Update camera 
     /// </summary>
     private void UpdateCamera()
     {
@@ -438,7 +438,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// mute microphone 
+    /// Mute microphone 
     /// </summary>
     public void Mute()
     {
@@ -447,7 +447,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// unmute microphone 
+    /// Unmute microphone 
     /// </summary>
     public void Unmute()
     {
@@ -457,7 +457,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// update microphone 
+    /// Update microphone 
     /// </summary>
     private void UpdateMicrophone()
     {
@@ -471,7 +471,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// mute speaker 
+    /// Mute speaker 
     /// </summary>
     public void MuteSpeaker()
     {
@@ -480,7 +480,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// unmute speaker 
+    /// Unmute speaker 
     /// </summary>
     public void UnmuteSpeaker()
     {
@@ -489,7 +489,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// update speaker 
+    /// Update speaker 
     /// </summary>
     private void UpdateSpeaker()
     {
@@ -504,7 +504,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// leave a current call
+    /// Leave a current call
     /// </summary>
     public async void Leave()
     {
@@ -517,7 +517,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// login/authenticate and join a meeting 
+    /// Login/authenticate and join a meeting 
     /// </summary>
     /// <param name="joinLocator"></param>
     /// <param name="createCallWithUser"></param>
@@ -557,7 +557,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// login worker task 
+    /// Login worker task 
     /// </summary>
     /// <returns></returns>
     private async Task<bool> LoginWorker()
@@ -671,7 +671,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// logout worker 
+    /// Logout worker 
     /// </summary>
     private async void LogoutWorker()
     {
@@ -680,7 +680,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// authenticate 
+    /// Authenticate 
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
@@ -721,7 +721,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// cancel login
+    /// Cancel login
     /// </summary>
     /// <returns></returns>
     private CancellationToken CancelPreviousLoginAndCreateNewCancellationToken()
@@ -738,7 +738,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// apply status 
+    /// Apply status 
     /// </summary>
     /// <param name="status"></param>
     private void ApplyStatus(MeetingStatus status)
@@ -770,7 +770,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// apply mute 
+    /// Apply mute 
     /// </summary>
     /// <param name="isMuted"></param>
     private void ApplyIsMuted(bool isMuted)
@@ -787,7 +787,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// set status text 
+    /// Set status text 
     /// </summary>
     /// <param name="status"></param>
     private void SetStatusText(string status)
@@ -797,7 +797,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// process pending actions 
+    /// Process pending actions 
     /// </summary>
     private void ApplyPendingActions()
     {
@@ -808,7 +808,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// get called when there is an incoming call
+    /// Get called when there is an incoming call
     /// </summary>
     /// <param name="callerName"></param>
     public void OnIncomingCall(string callerName)
@@ -824,7 +824,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// join a coming call with audio only, no video
+    /// Join a coming call with audio only, no video
     /// </summary>
     public void AcceptIncomingCallWithAudio()
     {
@@ -839,7 +839,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// join an incoming call with audio and video
+    /// Join an incoming call with audio and video
     /// </summary>
     public void AcceptIncomingCallWithVideo()
     {
@@ -854,7 +854,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// reject an incoming call
+    /// Reject an incoming call
     /// </summary>
     public void RejectIncomingCall()
     {
@@ -866,7 +866,7 @@ public class MeetingManager : MonoBehaviour
 
 
     /// <summary>
-    /// enable caption
+    /// Enable caption
     /// </summary>
     public void EnableCaption()
     {
@@ -875,7 +875,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// disable caption
+    /// Disable caption
     /// </summary>
     public void DisableCaption()
     {
@@ -884,7 +884,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// set current active call
+    /// Set current active call
     /// </summary>
     /// <param name="activeCall"></param>
     private void SetCurrentActiveCall(CallScenario activeCall)
@@ -896,7 +896,7 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// return true if the current active call is a Teams meeting 
+    /// Return true if the current active call is a Teams meeting 
     /// </summary>
     /// <returns></returns>
     public bool IsCurrentActiveCallTeamsMeeting()

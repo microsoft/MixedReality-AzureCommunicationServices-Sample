@@ -18,16 +18,16 @@ public class BatteryLevelDisplay : MonoBehaviour
     private float updateInterval = 1.0f;
     
     /// <summary>
-    /// keep the init battery icon position to adjust the level correctly
+    /// Keep the init battery icon position to adjust the level correctly
     /// </summary>
     private float initPosX;
     /// <summary>
-    /// keep the init battery icon width  to adjust the level correctly
+    /// Keep the init battery icon width  to adjust the level correctly
     /// </summary>
     private float initWidth;
     
     /// <summary>
-    /// last updated time
+    /// Last updated time
     /// </summary>
     private float lastUpdatedTime = 0;
     

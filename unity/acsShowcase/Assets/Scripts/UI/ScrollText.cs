@@ -23,17 +23,17 @@ public class ScrollText : MonoBehaviour
     private float duration = 1f;
     
     /// <summary>
-    /// elapsed time to lerp between the current and target anchor y position when scrolling  
+    /// Elapsed time to lerp between the current and target anchor y position when scrolling  
     /// </summary>
     private float elapsedTime = 1f;
     
     /// <summary>
-    /// start y anchor position before scrolling starts 
+    /// Start y anchor position before scrolling starts 
     /// </summary>
     private float startYPos = 0f;
     
     /// <summary>
-    /// desired y anchor position when scrolling ends
+    /// Desired y anchor position when scrolling ends
     /// </summary>
     private float targetYPos = 0f;
 

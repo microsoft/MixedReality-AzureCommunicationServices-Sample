@@ -14,7 +14,7 @@ public class RefreshContent : MonoBehaviour
     private ContentSizeFitter contentSizeFitter; 
 
     /// <summary>
-    /// refresh 
+    /// Refresh 
     /// </summary>
     public void Refresh()
     {
@@ -22,7 +22,7 @@ public class RefreshContent : MonoBehaviour
     }
     
     /// <summary>
-    /// refresh coroutine
+    /// Refresh coroutine
     /// </summary>
     /// <returns></returns>
     private IEnumerator RefreshCoroutine()

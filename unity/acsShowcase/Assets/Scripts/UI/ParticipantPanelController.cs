@@ -46,17 +46,17 @@ public class ParticipantPanelController : MonoBehaviour
     private MeetingManager meetingManager;
     
     /// <summary>
-    /// user controler 
+    /// User controler 
     /// </summary>
     private UserController userControler;
 
     /// <summary>
-    /// add participant event
+    /// Add participant event
     /// </summary>
     public static event Action<GraphUser> OnAddParticipant;
     
     /// <summary>
-    /// remove participant event  
+    /// Remove participant event  
     /// </summary>
     public static event Action<RemoteParticipant> OnRemoveParticipant;
 
@@ -93,7 +93,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// update participant list 
+    /// Update participant list 
     /// </summary>
     /// <returns></returns>
     private IEnumerator OnParticipantListUpdateCoroutine()
@@ -227,7 +227,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
     
     /// <summary>
-    /// event occurs when participant selection has changed 
+    /// Event occurs when participant selection has changed 
     /// </summary>
     private void OnSelectedParticipantsChanged()
     {
@@ -238,7 +238,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// remove participant 
+    /// Remove participant 
     /// </summary>
     public void RemoveParticipants()
     {
@@ -287,7 +287,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// convert user object to graph user 
+    /// Convert user object to graph user 
     /// </summary>
     /// <param name="userObject"></param>
     /// <returns></returns>

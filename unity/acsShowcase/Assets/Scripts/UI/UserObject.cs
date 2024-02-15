@@ -35,17 +35,17 @@ public class UserObject : MonoBehaviour
     private float hoverMinDuration = 0.1f;
     
     /// <summary>
-    /// list of background color 
+    /// List of background color 
     /// </summary>
     private List<Color> backgroundColors = new List<Color>() { new Color(170 / 255f, 1, 241 / 255f, 1), new Color(1, 136 / 255f, 145 / 255f, 1), new Color(238 / 255f, 160 / 255f, 1, 1) };
     
     /// <summary>
-    /// list of initial text color 
+    /// List of initial text color 
     /// </summary>
     private List<Color> initialsTextColors = new List<Color>() { new Color(63 / 255f, 118 / 255f, 192 / 255f, 1), new Color(183 / 255f, 32 / 255f, 35 / 255f, 1), new Color(149 / 255f, 32 / 255f, 183 / 255f, 1) };
 
     /// <summary>
-    /// user id 
+    /// User id 
     /// </summary>
     private string id;
     public string Id
@@ -55,7 +55,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// user email
+    /// User email
     /// </summary>
     private string email;
     public string Email
@@ -65,7 +65,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// user display name 
+    /// User display name 
     /// </summary>
     private string displayName;
     public string DisplayName
@@ -75,12 +75,12 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// is selected?
+    /// Is selected?
     /// </summary>
     public bool IsSelected = false;
     
     /// <summary>
-    /// user page type 
+    /// User page type 
     /// </summary>
     private PageType userPageType;
     public PageType UserObjectPageType
@@ -90,18 +90,18 @@ public class UserObject : MonoBehaviour
     }
     
     /// <summary>
-    /// user presence availability 
+    /// User presence availability 
     /// </summary>
     private PresenceAvailability presenceAvail;
     
     
     /// <summary>
-    /// default icon texture 
+    /// Default icon texture 
     /// </summary>
     private Texture defaultIconTexture;
 
     /// <summary>
-    /// user presence 
+    /// User presence 
     /// </summary>
     public PresenceAvailability Presence
     {
@@ -110,31 +110,31 @@ public class UserObject : MonoBehaviour
     }
     
     /// <summary>
-    /// event fired when participant selection has changed 
+    /// Event fired when participant selection has changed 
     /// </summary>
     public static event Action OnSelectedParticipantsChanged;
     
     /// <summary>
-    /// event fired when participant is selected to add  
+    /// Event fired when participant is selected to add  
     /// </summary>
     public static event Action OnSelectedParticipantToAdd;
      
     /// <summary>
-    /// event fired when selecting a particiant for a one to one call
+    /// Event fired when selecting a particiant for a one to one call
     /// </summary>
     public static event Action<UserObject> OnSelectedParticipantCall;
     /// <summary>
-    /// time when hover exit occurs 
+    /// Time when hover exit occurs 
     /// </summary>
     private float exitHoverTime = 0;
     
     /// <summary>
-    /// true when it is user button is entering hover 
+    /// True when it is user button is entering hover 
     /// </summary>
     private bool isEnterHover = false;
     
     /// <summary>
-    /// true when it is user button is exiting hover 
+    /// True when it is user button is exiting hover 
     /// </summary>
     private bool isExitHover = false;
 
@@ -147,7 +147,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// update 
+    /// Update 
     /// </summary>
     private void Update()
     {
@@ -166,7 +166,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// copy user object 
+    /// Copy user object 
     /// </summary>
     /// <param name="userObject"></param>
     public void Copy(UserObject userObject)
@@ -176,7 +176,7 @@ public class UserObject : MonoBehaviour
 
     
     /// <summary>
-    /// select user object 
+    /// Select user object 
     /// </summary>
     public void Select()
     {
@@ -256,7 +256,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// set interactability
+    /// Set interactability
     /// </summary>
     /// <param name="isInteractable"></param>
     public void SetInteractability(bool isInteractable)
@@ -265,7 +265,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// overlay when it is hoverd 
+    /// Overlay when it is hoverd 
     /// </summary>
     /// <param name="isHovering"></param>
     public void OverlayHover(bool isHovering)
@@ -277,7 +277,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// overlay when it is selected 
+    /// Overlay when it is selected 
     /// </summary>
     /// <param name="setActive"></param>
     private void SetSelectedOverlay(bool setActive)
@@ -319,7 +319,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// set info and update UI 
+    /// Set info and update UI 
     /// </summary>
     /// <param name="id"></param>
     /// <param name="email"></param>
@@ -350,7 +350,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// set name 
+    /// Set name 
     /// </summary>
     /// <param name="name"></param>
     public void SetName(string name)
@@ -364,7 +364,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// set profile icon 
+    /// Set profile icon 
     /// </summary>
     /// <param name="texture"></param>
     public void SetProfileIcon(Texture2D texture)
@@ -382,7 +382,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// set icon 
+    /// Set icon 
     /// </summary>
     private void SetForIcon()
     {
@@ -391,7 +391,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// set no icon 
+    /// Set no icon 
     /// </summary>
     private void SetForNoIcon()
     {
@@ -403,7 +403,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// get user initial 
+    /// Get user initial 
     /// </summary>
     /// <returns></returns>
     private string GetInitials()
@@ -416,7 +416,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// set icon and text color 
+    /// Set icon and text color 
     /// </summary>
     private void SetIconAndTextColors()
     {
@@ -426,7 +426,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// set user presence icon
+    /// Set user presence icon
     /// </summary>
     /// <param name="presenceRecieved"></param>
     public void SetPresenceIcon(PresenceAvailability presenceRecieved)
@@ -465,7 +465,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// called when user button is entering hover mode 
+    /// Called when user button is entering hover mode 
     /// </summary>
     public void OnEnterHover()
     {
@@ -479,7 +479,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// called when user button is exiting hover mode 
+    /// Called when user button is exiting hover mode 
     /// </summary>
     public void OnExitHover()
     {

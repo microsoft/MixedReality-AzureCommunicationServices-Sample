@@ -19,17 +19,17 @@ public class EventsView : MonoBehaviour
     private TextMeshProUGUI displayTime = null;
 
     /// <summary>
-    /// data collection
+    /// Data collection
     /// </summary>
     private ObservableCollection<IEvent> data = new ObservableCollection<IEvent>();
     
     /// <summary>
-    /// pending data to be processed 
+    /// Pending data to be processed 
     /// </summary>
     private IReadOnlyCollection<IEvent> pendingData = null;
     
     /// <summary>
-    /// display time value 
+    /// Display time value 
     /// </summary>
     private IDisplayTime displayTimeValue = null;
     

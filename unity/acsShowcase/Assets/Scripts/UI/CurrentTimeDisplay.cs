@@ -12,7 +12,7 @@ public class CurrentTimeDisplay : MonoBehaviour
     private TextMeshProUGUI timeText;
 
     /// <summary>
-    /// keep track of previous refreshed time 
+    /// Keep track of previous refreshed time 
     /// </summary>
     private float prevTime = 0;
     

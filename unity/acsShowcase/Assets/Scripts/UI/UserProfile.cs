@@ -10,41 +10,41 @@ using UnityEngine;
 public class UserProfile
 {
     /// <summary>
-    /// user ID 
+    /// User ID 
     /// </summary>
     private string id;
     public string Id {  get { return id; }  set => value = id; }
     
     /// <summary>
-    /// user name 
+    /// User name 
     /// </summary>
     private string name;
     
     /// <summary>
-    /// user display name 
+    /// User display name 
     /// </summary>
     public string DisplayName { get { return name; } set { name = value; } }
     
     /// <summary>
-    /// user icon 
+    /// User icon 
     /// </summary>
     private Texture2D icon; 
     public Texture2D Icon { get { return icon; } set { icon = value; } }
     
     /// <summary>
-    /// user presence
+    /// User presence
     /// </summary>
     private PresenceAvailability presence;
     public PresenceAvailability Presence { get { return presence; } set { presence = value; } } 
 
     /// <summary>
-    /// user email 
+    /// User email 
     /// </summary>
     private string email;
     public string Email { get { return email; } set { email = value; } }
 
     /// <summary>
-    /// constructor 
+    /// Constructor 
     /// </summary>
     /// <param name="id"></param>
     /// <param name="name"></param>

@@ -23,7 +23,7 @@ public class WiFiSignalDisplay : MonoBehaviour
     private List<GameObject> imageSignalList;
     
     /// <summary>
-    /// last updated time 
+    /// Last updated time 
     /// </summary>
     private float lastUpdatedTime = 0;
     

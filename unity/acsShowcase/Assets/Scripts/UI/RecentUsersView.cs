@@ -28,7 +28,7 @@ public class RecentUsersView : MonoBehaviour
     private RectTransform contentToRefresh;
     
     /// <summary>
-    /// is viewport expanded?
+    /// Is viewport expanded?
     /// </summary>
     private bool isViewportExpanded;
     
@@ -119,7 +119,7 @@ public class RecentUsersView : MonoBehaviour
     }
     
     /// <summary>
-    /// to hide or show users
+    /// To hide or show users
     /// </summary>
     /// <param name="hide"></param>
     private void HideOrShowChildren(bool hide)

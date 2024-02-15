@@ -19,12 +19,12 @@ public class CaptionController : MonoBehaviour
     private TextMeshProUGUI captionText;
 
     /// <summary>
-    /// list of each line of caption 
+    /// List of each line of caption 
     /// </summary>
     private List<string> multiLineText = new List<string>();
     
     /// <summary>
-    /// maximum number of line can be displayed 
+    /// Maximum number of line can be displayed 
     /// </summary>
     private const int maxLine = 5;
     

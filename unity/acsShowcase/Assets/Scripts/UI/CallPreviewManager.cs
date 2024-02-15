@@ -36,27 +36,27 @@ public class CallPreviewManager : MonoBehaviour
     private GameObject callPreviewPanel;
 
     /// <summary>
-    /// current meeting 
+    /// Current meeting 
     /// </summary>
     private EventView curMeeting = null;
 
     /// <summary>
-    /// user controler 
+    /// User controller 
     /// </summary>
     private UserController userControler;
     
     /// <summary>
-    /// people getter, to get user info
+    /// People getter, to get user info
     /// </summary>
     private PeopleGetter peopleGetter;
     
     /// <summary>
-    /// photo getter, to get user icon 
+    /// Photo getter, to get user icon 
     /// </summary>
     private PhotoGetter photoGettter;
     
     /// <summary>
-    /// keep track of all the attendees 
+    /// Keep track of all the attendees 
     /// </summary>
     private List<AttendeeInfo> allAttendeeInfos = new List<AttendeeInfo>();
     public List<AttendeeInfo> AllAttendeeInfos
@@ -64,17 +64,17 @@ public class CallPreviewManager : MonoBehaviour
         get { return allAttendeeInfos;  }
     }
     /// <summary>
-    /// join URL of the meeting 
+    /// Join URL of the meeting 
     /// </summary>
     private string joinURL;
     
     /// <summary>
-    /// authentication token
+    /// Authentication token
     /// </summary>
     private string authentificationToken;
     
     /// <summary>
-    /// meeting ID 
+    /// Meeting ID 
     /// </summary>
     private string meetingID;
 
@@ -112,7 +112,7 @@ public class CallPreviewManager : MonoBehaviour
 
 
     /// <summary>
-    /// set token for REST api call 
+    /// Set token for REST api call 
     /// </summary>
     /// <param name="token"></param>
     private void PeopleGetter_SendToken(string token)
@@ -122,7 +122,7 @@ public class CallPreviewManager : MonoBehaviour
 
 
     /// <summary>
-    /// show the meeting info: meeting title, all attendees with name and respsonse status
+    /// Show the meeting info: meeting title, all attendees with name and respsonse status
     /// this meeting info is coming from MS graph
     /// </summary>
     /// <param name="meeting"></param>
@@ -212,7 +212,7 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// retrieve user profile from email address 
+    /// Retrieve user profile from email address 
     /// </summary>
     /// <param name="userList"></param>
     private void GetPeopleHandler(IUsers userList)
@@ -223,7 +223,7 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// handler when attendees photo are loaded 
+    /// Handler when attendees photo are loaded 
     /// </summary>
     /// <param name="usersProfile"></param>
     public void OnAllPhotosLoaded(List<StaticUserProfile> usersProfile)
@@ -247,7 +247,7 @@ public class CallPreviewManager : MonoBehaviour
         }
     } 
     /// <summary>
-    /// get called when attendee selection changes, if one or more attendees are selected
+    /// Get called when attendee selection changes, if one or more attendees are selected
     /// the remove attendee button will be shown
     /// </summary>
     private void OnSelectedAttendeesChanged()
@@ -263,7 +263,7 @@ public class CallPreviewManager : MonoBehaviour
     }
     
     /// <summary>
-    /// remove selected attendees by updating meeting
+    /// Remove selected attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -315,7 +315,7 @@ public class CallPreviewManager : MonoBehaviour
     }
     
     /// <summary>
-    /// called when clicking on the remove button 
+    /// Called when clicking on the remove button 
     /// </summary>
     public async void OnRemoveButtonClicked()
     {
@@ -324,7 +324,7 @@ public class CallPreviewManager : MonoBehaviour
     } 
     
     /// <summary>
-    /// add new attendees by updating meeting
+    /// Add new attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -380,7 +380,7 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// join this meeting 
+    /// Join this meeting 
     /// </summary>
     public void JoinMeeting()
     {

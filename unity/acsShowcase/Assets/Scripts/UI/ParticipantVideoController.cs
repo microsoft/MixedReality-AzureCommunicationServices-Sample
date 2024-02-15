@@ -37,52 +37,52 @@ public class ParticipantVideoController : MonoBehaviour
     [SerializeField] private GameObject pinControl;
     
     /// <summary>
-    /// all participants 
+    /// All participants 
     /// </summary>
     private ParticipantRepeaterItem[] allParticipants = null;
     
     /// <summary>
-    /// current spekaer 
+    /// Current spekaer 
     /// </summary>
     private ParticipantRepeaterItem currentSpeaker = null;
     
     /// <summary>
-    /// current speaker initial 
+    /// Current speaker initial 
     /// </summary>
     private string currentSpeakerInitials = null;
     
     /// <summary>
-    /// keep track of last not speaker time to determine the current active speaker 
+    /// Keep track of last not speaker time to determine the current active speaker 
     /// </summary>
     private float[] lastNotSpeakTimes = null;
 
     /// <summary>
-    /// last update time
+    /// Last update time
     /// </summary>
     private float lastTimeCheck = 0;
      
     /// <summary>
-    /// current active speaker index 
+    /// Current active speaker index 
     /// </summary>
     private int curActiveSpeakerIndex = 0;
     
     /// <summary>
-    /// active speaker video status 
+    /// Active speaker video status 
     /// </summary>
     private int activeSpeakerVideoEnabledStatus = -1;
     
     /// <summary>
-    /// background color 
+    /// Background color 
     /// </summary>
     private Color backgroundColor = Color.white;
     
     /// <summary>
-    /// background color list 
+    /// Background color list 
     /// </summary>
     private List<Color> backgroundColorsList = new List<Color>() { new Color(170 / 255f, 1, 241 / 255f, 1), new Color(1, 136 / 255f, 145 / 255f, 1), new Color(238 / 255f, 160 / 255f, 1, 1) };
     
     /// <summary>
-    /// initial color list 
+    /// Initial color list 
     /// </summary>
     private List<Color> initialsTextColorsList = new List<Color>() { new Color(63 / 255f, 118 / 255f, 192 / 255f, 1), new Color(183 / 255f, 32 / 255f, 35 / 255f, 1), new Color(149 / 255f, 32 / 255f, 183 / 255f, 1) };
 
@@ -164,7 +164,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
 
     /// <summary>
-    /// set all participants  
+    /// Set all participants  
     /// </summary>
     /// <param name="participants"></param>
     public void SetAllParticipant(ParticipantRepeaterItem[] participants)
@@ -183,7 +183,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
 
     /// <summary>
-    /// switch the display video to the new active speaker's video 
+    /// Switch the display video to the new active speaker's video 
     /// </summary>
     /// <param name="newActiveSpeakerIndex"></param>
     private void SwitchSpeakerVideo(int newActiveSpeakerIndex)
@@ -197,7 +197,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
 
     /// <summary>
-    /// set active speaker index 
+    /// Set active speaker index 
     /// </summary>
     /// <param name="newActiveSpeakerIndex"></param>
     private void SetActiveSpeaker(int newActiveSpeakerIndex)
@@ -215,7 +215,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
 
     /// <summary>
-    /// wait for few frames so the video bounding box is calculated correctly before enable canvas
+    /// Wait for few frames so the video bounding box is calculated correctly before enable canvas
     /// otherwise we cannot adjust video size 
     /// </summary>
     /// <returns></returns>
@@ -230,7 +230,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
     
     /// <summary>
-    /// show/hide icon when video is not available 
+    /// Show/hide icon when video is not available 
     /// </summary>
     /// <param name="visible"></param>
     private void SetIconVisibility(bool visible)
@@ -283,7 +283,7 @@ public class ParticipantVideoController : MonoBehaviour
     }
     
     /// <summary>
-    /// set user icon and initial text colors 
+    /// Set user icon and initial text colors 
     /// </summary>
     private void SetIconAndTextColors()
     {
