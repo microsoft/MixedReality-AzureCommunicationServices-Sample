@@ -33,7 +33,6 @@ public class ScrollViewController : MonoBehaviour
     /// is it scrolling? 
     /// </summary>
     private bool isScrolling = false;
-    private float endScrollTime = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -62,15 +61,9 @@ public class ScrollViewController : MonoBehaviour
         // scrollable still allows to scroll horizontally even in the scroll rect component, the horizontal scrolling is disabled
         // scrollable is still experimental
         if (isScrolling)
-            contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y); // prevent the horizontal scrolling
-        
-        // fix horizontal scrolling after the finger is released 
-        if (endScrollTime > 0 && Time.time - endScrollTime > 0.5f)
         {
-            endScrollTime = -1;
-            contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y); // fix the horizontal scrolling if it happened
+            contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y);
         }
-        
     }
 
     /// <summary>
@@ -138,6 +131,5 @@ public class ScrollViewController : MonoBehaviour
     {
         isScrolling = false;
         contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y);
-        endScrollTime = Time.time;
     }
 }
