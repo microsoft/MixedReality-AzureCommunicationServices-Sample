@@ -248,7 +248,6 @@ public class UserController : MonoBehaviour
             if(userObject != null)
             {
                 userObject.DeSelect();
-                userObject.OverlayHover(false);
             } 
         }
         if(SelectedUserObject != null)
