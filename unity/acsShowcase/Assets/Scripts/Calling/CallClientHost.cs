@@ -13,7 +13,6 @@ public class CallClientHost : Singleton<CallClientHost>
 
     protected override void Created()
     {
-        DontDestroyOnLoad(gameObject);
         CallClient = new CallClient();
     }
 
