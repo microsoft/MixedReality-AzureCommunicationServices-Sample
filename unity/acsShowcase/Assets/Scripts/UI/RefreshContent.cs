@@ -3,6 +3,7 @@
 
 using System.Collections; 
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 /// <summary>
@@ -18,7 +19,10 @@ public class RefreshContent : MonoBehaviour
     /// </summary>
     public void Refresh()
     {
-        StartCoroutine(RefreshCoroutine());
+        if (isActiveAndEnabled)
+        {
+            StartCoroutine(RefreshCoroutine());
+        }
     }
     
     /// <summary>

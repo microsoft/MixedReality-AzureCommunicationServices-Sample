@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq; 
 using Azure.Communication.Calling.UnityClient;
+using MixedReality.Toolkit.SpatialManipulation;
 using TMPro; 
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,22 +16,50 @@ using UnityEngine.UI;
 /// </summary>
 public class ParticipantVideoController : MonoBehaviour
 {
-    [SerializeField] [Tooltip("The active speaker name text display")]
+    private enum SpeakerVideoVisibility
+    {
+        None = 0,
+        HasStream = 1,
+        NoStream = 2
+    }
+
+
+    [SerializeField] 
+    [Tooltip("The active speaker name text display")]
     private TextMeshPro speakerName;
-    [SerializeField] [Tooltip("The maximum idle time to switch active speaker")]
+
+    [SerializeField] 
+    [Tooltip("The maximum idle time to switch active speaker")]
     private float maxIdleTime = 3;
-    [SerializeField] [Tooltip("The user initial text display is shown when speaker has camera turned off")]
+
+    [SerializeField]
+    [Tooltip("The user initial text display is shown when speaker has camera turned off")]
     private TextMeshProUGUI initials;
-    [SerializeField] [Tooltip("The user profile icon is shown when the speaker has camera turned off")]
+
+    [SerializeField] 
+    [Tooltip("The user profile icon is shown when the speaker has camera turned off")]
     private RawImage profileIcon;
-    [SerializeField] [Tooltip("Reference to the parent of the profile icon to hide/show ")]
+
+    [SerializeField] 
+    [Tooltip("Reference to the parent of the profile icon to hide/show ")]
     private GameObject profileIconParent;
-    [SerializeField] [Tooltip("The video canvas ")]
+
+    [SerializeField]
+    [Tooltip("The video canvas ")]
     private GameObject canvasObject;
+
     [SerializeField] [Tooltip("The video panel ")]
     private MeshRenderer videoPanel;
+
     [SerializeField] [Tooltip("initial position offset ")]
     private Vector3 initialPosOffset;
+
+    [SerializeField] [Tooltip("The solver used to position the video.")]
+    private Solver solver;
+
+    [SerializeField] [Tooltip("The layout element that sizes the video.")]
+    private RectTransform videoContainer; 
+
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject caption;
     [SerializeField] private RectTransform speakerNameRect;
@@ -65,12 +94,17 @@ public class ParticipantVideoController : MonoBehaviour
     /// current active speaker index 
     /// </summary>
     private int curActiveSpeakerIndex = 0;
-    
+
+    /// <summary>
+    /// The index of the speaker to restore as "active" when this component is re-enabled.
+    /// </summary>
+    private int restoreActiveSpeakerIndex = 0;
+
     /// <summary>
     /// active speaker video status 
     /// </summary>
-    private int activeSpeakerVideoEnabledStatus = -1;
-    
+    private SpeakerVideoVisibility activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
+
     /// <summary>
     /// background color 
     /// </summary>
@@ -86,11 +120,20 @@ public class ParticipantVideoController : MonoBehaviour
     /// </summary>
     private List<Color> initialsTextColorsList = new List<Color>() { new Color(63 / 255f, 118 / 255f, 192 / 255f, 1), new Color(183 / 255f, 32 / 255f, 35 / 255f, 1), new Color(149 / 255f, 32 / 255f, 183 / 255f, 1) };
 
+    /// <summary>
+    /// Never allow the video to be larger than this size.
+    /// </summary>
+    private Vector3 initialVideoContainerSize;
 
     // Start is called before the first frame update
     void Start()
     {
         SetIconAndTextColors();
+
+        if (videoContainer != null)
+        {
+            initialVideoContainerSize = videoContainer.sizeDelta;
+        }
     }
 
     /// <summary>
@@ -98,22 +141,20 @@ public class ParticipantVideoController : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
-        videoPanel.transform.position = mainPanel.transform.position + initialPosOffset; 
-        videoPanel.transform.rotation = mainPanel.transform.rotation;
-        VideoStreamPlayer.s_VideoSizeChangeEvent += VideoSizeChanged;
         StartCoroutine(EnableCanvas());
-    }
-    
+        SetActiveSpeaker(restoreActiveSpeakerIndex);
+    }    
 
     /// <summary>
     /// OnDisable 
     /// </summary>
     private void OnDisable()
     {
+        restoreActiveSpeakerIndex = curActiveSpeakerIndex;
         speakerName.text = "";
         SetIconVisibility(false);
-        activeSpeakerVideoEnabledStatus = -1;
-        VideoStreamPlayer.s_VideoSizeChangeEvent -= VideoSizeChanged;
+        SetActiveSpeaker(-1);
+        activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
     }
 
     // Update is called once per frame
@@ -137,7 +178,7 @@ public class ParticipantVideoController : MonoBehaviour
                                 allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream.SourceKind != VideoStreamSourceKind.ScreenSharing)
                             {
                                 SwitchSpeakerVideo(i);
-                                activeSpeakerVideoEnabledStatus = -1;
+                                activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
                             }
                         }
                     }
@@ -146,7 +187,8 @@ public class ParticipantVideoController : MonoBehaviour
             else if (allParticipants == null || allParticipants.Length == 0)
             {
                 videoPanel.enabled = false;
-                activeSpeakerVideoEnabledStatus = -1;
+                SetActiveSpeaker(-1);
+                activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
                 profileIconParent.gameObject.SetActive(false);
                 speakerName.text = "";
             }
@@ -154,11 +196,14 @@ public class ParticipantVideoController : MonoBehaviour
         // check current active speaker video on/off 
         if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
         {
-            int isSpeakerVideoOn = allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream != null? 1: 0;
-            if (isSpeakerVideoOn != activeSpeakerVideoEnabledStatus)
+            var isSpeakerVideoOn = allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream != null ?
+                SpeakerVideoVisibility.HasStream :
+                SpeakerVideoVisibility.NoStream;
+
+            if (isSpeakerVideoOn != activeSpeakerVideoStatus)
             {
-                activeSpeakerVideoEnabledStatus = isSpeakerVideoOn;
-                SetIconVisibility(activeSpeakerVideoEnabledStatus != 1);
+                activeSpeakerVideoStatus = isSpeakerVideoOn;
+                SetIconVisibility(activeSpeakerVideoStatus != SpeakerVideoVisibility.HasStream);
             }
         } 
     }
@@ -169,13 +214,29 @@ public class ParticipantVideoController : MonoBehaviour
     /// <param name="participants"></param>
     public void SetAllParticipant(ParticipantRepeaterItem[] participants)
     {
-        allParticipants = participants;
-        lastNotSpeakTimes = new float[allParticipants.Length];
-        for (int i = 0; i < allParticipants.Length; i++)
+        if (allParticipants == participants)
         {
-            lastNotSpeakTimes[i] = Time.time;
-            if (i != 0)
+            return;
+        }
+
+        if (allParticipants != null)
+        {
+            for (int i = 0; i < allParticipants.Length; i++)
+            {
                 allParticipants[i].VideoPlayer.StopStreaming();
+            }
+        }
+
+        allParticipants = participants;
+        lastNotSpeakTimes = null;
+
+        if (allParticipants != null)
+        {
+            lastNotSpeakTimes = new float[allParticipants.Length];
+            for (int i = 0; i < allParticipants.Length; i++)
+            {
+                lastNotSpeakTimes[i] = Time.time;
+            }
         }
 
         // show video of the first participant 
@@ -190,8 +251,6 @@ public class ParticipantVideoController : MonoBehaviour
     {
         if (newActiveSpeakerIndex >= 0 && newActiveSpeakerIndex < allParticipants.Length)
         {
-            allParticipants[curActiveSpeakerIndex].VideoPlayer.StopStreaming();
-            allParticipants[curActiveSpeakerIndex].VideoPlayer.VideoRenderer = null;
             SetActiveSpeaker(newActiveSpeakerIndex);
         }
     }
@@ -202,15 +261,62 @@ public class ParticipantVideoController : MonoBehaviour
     /// <param name="newActiveSpeakerIndex"></param>
     private void SetActiveSpeaker(int newActiveSpeakerIndex)
     {
-        curActiveSpeakerIndex = newActiveSpeakerIndex;
-        if (curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
+        if (curActiveSpeakerIndex == newActiveSpeakerIndex)
         {
-            allParticipants[curActiveSpeakerIndex].VideoPlayer.VideoRenderer = gameObject.GetComponent<Renderer>();
-            allParticipants[curActiveSpeakerIndex].VideoPlayer.StartStreaming();
-            speakerName.text = allParticipants[curActiveSpeakerIndex].DisplayName;
-            currentSpeakerInitials = GetInitials();
-            initials.text = currentSpeakerInitials;
-            Debug.Log("SetActiveSpeaker " + newActiveSpeakerIndex);
+            return;
+        }
+
+        if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
+        {
+            var oldSpeaker = allParticipants[curActiveSpeakerIndex];
+            RemoveVideoSizeChangeHandlers(oldSpeaker);
+            oldSpeaker.VideoPlayer.StopStreaming();
+            oldSpeaker.VideoPlayer.VideoRenderer = null;
+        }
+
+        curActiveSpeakerIndex = newActiveSpeakerIndex;
+        
+        if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
+        {
+            var newSpeaker = allParticipants[curActiveSpeakerIndex];
+            newSpeaker.VideoPlayer.VideoRenderer = videoPanel;
+            newSpeaker.VideoPlayer.StartStreaming();
+            AddVideoSizeChangeHandlers(newSpeaker);
+
+            var displaceName = newSpeaker.DisplayName;
+            speakerName.text = displaceName;
+            initials.text = GetInitials(displaceName);
+        }
+    }
+
+    /// <summary>
+    /// Handle video size changes.
+    /// </summary>
+    /// <param name="participant"></param>
+    private void AddVideoSizeChangeHandlers(ParticipantRepeaterItem participant)
+    {
+        if (participant != null)
+        {
+            participant.VideoPlayer.VideoSizeChanged.AddListener(VideoSizeChanged);
+
+            if (participant.VideoPlayer.VideoFormat != null)
+            {
+                VideoSizeChanged(new Vector2(
+                    participant.VideoPlayer.VideoFormat.Width,
+                    participant.VideoPlayer.VideoFormat.Height));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Stop handling video size changes.
+    /// </summary>
+    /// <param name="participant"></param>
+    private void RemoveVideoSizeChangeHandlers(ParticipantRepeaterItem participant)
+    {
+        if (participant != null)
+        {
+            participant.VideoPlayer.VideoSizeChanged.RemoveListener(VideoSizeChanged);
         }
     }
 
@@ -236,16 +342,19 @@ public class ParticipantVideoController : MonoBehaviour
     private void SetIconVisibility(bool visible)
     {   
         profileIconParent.gameObject.SetActive(visible);
-        //reset aspect ratio
-        if(visible)
+
+        // reset aspect ratio
+        if (visible)
         {
-            VideoSizeChanged(new Vector3(0.5f,0.4f,0.1f));
+            VideoSizeChanged(initialVideoContainerSize);
         }
-        var currentSpeakerID = "";
-        if (allParticipants != null && curActiveSpeakerIndex < allParticipants.Length)
+
+        var currentSpeakerID = string.Empty;
+        if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
         {
             currentSpeakerID = allParticipants[curActiveSpeakerIndex].RemoteParticipant.Identifier.RawId;
         }
+
         bool iconFoundInRecentUsers = false;
         foreach(var recentUser in UserController.UserProfiles)
         {
@@ -274,11 +383,10 @@ public class ParticipantVideoController : MonoBehaviour
     /// Get user initial 
     /// </summary>
     /// <returns></returns>
-    private string GetInitials()
+    private static string GetInitials(string displaceName)
     {
-        var name = allParticipants[curActiveSpeakerIndex].RemoteParticipant.DisplayName;
-        var firstChars = name.Where((ch, index) => ch != ' '
-                                                   && (index == 0 || name[index - 1] == ' '));
+        var firstChars = displaceName.Where((ch, index) => ch != ' '
+            && (index == 0 || displaceName[index - 1] == ' '));
         return new String(firstChars.ToArray());
     }
     
@@ -295,25 +403,26 @@ public class ParticipantVideoController : MonoBehaviour
     /// Called when when video size changed
     /// </summary>
     /// <param name="newScale"></param>
-    private void VideoSizeChanged(Vector3 newScale)
+    private void VideoSizeChanged(Vector2 newSize)
     {
-        float xRatio = newScale.x/this.transform.localScale.x;
-        float yRatio = newScale.y/this.transform.localScale.y;
-        float zRatio = newScale.z/this.transform.localScale.z;
+        if (videoContainer == null)
+        {
+            return;
+        }
 
-        this.transform.localScale = newScale;
-        //adjust the caption and speaker name, and the pin control size so that look good
-        // (not squeeze, not stretched) with the video size
-        caption.transform.localScale = new Vector3(caption.transform.localScale.x / xRatio,
-            caption.transform.localScale.y / yRatio,
-            caption.transform.localScale.z / zRatio);
-        
-        speakerNameRect.localScale = new Vector3(speakerNameRect.localScale.x / xRatio,
-            speakerNameRect.localScale.y / yRatio,
-            speakerNameRect.localScale.z / zRatio);
-        
-        pinControl.transform.localScale = new Vector3(pinControl.transform.localScale.x / xRatio,
-            pinControl.transform.localScale.y / yRatio,
-            pinControl.transform.localScale.z / zRatio);
+        var scaleSize = newSize;
+
+        if (newSize.x > newSize.y)
+        {
+            scaleSize.y = newSize.y * initialVideoContainerSize.x / newSize.x;
+            scaleSize.x = initialVideoContainerSize.x;
+        }
+        else
+        {
+            scaleSize.x = newSize.x * initialVideoContainerSize.y / newSize.y;
+            scaleSize.y = initialVideoContainerSize.y;
+        }
+
+        videoContainer.sizeDelta = scaleSize;
     }
 }

@@ -309,6 +309,8 @@ GameObject:
   - component: {fileID: 9036251659391565325}
   - component: {fileID: 3555643967345683451}
   - component: {fileID: 4755101308724472918}
+  - component: {fileID: 6619563834418820648}
+  - component: {fileID: 8852965974333963957}
   m_Layer: 0
   m_Name: Backplate (For zwrite!)
   m_TagString: Untagged
@@ -367,6 +369,43 @@ MonoBehaviour:
   thickness: 2
   wedges: 8
   calculateSmoothEdges: 1
+--- !u!65 &6619563834418820648
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6678777286009606353}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8852965974333963957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6678777286009606353}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e13188787cfbdc945b510e90e9251420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisCollider: {fileID: 6619563834418820648}
+  attachedRectTransform: {fileID: 0}
+  padding: {x: 0, y: 0}
+  forceUpdateEveryFrame: 0
 --- !u!1001 &4316918484980595089
 PrefabInstance:
   m_ObjectHideFlags: 0

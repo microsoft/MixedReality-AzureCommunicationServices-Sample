@@ -5,6 +5,10 @@ using Azure.Communication.Calling.UnityClient;
 using System;
 using System.Collections.Concurrent;
 using UnityEngine;
+using UnityEngine.Events;
+
+[Serializable]
+public class VideoStreamPlayerVideoSizeChangedEvent : UnityEvent<Vector2> { }
 
 /// <summary>
 /// This class draws frame softwareFrames to a Unity textures
@@ -17,32 +21,56 @@ public class VideoStreamPlayer : MonoBehaviour
         public RawVideoFrameKind kind;
     }
 
-    CallVideoStream stream = null;
-    RawIncomingVideoStream rawIncomingStream = null;
-    ConcurrentQueue<PendingFrame> pendingFrames = new ConcurrentQueue<PendingFrame>();
-    VideoStreamPlayerTextures textures;
-    MaterialPropertyBlock materialProperty = null;
-    bool clearTextures = false;
-    Vector2 maxTransformSize = Vector2.zero;
-    Material activeMaterial = null;
+    private CallVideoStream stream = null;
+    private RawIncomingVideoStream rawIncomingStream = null;
+    private ConcurrentQueue<PendingFrame> pendingFrames = new ConcurrentQueue<PendingFrame>();
+    private VideoStreamPlayerTextures textures;
+    private MaterialPropertyBlock materialProperty = null;
+    private bool clearTextures = false;
+    private Material activeMaterial = null;
     private bool isActive = true;
 
-    [SerializeField] [Tooltip("The maximum number of frames to save in buffer")]
+    [SerializeField] 
+    [Tooltip("The maximum number of frames to save in buffer")]
     private int maxFrameBuffer = 5;
 
-    [SerializeField] [Tooltip("The videoRenderer that will draw the video textures to screen.")]
+    [SerializeField]
+    [Tooltip("The videoRenderer that will draw the video textures to screen.")]
     private Renderer videoRenderer = null;
 
-    [SerializeField] [Tooltip("The material to use for RBGA video streams.")]
+    [SerializeField]
+    [Tooltip("The material to use for RBGA video streams.")]
     private Material rgbaMaterial = null;
 
-    [SerializeField] [Tooltip("The material to use for i420 (YUV) video streams.")]
+    [SerializeField]
+    [Tooltip("The material to use for i420 (YUV) video streams.")]
     private Material i420Material = null;
 
-    [SerializeField] [Tooltip("Video size scale. The video object scale will be set to video width/sizeScale video height/sizeScale")]
+    [SerializeField]
+    [Tooltip("Video size scale. The video object scale will be set to video width/sizeScale video height/sizeScale")]
     private float sizeScale = 1f;
-    public delegate void VideoSizeChangeEventDelegate(Vector3 newScale);
-    public static VideoSizeChangeEventDelegate s_VideoSizeChangeEvent;
+
+    [SerializeField]
+    [Tooltip("The video stream be auto start when video is attached.")]
+    private bool autoStart = false;
+
+    [SerializeField]
+    [Tooltip("Event raised when the video size changes.")]
+    private VideoStreamPlayerVideoSizeChangedEvent videoSizeChanged = new VideoStreamPlayerVideoSizeChangedEvent();
+    
+    /// <summary>
+    /// Event raised when the video size changes.
+    /// </summary>
+    public VideoStreamPlayerVideoSizeChangedEvent VideoSizeChanged
+    {
+        get => videoSizeChanged;
+    }
+
+    /// <summary>
+    /// Get the current video format.
+    /// </summary>
+    public VideoStreamFormat VideoFormat { get; private set; } = null;
+   
     
     public CallVideoStream Stream
     {
@@ -102,11 +130,6 @@ public class VideoStreamPlayer : MonoBehaviour
     {
         materialProperty = new MaterialPropertyBlock();
         materialProperty.Clear();
-
-        if (videoRenderer != null)
-        {
-            maxTransformSize = new Vector2(videoRenderer.transform.localScale.x, videoRenderer.transform.localScale.y);
-        }
     }
 
 
@@ -163,7 +186,11 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         rawIncomingStream.RawVideoFrameReceived += OnRawVideoFrameAvailable;
-        rawIncomingStream.Start();
+
+        if (autoStart)
+        {
+            StartStreaming();
+        }
     }
 
     private void ReleaseStream()
@@ -211,9 +238,8 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         VideoStreamFormat videoFormat = videoFrameBuffer.StreamFormat;
-        EnsureTextures(videoFormat);
-        AdjustTransformSize(videoFormat);
-        AdjustMaterial(videoFormat.PixelFormat);
+
+        SetVideoFormat(videoFormat);
 
         if (videoFormat.PixelFormat == VideoStreamPixelFormat.I420)
         {
@@ -265,7 +291,7 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         UpdateRGBATexture(texture);
-        AdjustTransformSize(videoFormat);
+        RaiseSizeChangedEvent(videoFormat);
         AdjustMaterial(videoFormat.PixelFormat);
 
         return true;
@@ -285,43 +311,25 @@ public class VideoStreamPlayer : MonoBehaviour
             return false;
         }
 
-        EnsureTextures(videoFormat);
-        AdjustTransformSize(videoFormat);
-        AdjustMaterial(videoFormat.PixelFormat);
+        SetVideoFormat(videoFormat);
         RenderSoftwareRGBAFrame(frameBuffer);
 
         return true;
     }
 
-
-    private void AdjustTransformSize(VideoStreamFormat videoFormat)
+    private void SetVideoFormat(VideoStreamFormat videoFormat)
     {
-        if (videoRenderer == null)
-        {
-            return;
-        }
+        VideoFormat = videoFormat;
+        EnsureTextures(videoFormat);
+        RaiseSizeChangedEvent(videoFormat);
+        AdjustMaterial(videoFormat.PixelFormat);
+    }
 
-        Transform rendererTransform = videoRenderer.transform;
+    private void RaiseSizeChangedEvent(VideoStreamFormat videoFormat)
+    {
         float videoWidth = videoFormat.Width;
         float videoHeight = videoFormat.Height;
-
-        float transformWidth = maxTransformSize.x;
-        float transformHeight = (transformWidth * videoHeight) / videoWidth;
-
-        if (transformHeight > maxTransformSize.y)
-        {
-            transformHeight = maxTransformSize.y;
-            transformWidth = (transformHeight * videoWidth) / videoHeight;
-        }
-
-        float scaleRatio = rendererTransform.localScale.x / rendererTransform.localScale.y;
-        float videoRatio = transformWidth / transformHeight;
-        // adjust only ratio has changed, allow it to be resizable 
-        if (Mathf.Abs(scaleRatio - videoRatio) > 0.001f)
-        {
-            Vector3 wNewScale = new Vector3(transformWidth / sizeScale, transformHeight / sizeScale, rendererTransform.localScale.z);
-            s_VideoSizeChangeEvent?.Invoke(wNewScale);
-        }
+        VideoSizeChanged?.Invoke(new Vector2(videoWidth, videoHeight));
     }
 
     private void AdjustMaterial(VideoStreamPixelFormat pixelFormat)

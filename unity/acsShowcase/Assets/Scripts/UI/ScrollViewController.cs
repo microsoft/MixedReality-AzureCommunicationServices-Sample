@@ -38,23 +38,26 @@ public class ScrollViewController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateButtonUpDownVisibility();
-        scrollRect.onValueChanged.AddListener(ScrollRectValueChanged);
     }
 
     /// <summary>
-    /// OnEnable
+    /// Handle component enable event.
     /// </summary>
     private void OnEnable()
     {
+        scrollRect.onValueChanged.AddListener(ScrollRectValueChanged);
         contentInitPosition = contentRect.anchoredPosition;
+        UpdateButtonUpDownVisibility();
+        UpdateButtonUpDownEnablement();
+    }
 
-        // check if we need to show up/down button for scrolling
-        bool needVerticalScrollbar = scrollRect.content.rect.height > scrollRect.viewport.rect.height;
-        if (buttonUp != null)
-            buttonUp.gameObject.SetActive(needVerticalScrollbar);
-        if (buttonDown != null)
-            buttonDown.gameObject.SetActive(needVerticalScrollbar);
+
+    /// <summary>
+    /// Handle component disable event.
+    /// </summary>
+    private void OnDisable()
+    {
+        scrollRect.onValueChanged.RemoveListener(ScrollRectValueChanged);
     }
 
     private void Update()
@@ -62,15 +65,16 @@ public class ScrollViewController : MonoBehaviour
         // scrollable still allows to scroll horizontally even in the scroll rect component, the horizontal scrolling is disabled
         // scrollable is still experimental
         if (isScrolling)
+        {
             contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y); // prevent the horizontal scrolling
-        
+        }
+
         // fix horizontal scrolling after the finger is released 
         if (endScrollTime > 0 && Time.time - endScrollTime > 0.5f)
         {
             endScrollTime = -1;
             contentRect.anchoredPosition = new Vector2(contentInitPosition.x, contentRect.anchoredPosition.y); // fix the horizontal scrolling if it happened
-        }
-        
+        }        
     }
 
     /// <summary>
@@ -79,6 +83,7 @@ public class ScrollViewController : MonoBehaviour
     /// <param name="arg0"></param>
     private void ScrollRectValueChanged(Vector2 arg0)
     {
+        UpdateButtonUpDownEnablement();
         UpdateButtonUpDownVisibility();
     }
 
@@ -100,9 +105,28 @@ public class ScrollViewController : MonoBehaviour
     }
 
     /// <summary>
-    ///  show/hide the up down buttons
+    /// Update the up and down buttons' visibility
     /// </summary>
     private void UpdateButtonUpDownVisibility()
+    {
+        // check if we need to show up/down button for scrolling
+        bool needVerticalScrollbar = scrollRect.content.rect.height > scrollRect.viewport.rect.height;
+        if (buttonUp != null)
+        {
+            buttonUp.gameObject.SetActive(needVerticalScrollbar);
+        }
+
+        if (buttonDown != null)
+        {
+            buttonDown.gameObject.SetActive(needVerticalScrollbar);
+        }
+
+    }
+
+    /// <summary>
+    /// Enable or disable the up down buttons
+    /// </summary>
+    private void UpdateButtonUpDownEnablement()
     {
         if (buttonUp == null || buttonDown == null) return;
         if (scrollRect.verticalNormalizedPosition > 0.95)

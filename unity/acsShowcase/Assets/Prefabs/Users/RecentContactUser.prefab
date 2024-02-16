@@ -69,11 +69,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 1e17926a013590e42ab527610d49a55e, type: 3}
   - {fileID: 2800000, guid: 31c743e644772c44492a5100b330ae6d, type: 3}
   - {fileID: 2800000, guid: d2086432f49773e4abf53fc65626554c, type: 3}
-  selectedOverlay: {fileID: 0}
-  hoverOverlay: {fileID: 0}
   pressableButton: {fileID: 4819456912634123536}
-  hoverMinDuration: 0.1
-  IsSelected: 0
 --- !u!1 &5184956264256199011
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +87,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &536231760530836856
 RectTransform:
   m_ObjectHideFlags: 0
@@ -139,10 +135,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: KK
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 533bdd8d5c92b52448ee2ecf7bd828a4, type: 2}
+  m_sharedMaterial: {fileID: -1005824763306460071, guid: 533bdd8d5c92b52448ee2ecf7bd828a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -166,8 +162,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -516,7 +512,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -10.7, y: 16}
+  m_AnchoredPosition: {x: -10, y: 16.1}
   m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4620425448537533589
