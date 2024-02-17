@@ -702,7 +702,9 @@ PlayerSettings:
   platformCapabilities:
     WindowsStoreApps:
       EnterpriseAuthentication: True
+      GazeInput: True
       InternetClientServer: True
+      SpatialPerception: True
       InternetClient: True
       WebCam: True
       Microphone: True
