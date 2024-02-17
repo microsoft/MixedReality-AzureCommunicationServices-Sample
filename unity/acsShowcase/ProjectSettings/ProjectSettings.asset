@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: ACSShowcase
+  companyName: Microsoft
+  productName: ACS Showcase
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -40,7 +40,7 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos: []
-  m_VirtualRealitySplashScreen: {fileID: 0}
+  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: a3048bacd74ccac4f82bb774a5b2c605, type: 3}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1920
   defaultScreenHeight: 1080
@@ -644,9 +644,9 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: USE_INPUT_SYSTEM_POSE_CONTROL;USE_INPUT_SYSTEM_POSE_CONTROL
-    Standalone: USE_INPUT_SYSTEM_POSE_CONTROL;USE_INPUT_SYSTEM_POSE_CONTROL
-    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL;USE_INPUT_SYSTEM_POSE_CONTROL
+    Android: USE_INPUT_SYSTEM_POSE_CONTROL
+    Standalone: USE_INPUT_SYSTEM_POSE_CONTROL
+    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -686,8 +686,48 @@ PlayerSettings:
   metroCertificateIssuer: DefaultCompany
   metroCertificateNotAfter: 00f4dd71ef03db01
   metroApplicationDescription: ACSShowcase
-  wsaImages: {}
-  metroTileShortName: ACSShowcase
+  wsaImages:
+    65636: Assets/TileIcons/StoreLogo.scale-100.png
+    65661: Assets/TileIcons/StoreLogo.scale-125.png
+    65686: Assets/TileIcons/StoreLogo.scale-150.png
+    65736: Assets/TileIcons/StoreLogo.scale-200.png
+    65936: Assets/TileIcons/StoreLogo.scale-400.png
+    131172: Assets/TileIcons/SplashScreen.scale-100.png
+    131197: Assets/TileIcons/SplashScreen.scale-125.png
+    131222: Assets/TileIcons/SplashScreen.scale-150.png
+    131272: Assets/TileIcons/SplashScreen.scale-200.png
+    131472: Assets/TileIcons/SplashScreen.scale-400.png
+    2031632: Assets/TileIcons/Square44x44Logo.targetsize-16.png
+    2031640: Assets/TileIcons/Square44x44Logo.targetsize-24.png
+    2031648: Assets/TileIcons/Square44x44Logo.targetsize-32.png
+    2031664: Assets/TileIcons/Square44x44Logo.targetsize-48.png
+    2031716: Assets/TileIcons/Square44x44Logo.scale-100.png
+    2031741: Assets/TileIcons/Square44x44Logo.scale-125.png
+    2031766: Assets/TileIcons/Square44x44Logo.scale-150.png
+    2031816: Assets/TileIcons/Square44x44Logo.scale-200.png
+    2031872: Assets/TileIcons/Square44x44Logo.targetsize-256.png
+    2032016: Assets/TileIcons/Square44x44Logo.scale-400.png
+    2097252: Assets/TileIcons/SmallTile.scale-100.png
+    2097277: Assets/TileIcons/SmallTile.scale-125.png
+    2097302: Assets/TileIcons/SmallTile.scale-150.png
+    2097352: Assets/TileIcons/SmallTile.scale-200.png
+    2097552: Assets/TileIcons/SmallTile.scale-400.png
+    2162788: Assets/TileIcons/Square150x150Logo.scale-100.png
+    2162813: Assets/TileIcons/Square150x150Logo.scale-125.png
+    2162838: Assets/TileIcons/Square150x150Logo.scale-150.png
+    2162888: Assets/TileIcons/Square150x150Logo.scale-200.png
+    2163088: Assets/TileIcons/Square150x150Logo.scale-400.png
+    2228324: Assets/TileIcons/LargeTile.scale-100.png
+    2228349: Assets/TileIcons/LargeTile.scale-125.png
+    2228374: Assets/TileIcons/LargeTile.scale-150.png
+    2228424: Assets/TileIcons/LargeTile.scale-200.png
+    2228624: Assets/TileIcons/LargeTile.scale-400.png
+    2293860: Assets/TileIcons/Wide310x150Logo.scale-100.png
+    2293885: Assets/TileIcons/Wide310x150Logo.scale-125.png
+    2293910: Assets/TileIcons/Wide310x150Logo.scale-150.png
+    2293960: Assets/TileIcons/Wide310x150Logo.scale-200.png
+    2294160: Assets/TileIcons/Wide310x150Logo.scale-400.png
+  metroTileShortName: ACS Showcase
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
