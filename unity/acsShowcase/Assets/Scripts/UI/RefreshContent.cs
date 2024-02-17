@@ -15,11 +15,24 @@ public class RefreshContent : MonoBehaviour
     private ContentSizeFitter contentSizeFitter; 
 
     /// <summary>
+    /// Avoid multiple refresh requests.
+    /// </summary>
+    private bool refreshPending = false;
+
+    /// <summary>
+    /// When enabled, refresh layout.
+    /// </summary>
+    public void OnEnable()
+    {
+        Refresh();
+    }
+
+    /// <summary>
     /// refresh 
     /// </summary>
     public void Refresh()
     {
-        if (isActiveAndEnabled)
+        if (isActiveAndEnabled && !refreshPending)
         {
             StartCoroutine(RefreshCoroutine());
         }
@@ -31,12 +44,13 @@ public class RefreshContent : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RefreshCoroutine()
     {
+        refreshPending = true;
         yield return null;
+        refreshPending = false;
 
         if (contentSizeFitter != null)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentSizeFitter.gameObject.GetComponent<RectTransform>());
         }
-
     }
 }

@@ -29,6 +29,7 @@ public class VideoStreamPlayer : MonoBehaviour
     private bool clearTextures = false;
     private Material activeMaterial = null;
     private bool isActive = true;
+    private bool isPendingAutoStart = false;
 
     [SerializeField] 
     [Tooltip("The maximum number of frames to save in buffer")]
@@ -80,12 +81,25 @@ public class VideoStreamPlayer : MonoBehaviour
         {
             if (stream != value)
             {
-                // if the current stream is screen sharing, ignore other kind 
-                if (stream != null && value != null && stream.SourceKind == VideoStreamSourceKind.ScreenSharing) 
-                    return;
                 ReleaseStream();
                 stream = value;
                 AttachStream();
+            }
+        }
+    }
+
+    /// <summary>
+    /// The video stream be auto start when video is attached.
+    /// </summary>
+    public bool AutoStart
+    {
+        get => autoStart;
+        set
+        {
+            if (autoStart != value)
+            {
+                autoStart = value;
+                isPendingAutoStart = autoStart;
             }
         }
     }
@@ -101,8 +115,12 @@ public class VideoStreamPlayer : MonoBehaviour
         if (rawIncomingStream is not null)
         {
             ClearTextures();
-            rawIncomingStream.Start();
-            isActive = true;
+
+            if (rawIncomingStream.State != VideoStreamState.Started)
+            {
+                rawIncomingStream.Start();
+                isActive = true;
+            }
         }
     }
 
@@ -110,19 +128,23 @@ public class VideoStreamPlayer : MonoBehaviour
     {
         if (rawIncomingStream is not null)
         {
-            ClearTextures();
             if (rawIncomingStream.State == VideoStreamState.Started)
             {
                 rawIncomingStream.Stop();
             }
-            isActive = false;
         }
+
+        clearTextures = true;
+        isActive = false;
+        pendingFrames.Clear();
     }
 
     private void OnDestroy()
     {
         if (isActive)
+        {
             ClearTextures();
+        }
     }
 
 
@@ -139,6 +161,12 @@ public class VideoStreamPlayer : MonoBehaviour
         {
             clearTextures = false;
             ClearTextures();
+        }
+
+        if (isPendingAutoStart)
+        {
+            isPendingAutoStart = false;
+            StartStreaming();            
         }
 
         while (pendingFrames.Count > maxFrameBuffer)
@@ -176,6 +204,11 @@ public class VideoStreamPlayer : MonoBehaviour
             rawIncomingStream = (RawIncomingVideoStream)stream;
             AttachRawIncomingStream();
         }
+
+        if (autoStart)
+        {
+            isPendingAutoStart = true;
+        }
     }
 
     private void AttachRawIncomingStream()
@@ -186,11 +219,6 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         rawIncomingStream.RawVideoFrameReceived += OnRawVideoFrameAvailable;
-
-        if (autoStart)
-        {
-            StartStreaming();
-        }
     }
 
     private void ReleaseStream()
@@ -214,10 +242,7 @@ public class VideoStreamPlayer : MonoBehaviour
         }
 
         rawIncomingStream.RawVideoFrameReceived -= OnRawVideoFrameAvailable;
-        if (rawIncomingStream.State == VideoStreamState.Started)
-        {
-            rawIncomingStream.Stop();
-        }
+        StopStreaming();
     }
 
     private void OnRawVideoFrameAvailable(object sender, RawVideoFrameReceivedEventArgs args)

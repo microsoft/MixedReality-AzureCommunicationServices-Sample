@@ -26,7 +26,7 @@ public class ParticipantVideoController : MonoBehaviour
 
     [SerializeField] 
     [Tooltip("The active speaker name text display")]
-    private TextMeshPro speakerName;
+    private TextMeshProUGUI speakerName;
 
     [SerializeField] 
     [Tooltip("The maximum idle time to switch active speaker")]
@@ -48,22 +48,25 @@ public class ParticipantVideoController : MonoBehaviour
     [Tooltip("The video canvas ")]
     private GameObject canvasObject;
 
-    [SerializeField] [Tooltip("The video panel ")]
+    [SerializeField]
+    [Tooltip("The video panel ")]
     private MeshRenderer videoPanel;
 
-    [SerializeField] [Tooltip("initial position offset ")]
+    [SerializeField]
+    [Tooltip("initial position offset ")]
     private Vector3 initialPosOffset;
 
-    [SerializeField] [Tooltip("The solver used to position the video.")]
+    [SerializeField]
+    [Tooltip("The solver used to position the video.")]
     private Solver solver;
 
-    [SerializeField] [Tooltip("The layout element that sizes the video.")]
+    [SerializeField]
+    [Tooltip("The layout element that sizes the video.")]
     private RectTransform videoContainer; 
 
-    [SerializeField] private GameObject mainPanel;
-    [SerializeField] private GameObject caption;
-    [SerializeField] private RectTransform speakerNameRect;
-    [SerializeField] private GameObject pinControl;
+    [SerializeField]
+    [Tooltip("The main panel to position the video during enablement.")]
+    private GameObject mainPanel;
     
     /// <summary>
     /// all participants 
@@ -98,7 +101,7 @@ public class ParticipantVideoController : MonoBehaviour
     /// <summary>
     /// The index of the speaker to restore as "active" when this component is re-enabled.
     /// </summary>
-    private int restoreActiveSpeakerIndex = 0;
+    private int restoreActiveSpeakerIndex = -1;
 
     /// <summary>
     /// active speaker video status 
@@ -141,6 +144,12 @@ public class ParticipantVideoController : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
+        if (mainPanel != null)
+        {
+            transform.position = mainPanel.transform.position + mainPanel.transform.TransformVector(initialPosOffset);
+            transform.transform.rotation = mainPanel.transform.rotation;
+        }
+
         StartCoroutine(EnableCanvas());
         SetActiveSpeaker(restoreActiveSpeakerIndex);
     }    
@@ -165,32 +174,53 @@ public class ParticipantVideoController : MonoBehaviour
             lastTimeCheck = Time.time;
             if (allParticipants != null && allParticipants.Length > 0)
             {
-                videoPanel.enabled = true;
+                float currentSpeakersIdleTime = float.MaxValue;
+                if (curActiveSpeakerIndex > 0 && curActiveSpeakerIndex < lastNotSpeakTimes.Length)
+                {
+                    currentSpeakersIdleTime = Time.time - lastNotSpeakTimes[curActiveSpeakerIndex];
+                }
+
+                CallVideoStream currentSpeakerStream = null;
+                if (curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
+                {
+                    currentSpeakerStream = allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream;
+                }
+
+                bool currentSpeakerIsScreenSharing = false;
+                if (currentSpeakerStream != null && currentSpeakerStream.SourceKind != VideoStreamSourceKind.ScreenSharing)
+                {
+                    currentSpeakerIsScreenSharing = true;
+                }
+
+                int newSpeakerIndex = -1;
                 for (int i = 0; i < allParticipants.Length; i++)
                 {
                     if (allParticipants[i].RemoteParticipant.IsSpeaking)
                     {
                         lastNotSpeakTimes[i] = Time.time;
-                        if (i != curActiveSpeakerIndex && (Time.time - lastNotSpeakTimes[curActiveSpeakerIndex]) > maxIdleTime)
+
+                        // Perfer to keep the last active speaker, otherwise perfer the participant with lowest index.
+                        if (newSpeakerIndex < 0 || i == curActiveSpeakerIndex)
                         {
-                            // if the active speaker is sharing screen, do not switch 
-                            if (allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream == null || 
-                                allParticipants[curActiveSpeakerIndex].VideoPlayer.Stream.SourceKind != VideoStreamSourceKind.ScreenSharing)
-                            {
-                                SwitchSpeakerVideo(i);
-                                activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
-                            }
+                            newSpeakerIndex = i;
                         }
                     }
+                }
+
+                // if the active speaker is sharing screen, do not switch 
+                if (newSpeakerIndex >= 0 &&
+                    newSpeakerIndex != curActiveSpeakerIndex && 
+                    currentSpeakersIdleTime > maxIdleTime && 
+                    !currentSpeakerIsScreenSharing)
+                {
+                    SetActiveSpeaker(newSpeakerIndex);
+                    activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
                 }
             }
             else if (allParticipants == null || allParticipants.Length == 0)
             {
-                videoPanel.enabled = false;
                 SetActiveSpeaker(-1);
                 activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
-                profileIconParent.gameObject.SetActive(false);
-                speakerName.text = "";
             }
         }
         // check current active speaker video on/off 
@@ -244,18 +274,6 @@ public class ParticipantVideoController : MonoBehaviour
     }
 
     /// <summary>
-    /// switch the display video to the new active speaker's video 
-    /// </summary>
-    /// <param name="newActiveSpeakerIndex"></param>
-    private void SwitchSpeakerVideo(int newActiveSpeakerIndex)
-    {
-        if (newActiveSpeakerIndex >= 0 && newActiveSpeakerIndex < allParticipants.Length)
-        {
-            SetActiveSpeaker(newActiveSpeakerIndex);
-        }
-    }
-
-    /// <summary>
     /// set active speaker index 
     /// </summary>
     /// <param name="newActiveSpeakerIndex"></param>
@@ -271,6 +289,7 @@ public class ParticipantVideoController : MonoBehaviour
             var oldSpeaker = allParticipants[curActiveSpeakerIndex];
             RemoveVideoSizeChangeHandlers(oldSpeaker);
             oldSpeaker.VideoPlayer.StopStreaming();
+            oldSpeaker.VideoPlayer.AutoStart = false;
             oldSpeaker.VideoPlayer.VideoRenderer = null;
         }
 
@@ -279,13 +298,22 @@ public class ParticipantVideoController : MonoBehaviour
         if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
         {
             var newSpeaker = allParticipants[curActiveSpeakerIndex];
-            newSpeaker.VideoPlayer.VideoRenderer = videoPanel;
-            newSpeaker.VideoPlayer.StartStreaming();
-            AddVideoSizeChangeHandlers(newSpeaker);
 
-            var displaceName = newSpeaker.DisplayName;
-            speakerName.text = displaceName;
-            initials.text = GetInitials(displaceName);
+            videoPanel.enabled = true;
+            profileIconParent.gameObject.SetActive(true);
+            speakerName.text = newSpeaker.DisplayName;
+            initials.text = GetInitials(speakerName.text);
+
+            newSpeaker.VideoPlayer.VideoRenderer = videoPanel;
+            newSpeaker.VideoPlayer.AutoStart = true;
+            AddVideoSizeChangeHandlers(newSpeaker);;
+        }
+        else
+        {
+            videoPanel.enabled = false;
+            profileIconParent.gameObject.SetActive(false);
+            speakerName.text = string.Empty;
+            initials.text = string.Empty;
         }
     }
 

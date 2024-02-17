@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6887159175224082104}
   - component: {fileID: 7848108804052909661}
-  - component: {fileID: 3390388904865453977}
   - component: {fileID: 7566793971102207632}
+  - component: {fileID: 4178166466053950316}
   m_Layer: 0
   m_Name: Viewport
   m_TagString: Untagged
@@ -47,20 +47,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2359684173790674976}
   m_CullTransparentMesh: 1
---- !u!114 &3390388904865453977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2359684173790674976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a55c55bcb6842b94db6488b68732ce01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 0}
 --- !u!114 &7566793971102207632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,6 +67,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
+--- !u!114 &4178166466053950316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359684173790674976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa891da5b881eaf438fcf2d8e2958a38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
+  independentRadii: 1
+  radii: {x: 0, y: 0, z: 10, w: 10}
 --- !u!1 &2797922552628862168
 GameObject:
   m_ObjectHideFlags: 0

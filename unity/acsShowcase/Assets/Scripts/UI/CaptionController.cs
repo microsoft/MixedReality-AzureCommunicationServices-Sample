@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-
 /// <summary>
 /// This class manages caption display 
 /// </summary>
@@ -27,8 +26,15 @@ public class CaptionController : MonoBehaviour
     /// maximum number of line can be displayed 
     /// </summary>
     private const int maxLine = 5;
-    
-  
+
+    /// <summary>
+    /// Force captions to be hidden when the object is disabled
+    /// </summary>
+    private void OnDisable()
+    {
+        Disable();
+    }
+
     /// <summary>
     /// Enable caption 
     /// </summary>
@@ -53,8 +59,10 @@ public class CaptionController : MonoBehaviour
     /// <param name="lineText"></param>
     public void AddCaptionText(string lineText)
     {
-        if (string.IsNullOrEmpty(lineText)) return;
-        if (!gameObject.activeSelf) return;
+        if (string.IsNullOrEmpty(lineText))
+        {
+            return;
+        }
         
         if (multiLineText.Count > maxLine)
         {
@@ -79,7 +87,7 @@ public class CaptionController : MonoBehaviour
         {
             displayText += oneLine + "\n";
         }
+
         captionText.text = displayText;
-    }
-    
+    }    
 }

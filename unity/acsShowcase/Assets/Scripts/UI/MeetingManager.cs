@@ -80,6 +80,12 @@ public class MeetingManager : MonoBehaviour
     [SerializeField] [Tooltip("GraphEvent raised when microphone is unmuted.")]
     private UnityEvent unmuted = new UnityEvent();
 
+    [SerializeField] [Tooltip("GraphEvent raised when video capture started.")]
+    private UnityEvent videoCaptureStarted = new UnityEvent();
+
+    [SerializeField] [Tooltip("GraphEvent raised when video capture ended.")]
+    private UnityEvent videoCaptureEnded = new UnityEvent();
+
     [SerializeField] [Tooltip("GraphEvent raised when status changes.")]
     private MeetingMaanagerStatusStringEvent statusChanged = new MeetingMaanagerStatusStringEvent();
 
@@ -431,9 +437,13 @@ public class MeetingManager : MonoBehaviour
         if (currentActiveCall is not null)
         {
             if (isSharedCamera)
+            {
                 currentActiveCall.ShareCamera();
+            }
             else
+            {
                 currentActiveCall.UnShareCamera();
+            }
         }
     }
 
@@ -464,9 +474,13 @@ public class MeetingManager : MonoBehaviour
         if (currentActiveCall is not null)
         {
             if (isMute)
+            {
                 currentActiveCall.Mute();
+            }
             else
+            {
                 currentActiveCall.Unmute();
+            }
         }
     }
 
@@ -506,7 +520,7 @@ public class MeetingManager : MonoBehaviour
     /// <summary>
     /// leave a current call
     /// </summary>
-    public async void Leave()
+    public void Leave()
     {
         if (currentActiveCall is not null)
         {
@@ -832,12 +846,11 @@ public class MeetingManager : MonoBehaviour
         if (handleIncomingCall.IsValidIncomingCall())
         {
             handleIncomingCall.Accept();
+            isSharedCamera = false;
             SetCurrentActiveCall(handleIncomingCall);
             incomingCallAccepted?.Invoke();
-            UnshareCamera();
         }
     }
-
 
     /// <summary>
     /// join an incoming call with audio and video
@@ -847,12 +860,11 @@ public class MeetingManager : MonoBehaviour
         if (handleIncomingCall.IsValidIncomingCall())
         {
             handleIncomingCall.Accept();
-            currentActiveCall = handleIncomingCall;
+            isSharedCamera = true;
+            SetCurrentActiveCall(handleIncomingCall);
             incomingCallAccepted?.Invoke();
-            ShareCamera();
         }
     }
-
 
     /// <summary>
     /// reject an incoming call
@@ -890,7 +902,24 @@ public class MeetingManager : MonoBehaviour
     /// <param name="activeCall"></param>
     private void SetCurrentActiveCall(CallScenario activeCall)
     {
+        if (currentActiveCall != null)
+        {
+            currentActiveCall.Muted.RemoveListener(OnCurrentCallMuted);
+            currentActiveCall.Unmuted.RemoveListener(OnCurrentCallUnmuted);
+            currentActiveCall.VideoCaptureStarted.RemoveListener(OnCurrentCallVideoCaptureStarted);
+            currentActiveCall.VideoCaptureEnded.RemoveListener(OnCurrentCallVideoCaptureEnded);
+        }
+
         currentActiveCall = activeCall;
+
+        if (currentActiveCall != null)
+        {
+            currentActiveCall.Muted.AddListener(OnCurrentCallMuted);
+            currentActiveCall.Unmuted.AddListener(OnCurrentCallUnmuted);
+            currentActiveCall.VideoCaptureStarted.AddListener(OnCurrentCallVideoCaptureStarted);
+            currentActiveCall.VideoCaptureEnded.AddListener(OnCurrentCallVideoCaptureEnded);
+        }
+
         UpdateMicrophone();
         UpdateSpeaker();
         UpdateCamera();
@@ -930,6 +959,26 @@ public class MeetingManager : MonoBehaviour
         }
         ApplyStatus(status);
     }
+
+    private void OnCurrentCallMuted()
+    {
+        ApplyIsMuted(true);
+    }
+
+    private void OnCurrentCallUnmuted()
+    {
+        ApplyIsMuted(false);
+    }
+
+    private void OnCurrentCallVideoCaptureStarted()
+    {
+        videoCaptureStarted?.Invoke();        
+    }
+
+    private void OnCurrentCallVideoCaptureEnded()
+    {
+        videoCaptureEnded?.Invoke();
+    }
 }
 
 [Serializable]
@@ -942,3 +991,5 @@ public class MeetingManagerIncomingMeetingCallEvent : UnityEvent<string>
 {
     public string CallerName;
 }
+
+

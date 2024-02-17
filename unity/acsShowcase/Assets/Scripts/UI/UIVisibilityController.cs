@@ -161,6 +161,9 @@ public class UIVisibilityController : MonoBehaviour
                 if (State == UIVisibilityControllerState.Unknown || 
                     State == UIVisibilityControllerState.MainPanel)
                 {
+                    HideCallPreviewPanel();
+                    HideInCallPanel();
+                    HideSearchPanel();
                     HideMainPanel();
                     ShowSignInPanel();
                     succsess = true;
@@ -197,8 +200,12 @@ public class UIVisibilityController : MonoBehaviour
                 }
                 break;
             case UIVisibilityControllerState.InCallPanel:
-                if (State == UIVisibilityControllerState.CallPreviewPanel)
+                if (State == UIVisibilityControllerState.MainPanel ||
+                    State == UIVisibilityControllerState.SearchPanel ||
+                    State == UIVisibilityControllerState.CallPreviewPanel)
                 {
+                    HideSearchPanel();
+                    HideMainPanel();
                     HideCallPreviewPanel();
                     ShowInCallPanel();
                     succsess = true;
@@ -224,7 +231,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// show the sign in panel
     /// </summary>
-    public void ShowSignInPanel()
+    private void ShowSignInPanel()
     {
         showSignInPanel?.Invoke();
     }
@@ -232,15 +239,15 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Hide the sign in panel
     /// </summary>
-    public void HideSignInPanel()
+    private void HideSignInPanel()
     {
         hideSigninPanel?.Invoke();
     }
-    
+
     /// <summary>
     /// show the main panel 
     /// </summary>
-    public void ShowMainPanel()
+    private void ShowMainPanel()
     {
         showMainPanel?.Invoke();
     }
@@ -248,16 +255,15 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Hide the main panel 
     /// </summary>
-    public void HideMainPanel()
+    private void HideMainPanel()
     {
         hideMainPanel?.Invoke();
-
     }
 
     /// <summary>
     /// Show the search panel
     /// </summary>
-    public void ShowSearchPanel()
+    private void ShowSearchPanel()
     {
         showSearchPanel?.Invoke();
     }
@@ -265,7 +271,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Hide the search panel.
     /// </summary>
-    public void HideSearchPanel() 
+    private void HideSearchPanel() 
     {
         hideSearchPanel?.Invoke();
     }
@@ -273,7 +279,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Show the call preview panel
     /// </summary>
-    public void ShowCallPreviewPanel()
+    private void ShowCallPreviewPanel()
     {
         if (meetingManager != null)
         {
@@ -287,7 +293,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Hide the call preview panel 
     /// </summary>
-    public void HideCallPreviewPanel()
+    private void HideCallPreviewPanel()
     {
         hideCallPreviewPanel?.Invoke();
     }
@@ -295,7 +301,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// show the the in-call panel 
     /// </summary>
-    public void ShowInCallPanel()
+    private void ShowInCallPanel()
     {
         showInCallPanel?.Invoke();
         isInCallPanelVisible = true;
@@ -304,7 +310,7 @@ public class UIVisibilityController : MonoBehaviour
     /// <summary>
     /// Hide the in-call panel 
     /// </summary>
-    public void HideInCallPanel()
+    private void HideInCallPanel()
     {
         hideInCallPanel?.Invoke();
         isInCallPanelVisible = false;
