@@ -187,7 +187,7 @@ public class ParticipantVideoController : MonoBehaviour
                 }
 
                 bool currentSpeakerIsScreenSharing = false;
-                if (currentSpeakerStream != null && currentSpeakerStream.SourceKind != VideoStreamSourceKind.ScreenSharing)
+                if (currentSpeakerStream != null && currentSpeakerStream.SourceKind == VideoStreamSourceKind.ScreenSharing)
                 {
                     currentSpeakerIsScreenSharing = true;
                 }
@@ -223,6 +223,7 @@ public class ParticipantVideoController : MonoBehaviour
                 activeSpeakerVideoStatus = SpeakerVideoVisibility.None;
             }
         }
+
         // check current active speaker video on/off 
         if (allParticipants != null && curActiveSpeakerIndex >= 0 && curActiveSpeakerIndex < allParticipants.Length)
         {
@@ -249,13 +250,11 @@ public class ParticipantVideoController : MonoBehaviour
             return;
         }
 
-        if (allParticipants != null)
-        {
-            for (int i = 0; i < allParticipants.Length; i++)
-            {
-                allParticipants[i].VideoPlayer.StopStreaming();
-            }
-        }
+        // stop video while we search for new participants
+        // ideally we shouldn't stop the video if the participant is still in the call and 
+        // is the active speaker. But for simplicity, we stop the video and restart it when
+        // the participant is found.
+        SetActiveSpeaker(-1);
 
         allParticipants = participants;
         lastNotSpeakTimes = null;

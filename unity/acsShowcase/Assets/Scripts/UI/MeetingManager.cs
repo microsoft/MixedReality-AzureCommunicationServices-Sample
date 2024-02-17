@@ -601,11 +601,15 @@ public class MeetingManager : MonoBehaviour
         {
             Log.Verbose<MeetingManager>("Logged in.");
             IsLoggedIn = true;
-            if (string.IsNullOrEmpty(displayName) || (displayName.Equals(SystemUser.UNKNOWN_USER) || displayName.ToLower() == "unknown user"))
+
+            bool displayNameIsUnknown = 
+                string.IsNullOrEmpty(displayName) ||
+                (displayName.Equals(SystemUser.UNKNOWN_USER) ||
+                displayName.ToLower() == "unknown user");
+
+            if (displayNameIsUnknown && ProfileGetter.Profile != null)
             {
-                displayName = displayName;
-                if (ProfileGetter.Profile != null)
-                    displayName = ProfileGetter.Profile.displayName;
+                displayName = ProfileGetter.Profile.displayName;
             }
 
             // start listening to the incoming call
@@ -675,15 +679,14 @@ public class MeetingManager : MonoBehaviour
         if (serviceIdentity == null || cancellationToken.IsCancellationRequested)
         {
             Status = MeetingStatus.LoginError();
+            return false;
         }
         else
         {
             Status = MeetingStatus.NoCall(MeetingAuthenticationState.LoggedIn);
+            return true;              
         }
-
-        return true;
     }
-
 
     /// <summary>
     /// logout worker 

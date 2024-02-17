@@ -4,6 +4,8 @@
 using Azure.Communication.Calling.UnityClient;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,15 +23,15 @@ public class VideoStreamPlayer : MonoBehaviour
         public RawVideoFrameKind kind;
     }
 
-    private CallVideoStream stream = null;
     private RawIncomingVideoStream rawIncomingStream = null;
     private ConcurrentQueue<PendingFrame> pendingFrames = new ConcurrentQueue<PendingFrame>();
     private VideoStreamPlayerTextures textures;
     private MaterialPropertyBlock materialProperty = null;
-    private bool clearTextures = false;
+    private bool pendingClearTextures = false;
     private Material activeMaterial = null;
     private bool isActive = true;
     private bool isPendingAutoStart = false;
+    private Thread mainThread;
 
     [SerializeField] 
     [Tooltip("The maximum number of frames to save in buffer")]
@@ -75,15 +77,14 @@ public class VideoStreamPlayer : MonoBehaviour
     
     public CallVideoStream Stream
     {
-        get => stream;
+        get => rawIncomingStream;
 
         set
         {
-            if (stream != value)
+            if (rawIncomingStream != value)
             {
                 ReleaseStream();
-                stream = value;
-                AttachStream();
+                AttachStream(value as RawIncomingVideoStream);
             }
         }
     }
@@ -112,54 +113,44 @@ public class VideoStreamPlayer : MonoBehaviour
 
     public void StartStreaming()
     {
-        if (rawIncomingStream is not null)
-        {
-            ClearTextures();
+        ClearTextures();
 
-            if (rawIncomingStream.State != VideoStreamState.Started)
-            {
-                rawIncomingStream.Start();
-                isActive = true;
-            }
+        if (rawIncomingStream != null &&
+            rawIncomingStream.State != VideoStreamState.Started)
+        {
+            rawIncomingStream.Start();
         }
     }
 
     public void StopStreaming()
     {
-        if (rawIncomingStream is not null)
+        if (rawIncomingStream != null &&
+            rawIncomingStream.State == VideoStreamState.Started)
         {
-            if (rawIncomingStream.State == VideoStreamState.Started)
-            {
-                rawIncomingStream.Stop();
-            }
+            rawIncomingStream.Stop();
         }
 
-        clearTextures = true;
-        isActive = false;
+        ClearTextures();
         pendingFrames.Clear();
     }
 
-    private void OnDestroy()
-    {
-        if (isActive)
-        {
-            ClearTextures();
-        }
-    }
-
-
     private void Start()
     {
+        mainThread = System.Threading.Thread.CurrentThread;
         materialProperty = new MaterialPropertyBlock();
         materialProperty.Clear();
     }
 
+    private void OnDestroy()
+    {
+        ReleaseStream();
+    }
 
     private void Update()
     {
-        if (clearTextures)
+        if (pendingClearTextures)
         {
-            clearTextures = false;
+            pendingClearTextures = false;
             ClearTextures();
         }
 
@@ -191,58 +182,33 @@ public class VideoStreamPlayer : MonoBehaviour
         }
     }
 
-
-    private void AttachStream()
+    bool IsUpdateThread()
     {
-        if (stream == null)
-        {
-            return;
-        }
-
-        if (stream is RawIncomingVideoStream)
-        {
-            rawIncomingStream = (RawIncomingVideoStream)stream;
-            AttachRawIncomingStream();
-        }
-
-        if (autoStart)
-        {
-            isPendingAutoStart = true;
-        }
-    }
-
-    private void AttachRawIncomingStream()
-    {
-        if (rawIncomingStream == null)
-        {
-            return;
-        }
-
-        rawIncomingStream.RawVideoFrameReceived += OnRawVideoFrameAvailable;
+        return mainThread.Equals(Thread.CurrentThread);
     }
 
     private void ReleaseStream()
     {
-        if (stream == null)
-        {
-            return;
-        }
+        StopStreaming();
 
-        ReleaseRawIncomingStream();
-        rawIncomingStream = null;
-        clearTextures = true;
-        pendingFrames.Clear();
+        if (rawIncomingStream != null)
+        {
+            rawIncomingStream.RawVideoFrameReceived -= OnRawVideoFrameAvailable;
+            rawIncomingStream = null;
+        }
     }
 
-    private void ReleaseRawIncomingStream()
+    private void AttachStream(RawIncomingVideoStream stream)
     {
-        if (rawIncomingStream == null)
+        rawIncomingStream = stream;
+        if (rawIncomingStream != null)
         {
-            return;
+            rawIncomingStream.RawVideoFrameReceived += OnRawVideoFrameAvailable;
+            if (autoStart)
+            {
+                isPendingAutoStart = true;
+            }
         }
-
-        rawIncomingStream.RawVideoFrameReceived -= OnRawVideoFrameAvailable;
-        StopStreaming();
     }
 
     private void OnRawVideoFrameAvailable(object sender, RawVideoFrameReceivedEventArgs args)
@@ -425,6 +391,12 @@ public class VideoStreamPlayer : MonoBehaviour
 
     private void ClearTextures()
     {
+        if (!IsUpdateThread())
+        {
+            pendingClearTextures = true;
+            return;
+        }
+
         textures.TextureY = null;
         textures.TextureU = null;
         textures.TextureV = null;
