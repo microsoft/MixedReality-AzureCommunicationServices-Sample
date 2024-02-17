@@ -723,22 +723,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProgressIndicatorRotatingOrbs
       objectReference: {fileID: 0}
-    - target: {fileID: 1877138048077504, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4096728816918502, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 4096728816918502, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 4096728816918502, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 500
-      objectReference: {fileID: 0}
     - target: {fileID: 4096728816918502, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -779,14 +763,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 248783343367533792, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 248783343367533792, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.0399
-      objectReference: {fileID: 0}
     - target: {fileID: 544213381485393188, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
       propertyPath: m_SortingLayer
       value: 0
@@ -794,42 +770,6 @@ PrefabInstance:
     - target: {fileID: 2941236439767725359, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
       propertyPath: m_SortingLayer
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_text
-      value: Waiting for login
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_fontSize
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_textAlignment
-      value: 65535
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_VerticalAlignment
-      value: 512
-      objectReference: {fileID: 0}
-    - target: {fileID: 5132018694597036767, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6466824095178103620, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
       propertyPath: m_SortingLayer
@@ -847,10 +787,6 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8794999869893679419, guid: 65fa42bb01c733c42b05a4e91628f494, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

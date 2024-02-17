@@ -579,7 +579,7 @@ MonoBehaviour:
   profileIconParent: {fileID: 789686481099768123}
   canvasObject: {fileID: 1378028798195460288}
   videoPanel: {fileID: 1240690125611268000}
-  initialPosOffset: {x: 0, y: 0, z: 0.8}
+  initialPosOffset: {x: 0, y: 0.1, z: 1.5}
   solver: {fileID: 894452531531728232}
   videoContainer: {fileID: 6588964595213168794}
   mainPanel: {fileID: 0}
@@ -720,8 +720,8 @@ MonoBehaviour:
   smoothing: 1
   lifetime: 0
   referenceDirection: 1
-  minDistance: 0.3
-  maxDistance: 0.5
+  minDistance: 0.35
+  maxDistance: 1
   minViewDegrees: 0
   maxViewDegrees: 20
   aspectV: 1
@@ -817,18 +817,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6148595604907969185}
-        m_TargetAssemblyTypeName: MixedReality.Toolkit.StatefulInteractable, MixedReality.Toolkit.Core
-        m_MethodName: ForceSetToggled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
   m_LastSelectExited:
     m_PersistentCalls:
@@ -2754,17 +2742,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7216918420766221479, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
   m_PrefabInstance: {fileID: 2408265518316281851}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6148595604907969185 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
-  m_PrefabInstance: {fileID: 2408265518316281851}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6148595604907969209}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c32e8a7644144f8419bb881ad588ed0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &6148595604907969190 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8376646494505211229, guid: c6b351a67ceb69140b199996bbbea156, type: 3}

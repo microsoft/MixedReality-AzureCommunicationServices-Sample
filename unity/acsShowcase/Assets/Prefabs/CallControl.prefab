@@ -5572,6 +5572,30 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7177774427733301015, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
       propertyPath: m_Name
       value: PinMainPanel
