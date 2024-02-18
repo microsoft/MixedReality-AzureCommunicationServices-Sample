@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Azure.Communication.Calling.Unity;
 using Azure.Communication.Calling.UnityClient;
 using System;
 using System.Collections.Concurrent;
@@ -502,21 +503,26 @@ public abstract class CallScenario : MonoBehaviour
 
     protected async Task HangUpCurrentCall()
     {
-        if (CurrentCall != null)
+        var call = CurrentCall;
+        CurrentCall = null;
+
+        if (call != null && 
+            call.State != CallState.Disconnected &&
+            call.State != CallState.Disconnecting)
         {
             try
             {
-                await CurrentCall.HangUpAsync(new HangUpOptions()
+                await call.HangUpAsync(new HangUpOptions()
                 {
                     ForEveryone = false
                 });
             }
             catch (Exception e)
             {
-                Debug.LogError("Error HangUpCurrentCall. Exception: " + e.Message);
+                Log.Error<CallScenario>($"Error HangUpCurrentCall. Exception: {e.Message}");
             }
-            CurrentCall = null;
         }
+
         InvalidateStatus();
     }
 
@@ -528,7 +534,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new outgoing video options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new outgoing video options while there is an active call.");
             return null;
         }
 
@@ -546,7 +552,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new incoming video options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new incoming video options while there is an active call.");
             return null;
         }
 
@@ -561,7 +567,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new outgoing audio options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new outgoing audio options while there is an active call.");
             return null;
         }
 
@@ -584,7 +590,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new incoming audio options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new incoming audio options while there is an active call.");
             return null;
         }
 
@@ -725,7 +731,7 @@ public abstract class CallScenario : MonoBehaviour
 
     private void OnOutgoingVideoStreamFormatChanged(object sender, VideoStreamFormatChangedEventArgs args)
     {
-        Debug.LogError("Unable handle outgoing video format change.");
+        Log.Error<CallScenario>("Unable handle outgoing video format change.");
     }
 
     private void OnRawOutgoingAudioStreamStateChanged(object sender, AudioStreamStateChangedEventArgs args)
@@ -780,7 +786,7 @@ public abstract class CallScenario : MonoBehaviour
         if (customAudioReceiver != null && stream != null && args.AudioBuffer.Count > 0)
         {
             var participantIds = args.RemoteParticipantIds;
-            Debug.Log($"Using ummixed audio for participant id = {(participantIds != null && participantIds.Count > 0 ? participantIds[0] : "empty")}");
+            Log.Verbose<CallScenario>($"Using ummixed audio for participant id = {(participantIds != null && participantIds.Count > 0 ? participantIds[0] : "empty")}");
             customAudioReceiver.AddSamples(args.AudioBuffer[0].Buffer);
         }
     }
@@ -1140,7 +1146,7 @@ public abstract class CallScenario : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to start video. Exception: {ex}");
+                    Log.Error<CallScenario>($"Failed to start video. Exception: {ex}");
                 }
             }
             else
@@ -1178,7 +1184,7 @@ public abstract class CallScenario : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to stop video. Exception: {ex}");
+                    Log.Error<CallScenario>($"Failed to stop video. Exception: {ex}");
                 }
             }
             else

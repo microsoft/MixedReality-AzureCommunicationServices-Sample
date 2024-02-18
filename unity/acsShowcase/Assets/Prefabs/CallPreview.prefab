@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2045079351206169189}
   - component: {fileID: 4727418001493205723}
-  - component: {fileID: 2768412582368646827}
+  - component: {fileID: 1959829164278846834}
   m_Layer: 0
   m_Name: Viewport
   m_TagString: Untagged
@@ -46,7 +46,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 859087630959708224}
   m_CullTransparentMesh: 1
---- !u!114 &2768412582368646827
+--- !u!114 &1959829164278846834
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,13 +55,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 859087630959708224}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa891da5b881eaf438fcf2d8e2958a38, type: 3}
+  m_Script: {fileID: 11500000, guid: a55c55bcb6842b94db6488b68732ce01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
-  independentRadii: 1
-  radii: {x: 0, y: 0, z: 10, w: 10}
 --- !u!1 &1838304393310993209
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,7 +86,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838304393310993209}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.9999743}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -651,6 +649,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9aea56bccf7ec41ae60624b18ae6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  authenticationManager: {fileID: 0}
+  authenticationRequest: {fileID: 0}
+  isAuthenticatedChanged:
+    m_PersistentCalls:
+      m_Calls: []
   attendeeContainer: {fileID: 2034856708945114494}
   attendeePrefab: {fileID: 3567217674101987447, guid: 22bc68769c4333547b64bcd7f8544330, type: 3}
   meetingTitle: {fileID: 0}

@@ -44,11 +44,13 @@ public class CopyCanvasSizeToMesh : UIBehaviour
         }
     }
 
+#if UNITY_EDITOR
     protected override void OnValidate()
     {
         base.OnValidate();
         UpdateMeshSize();
     }
+#endif
 
     protected override void OnEnable()
     {

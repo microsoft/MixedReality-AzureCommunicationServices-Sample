@@ -33,10 +33,6 @@ public class UIVisibilityController : MonoBehaviour
     [SerializeField]
     [Tooltip("camera off button")]
     private GameObject cameraOffButton = null;
-    
-    [SerializeField]
-    [Tooltip("leave button")]
-    private PressableButton leaveButton = null;
 
     [SerializeField]
     [Tooltip("event raised when the state is changing.")]
@@ -86,10 +82,9 @@ public class UIVisibilityController : MonoBehaviour
     [Tooltip("event raised when hiding in call panel")]
     private UnityEvent hideInCallPanel = new UnityEvent();
     
-    private bool isInCallPanelVisible = false;
     public bool IsInCallPanelVisible
     {
-        get => isInCallPanelVisible;
+        get => State == UIVisibilityControllerState.InCallPanel;
     }
 
     /// <summary>
@@ -304,28 +299,12 @@ public class UIVisibilityController : MonoBehaviour
     private void ShowInCallPanel()
     {
         showInCallPanel?.Invoke();
-        isInCallPanelVisible = true;
     }
 
-    /// <summary>
     /// Hide the in-call panel 
     /// </summary>
     private void HideInCallPanel()
     {
         hideInCallPanel?.Invoke();
-        isInCallPanelVisible = false;
-    }
-    
-    public void LeftCallEventHandler()
-    {
-        if (isInCallPanelVisible)
-        {
-            // this could happen when the user is removed from a call by the organizer
-            // so we cleanup resource as we click on the leave button
-            if (leaveButton != null)
-            {
-                leaveButton.OnClicked.Invoke();
-            }
-        }
     }
 }

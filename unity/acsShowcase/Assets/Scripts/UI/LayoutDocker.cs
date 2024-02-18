@@ -61,13 +61,15 @@ public class LayoutDocker : UIBehaviour
         }
     }
 
-    override protected void OnValidate()
+#if UNITY_EDITOR
+    protected override void OnValidate()
     {
         base.OnValidate();
         UpdatePosition();
     }
+#endif
 
-    override protected void OnEnable()
+    protected override void OnEnable()
     {
         base.OnEnable();
         UpdatePosition();

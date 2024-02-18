@@ -45,14 +45,8 @@ public class MeetingManager : MonoBehaviour
     [SerializeField] [Tooltip("The request for an access token containing the Microsoft Graph scopes.")]
     private AuthenticationRequest graphAccess = null;
 
-    [Header("Login Settings")] [SerializeField] [Tooltip("Should log occur at start up.")]
-    private bool autoLogin = false;
-
     [SerializeField] [Tooltip("Should the user sign into Teams as a guest.")]
     private bool forceSignInAsGuest = false;
-
-    [SerializeField] [Tooltip("The display name to use when signing into Teams as a guest.")]
-    private string displayName = null;
 
     [Header("Meeting Settings")] [SerializeField] [Tooltip("The default meeting locator to use during a Join() request.")]
     private MeetingLocator defaultMeetingLocator = null;
@@ -117,11 +111,6 @@ public class MeetingManager : MonoBehaviour
     public event Action<MeetingManager, MeetingStatus> StatusChanged;
 
     /// <summary>
-    /// started 
-    /// </summary>
-    private bool started = false;
-
-    /// <summary>
     /// meeting last call state 
     /// </summary>
     private MeetingCallState lastCallState = MeetingCallState.Disconnecting;
@@ -149,11 +138,6 @@ public class MeetingManager : MonoBehaviour
             }
         }
     }
-
-    /// <summary>
-    /// pending join 
-    /// </summary>
-    private MeetingLocator pendingJoin = null;
 
     /// <summary>
     /// pending action 
@@ -239,20 +223,21 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
+    /// The display name of the signed in user.
+    /// </summary>
+    public string DisplayName
+    {
+        get;
+        private set;
+    }
+
+    /// <summary>
     /// OnEnable
     /// </summary>
     private void OnEnable()
     {
-        leftCall?.Invoke();
         ParticipantPanelController.OnAddParticipant += ParticipantPanelControllerOnAddParticipant;
         ParticipantPanelController.OnRemoveParticipant += ParticipantPanelControllerOnRemoveParticipant;
-
-        started = true;
-        displayName = "";
-        if (autoLogin)
-        {
-            LogInAndJoinOrCreateMeetingIfPossible(pendingJoin, createCallWithUser: null);
-        }
     }
 
     /// <summary>
@@ -260,19 +245,9 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        loggedIn = false;
-        displayName = "";
-    }
-
-    /// <summary>
-    /// OnDestroy
-    /// </summary>
-    private async void OnDestroy()
-    {
         ParticipantPanelController.OnAddParticipant -= ParticipantPanelControllerOnAddParticipant;
         ParticipantPanelController.OnRemoveParticipant -= ParticipantPanelControllerOnRemoveParticipant;
     }
-
 
     /// <summary>
     /// Update
@@ -287,12 +262,39 @@ public class MeetingManager : MonoBehaviour
                 // wait for previous call agent to be destroyed before start listening 
                 if (currentActiveCall.CurrentCallAgent == null)
                 {
-                    handleIncomingCall.StartListening(displayName, forceSignInAsGuest);
+                    handleIncomingCall.StartListening(DisplayName, forceSignInAsGuest);
                     SetCurrentActiveCall(null);
                     startListeningComingCall = false;
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Start the sign-in process.
+    /// </summary>
+    public void SignIn()
+    {
+        LogInIfPossible();
+    }
+
+    /// <summary>
+    /// Cancel the sign-in process, if it is in progress still.
+    /// </summary>
+    public void CancelSignIn()
+    {
+        if (!IsLoggedIn)
+        {
+            _ = CancelPreviousLoginAndCreateNewCancellationToken();
+        }
+    }
+
+    /// <summary>
+    /// Sign out of the meeting services.
+    /// </summary>
+    public void SignOut()
+    {
+        LogoutWorker();
     }
 
     /// <summary>
@@ -324,7 +326,7 @@ public class MeetingManager : MonoBehaviour
                 Log.Verbose<MeetingManager>("Token: {0}", teamMeeting.Token);
                 Log.Verbose<MeetingManager>("Team URL: {0}", teamLocator.Url);
                 teamMeeting.JoinUrl = teamLocator.Url;
-                teamMeeting.Join(displayName);
+                teamMeeting.Join(DisplayName);
             }
 
             SetCurrentActiveCall(teamMeeting);
@@ -361,16 +363,25 @@ public class MeetingManager : MonoBehaviour
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
         if (currentActiveCall is not null)
+        {
             await currentActiveCall.RemoveParticipant(identifier);
+        }
     }
 
     /// <summary>
     /// get called when removing participant 
     /// </summary>
     /// <param name="participant"></param>
-    private void ParticipantPanelControllerOnRemoveParticipant(RemoteParticipant participant)
+    private async void ParticipantPanelControllerOnRemoveParticipant(RemoteParticipant participant)
     {
-        RemoveParticipant(participant);
+        try
+        { 
+            await RemoveParticipant(participant);
+        }
+        catch (Exception ex)
+        {
+            Log.Error<MeetingManager>("Failed to remove participant. {0}", ex);
+        }
     }
 
     /// <summary>
@@ -396,7 +407,7 @@ public class MeetingManager : MonoBehaviour
         else
         {
             // 1-1 calling not working 
-            //LogInAndJoinOrCreateMeetingIfPossible(joinLocator: null, user);
+            //LogInIfPossible(joinLocator: null, user);
         }
     }
 
@@ -535,86 +546,74 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     /// <param name="joinLocator"></param>
     /// <param name="createCallWithUser"></param>
-    private async void LogInAndJoinOrCreateMeetingIfPossible(MeetingLocator joinLocator, UserIdentity createCallWithUser)
+    private async void LogInIfPossible()
     {
         var loggedIdTask = loggedInTask;
-        if (started && (loggedIdTask == null || !loggedIn))
+        if (loggedIdTask == null || !loggedIn)
         {
             loggedInTask = loggedIdTask = LoginWorker();
         }
 
         if (loggedIdTask == null)
         {
-            Log.Verbose<MeetingManager>("Waiting to join meeting ({0})", joinLocator);
-            pendingJoin = joinLocator;
+            Log.Verbose<MeetingManager>("LogIntoMeetingServices request ignored, already logged in");
         }
         else if (await loggedIdTask)
         {
-            Log.Verbose<MeetingManager>("Login completes");
-            if (joinLocator != null)
-            {
-                //await JoinMeetingIfNotNull(joinLocator);
-            }
-            else if (createCallWithUser != null)
-            {
-                //await CreateMeetingIfNotNull(createCallWithUser);
-            }
-        }
-        else if (joinLocator != null)
-        {
-            Log.Error<MeetingManager>("Log in failed. Can't join meeting ({0})", joinLocator);
-        }
-        else if (createCallWithUser != null)
-        {
-            Log.Error<MeetingManager>("Log in failed. Can't create meeting ({0})", createCallWithUser);
+            Log.Verbose<MeetingManager>("LogIntoMeetingServices completes");
         }
     }
 
     /// <summary>
     /// login worker task 
     /// </summary>
-    /// <returns></returns>
     private async Task<bool> LoginWorker()
     {
         CancellationToken cancellationToken = CancelPreviousLoginAndCreateNewCancellationToken();
-        bool result;
 
         Log.Verbose<MeetingManager>("LoginWorker");
 
-        // If can't login yet, try obtaining additional scoped access tokens.
-        if (await AuthenticateAsync(cancellationToken) &&
+        bool obtainedAuthenticationTokens = false;
+        if (await RequestAzureTokens(cancellationToken) &&
             !cancellationToken.IsCancellationRequested)
         {
             communicationAzureActiveDirectoryAccessTokenResponse = communicationAzureActiveDirectoryAccess?.TokenResponse ?? TokenResponse.Invalid;
             functionAppAccessTokenResponse = functionAppAccess?.TokenResponse ?? TokenResponse.Invalid;
             graphAccessTokenResponse = graphAccess?.TokenResponse ?? TokenResponse.Invalid;
+
+            obtainedAuthenticationTokens = 
+                communicationAzureActiveDirectoryAccessTokenResponse.IsValid() &&
+                functionAppAccessTokenResponse.IsValid() &&
+                graphAccessTokenResponse.IsValid();
         }
 
-        result = await Login(cancellationToken);
+        bool loggedIntoMeetingServices = false;
+        if (obtainedAuthenticationTokens)
+        { 
+            loggedIntoMeetingServices = await LogIntoMeetingServices(cancellationToken);
+        }
 
         if (cancellationToken.IsCancellationRequested)
         {
             Log.Verbose<MeetingManager>("Log in cancelled.");
-            result = false;
         }
-        else if (result)
+        else if (loggedIntoMeetingServices)
         {
             Log.Verbose<MeetingManager>("Logged in.");
             IsLoggedIn = true;
 
-            bool displayNameIsUnknown = 
-                string.IsNullOrEmpty(displayName) ||
-                (displayName.Equals(SystemUser.UNKNOWN_USER) ||
-                displayName.ToLower() == "unknown user");
-
-            if (displayNameIsUnknown && ProfileGetter.Profile != null)
+            if (ProfileGetter.Profile != null)
             {
-                displayName = ProfileGetter.Profile.displayName;
+                DisplayName = ProfileGetter.Profile.displayName;
             }
+            else
+            {
+                DisplayName = string.Empty;
+            }            
 
             // start listening to the incoming call
             handleIncomingCall.Token = serviceIdentity.CommunicationAccessToken;
-            handleIncomingCall.StartListening(displayName, forceSignInAsGuest);
+            handleIncomingCall.StartListening(DisplayName, forceSignInAsGuest);
         }
         else
         {
@@ -622,25 +621,25 @@ public class MeetingManager : MonoBehaviour
             IsLoggedIn = false;
         }
 
-        return result;
+        return IsLoggedIn;
     }
 
     /// <summary>
     /// Log into meeting services.
     /// </summary>
-    public async Task<bool> Login(CancellationToken cancellationToken)
+    private async Task<bool> LogIntoMeetingServices(CancellationToken cancellationToken)
     {
         Log.Verbose<MeetingManager>("Logging in");
 
         Status = MeetingStatus.NoCall(MeetingAuthenticationState.LoggingIn);
 
-        string name = displayName;
+        string name = DisplayName;
         try
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 name = await SystemUser.GetName();
-                displayName = name;
+                DisplayName = name;
             }
         }
         catch (Exception ex)
@@ -657,7 +656,7 @@ public class MeetingManager : MonoBehaviour
             functionAppEndpoint = functionAppEndpoint,
             functionAppAccess = functionAppAccessTokenResponse,
             graphAccessToken = graphAccessTokenResponse,
-            displayName = displayName
+            displayName = DisplayName
         };
 
         try
@@ -673,7 +672,7 @@ public class MeetingManager : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Log.Error<MeetingManager>("Login failed. {0}", ex);
+            Log.Error<MeetingManager>("LogIntoMeetingServices failed. {0}", ex);
         }
 
         if (serviceIdentity == null || cancellationToken.IsCancellationRequested)
@@ -689,29 +688,32 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// logout worker 
+    /// Logout worker 
     /// </summary>
-    private async void LogoutWorker()
+    private void LogoutWorker()
     {
-        _ = CancelPreviousLoginAndCreateNewCancellationToken();
+        communicationAzureActiveDirectoryAccessTokenResponse = TokenResponse.Invalid;
+        functionAppAccessTokenResponse = TokenResponse.Invalid; 
+        graphAccessTokenResponse = TokenResponse.Invalid;
+
+        serviceIdentity = null;
         IsLoggedIn = false;
+        DisplayName = string.Empty;
+        _ = CancelPreviousLoginAndCreateNewCancellationToken();
     }
 
     /// <summary>
-    /// authenticate 
+    /// Obtain an authentication token for Azure services.
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async Task<bool> AuthenticateAsync(CancellationToken cancellationToken)
+    private async Task<bool> RequestAzureTokens(CancellationToken cancellationToken)
     {
         var manager = authenticationManager;
-
-        // If no authentication has been configured assume success
+        
         if (manager == null)
         {
-            return communicationAzureActiveDirectoryAccess == null && functionAppAccess == null;
+            Log.Error<MeetingManager>("No authentication manager. Unable to login.");
+            return false;
         }
-
 
         if (clearTokenCache)
         {
@@ -772,13 +774,23 @@ public class MeetingManager : MonoBehaviour
                     joinedCall?.Invoke();
                     break;
 
-                case MeetingCallState.None:
                 case MeetingCallState.Disconnected:
+                case MeetingCallState.Disconnecting:
                     leftCall?.Invoke();
                     break;
 
-                default:
+                case MeetingCallState.Connecting:
+                case MeetingCallState.Ringing:
+                case MeetingCallState.InLobby:
                     joiningCall?.Invoke();
+                    break;
+
+                case MeetingCallState.None:
+                    Log.Verbose<MeetingManager>("Unhandled call state {0}", lastCallState);
+                    break;
+
+                default:
+                    Log.Warning<MeetingManager>("Unhandled call state {0}", lastCallState); 
                     break;
             }
         }
@@ -884,10 +896,21 @@ public class MeetingManager : MonoBehaviour
     /// <summary>
     /// enable caption
     /// </summary>
-    public void EnableCaption()
+    public async void EnableCaption()
     {
-        if (currentActiveCall != teamMeeting) return;
-        teamMeeting.EnableCaption();
+        if (currentActiveCall != teamMeeting)
+        {
+            return;
+        }
+
+        try
+        {
+            await teamMeeting.EnableCaption();
+        }
+        catch (Exception ex)
+        {
+            Log.Error<MeetingManager>("Failed to enable caption. {0}", ex);
+        }
     }
 
     /// <summary>
@@ -895,7 +918,10 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     public void DisableCaption()
     {
-        if (currentActiveCall != teamMeeting) return;
+        if (currentActiveCall != teamMeeting)
+        {
+            return;
+        }
         teamMeeting.StopCaption();
     }
 

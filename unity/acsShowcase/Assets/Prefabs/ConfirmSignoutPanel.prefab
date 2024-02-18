@@ -584,7 +584,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4442499259758079350, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TransitionToSignInPanel
+      value: SignOut
       objectReference: {fileID: 0}
     - target: {fileID: 4442499259758079350, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -596,7 +596,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4442499259758079350, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIVisibilityController, Assembly-CSharp
+      value: SignInManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4442499259758079350, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -673,6 +673,10 @@ PrefabInstance:
     - target: {fileID: 5587287405658047829, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995460478670684995, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
+      propertyPath: m_text
+      value: Sign Out
       objectReference: {fileID: 0}
     - target: {fileID: 7296292635300266116, guid: 3248a26f1ad9c6144a2f5bf4ed35ae4c, type: 3}
       propertyPath: m_Name
