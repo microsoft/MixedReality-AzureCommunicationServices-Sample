@@ -25,14 +25,8 @@ public class UserObject : MonoBehaviour
     private TextMeshProUGUI initialsText;
     [SerializeField] [Tooltip("The texture image of the presence")]
     private List<Texture2D> presences;
-    [SerializeField] [Tooltip("This object is shown when user object is selected")]
-    private GameObject selectedOverlay;
-    [SerializeField] [Tooltip("This object is shown when user object is hovered")]
-    private GameObject hoverOverlay;
     [SerializeField] [Tooltip("The pressable button of this user object")]
     private PressableButton pressableButton;
-    [SerializeField] [Tooltip("minimum duration in second when hover enter and exit")]
-    private float hoverMinDuration = 0.1f;
     
     /// <summary>
     /// list of background color 
@@ -77,8 +71,18 @@ public class UserObject : MonoBehaviour
     /// <summary>
     /// is selected?
     /// </summary>
-    public bool IsSelected = false;
-    
+    public bool IsSelected
+    {
+        get => pressableButton != null && pressableButton.IsToggled.Active;
+        set
+        {
+            if (pressableButton != null)
+            {
+                pressableButton.ForceSetToggled(value);
+            }
+        }
+    }
+
     /// <summary>
     /// user page type 
     /// </summary>
@@ -123,20 +127,6 @@ public class UserObject : MonoBehaviour
     /// event fired when selecting a particiant for a one to one call
     /// </summary>
     public static event Action<UserObject> OnSelectedParticipantCall;
-    /// <summary>
-    /// time when hover exit occurs 
-    /// </summary>
-    private float exitHoverTime = 0;
-    
-    /// <summary>
-    /// true when it is user button is entering hover 
-    /// </summary>
-    private bool isEnterHover = false;
-    
-    /// <summary>
-    /// true when it is user button is exiting hover 
-    /// </summary>
-    private bool isExitHover = false;
 
     /// <summary>
     /// Start 
@@ -144,25 +134,6 @@ public class UserObject : MonoBehaviour
     void Start()
     {
         defaultIconTexture = profileIcon.texture;
-    }
-
-    /// <summary>
-    /// update 
-    /// </summary>
-    private void Update()
-    {
-        
-        if (isExitHover)
-        {
-            // avoid flickering of overlay hover image because the hover enter and exit 
-            // can occurs very frequently 
-            if (Time.time - exitHoverTime > hoverMinDuration)
-            {
-                isEnterHover = false;
-                isExitHover = false;
-                OverlayHover(false);
-            }
-        }
     }
 
     /// <summary>
@@ -200,7 +171,6 @@ public class UserObject : MonoBehaviour
             else
             {
                 UserController.SelectedUserObjects.Add(this);
-                SetSelectedOverlay(true);
                 UserController.SelectedUserObject = this;
                 IsSelected = true;
             }
@@ -219,7 +189,6 @@ public class UserObject : MonoBehaviour
                 if (UserController.SelectedUserObject != null)
                     UserController.SelectedUserObject.Select();
                 UserController.SelectedUserObject = this;
-                SetSelectedOverlay(true);
                 IsSelected = true;
                 UserController.AddToRelevantContacts(this);
             }
@@ -245,15 +214,12 @@ public class UserObject : MonoBehaviour
         if (UserObjectPageType == PageType.Participants)
         {
             UserController.SelectedUserObjects.Remove(this);
-            SetSelectedOverlay(false);
-            OverlayHover(false);
             UserController.SelectedUserObject = null;
             IsSelected = false;
         }
         else
         {
             UserController.SelectedUserObject = null;
-            SetSelectedOverlay(false);
             IsSelected = false;
         }
     }
@@ -265,32 +231,6 @@ public class UserObject : MonoBehaviour
     public void SetInteractability(bool isInteractable)
     {
         pressableButton.enabled = isInteractable;
-    }
-
-    /// <summary>
-    /// overlay when it is hoverd 
-    /// </summary>
-    /// <param name="isHovering"></param>
-    public void OverlayHover(bool isHovering)
-    {
-        if (selectedOverlay.activeSelf)
-            isHovering = false;
-        hoverOverlay.SetActive(isHovering);
-        SetOverlayIcon(isHovering, hoverOverlay);
-    }
-
-    /// <summary>
-    /// overlay when it is selected 
-    /// </summary>
-    /// <param name="setActive"></param>
-    private void SetSelectedOverlay(bool setActive)
-    {
-        if (setActive)
-            hoverOverlay.SetActive(false);
-        selectedOverlay.SetActive(setActive);
-        SetOverlayIcon(setActive, selectedOverlay);
-        if (!setActive && UserController.SelectedUserObject == this)
-            OverlayHover(true);
     }
 
     /// <summary>
@@ -448,29 +388,6 @@ public class UserObject : MonoBehaviour
                 presence.texture = presences[5];
                 break;
         }
-    }
-
-    /// <summary>
-    /// called when user button is entering hover mode 
-    /// </summary>
-    public void OnEnterHover()
-    {
-        if (!isEnterHover)
-        {
-            isEnterHover = true;
-            OverlayHover(true);
-        }
-        exitHoverTime = Time.time;
-        isExitHover = false;
-    }
-
-    /// <summary>
-    /// called when user button is exiting hover mode 
-    /// </summary>
-    public void OnExitHover()
-    {
-        exitHoverTime = Time.time;
-        isExitHover = true;
     }
 }
 

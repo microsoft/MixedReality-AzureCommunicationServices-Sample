@@ -2,20 +2,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Communication.Calling.Unity;
 using Azure.Communication.Calling.Unity.Rest;
-using Azure.Communication.Calling.UnityClient;
-using TMPro; 
+using TMPro;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
+
 /// <summary>
 /// This class controls the window for a call preview, after clicking join from a meeting on the main panel.
 /// </summary>
-public class CallPreviewManager : MonoBehaviour
+public class CallPreviewManager : AuthenticatedOperation
 {
     [SerializeField] [Tooltip("The parent game object that contains the list of all the attendees")]
     private GameObject attendeeContainer;
@@ -69,11 +67,6 @@ public class CallPreviewManager : MonoBehaviour
     private string joinURL;
     
     /// <summary>
-    /// authentication token
-    /// </summary>
-    private string authentificationToken;
-    
-    /// <summary>
     /// meeting ID 
     /// </summary>
     private string meetingID;
@@ -96,7 +89,6 @@ public class CallPreviewManager : MonoBehaviour
     {
         UserObject.OnSelectedParticipantsChanged += OnSelectedAttendeesChanged;
         UserObject.OnSelectedParticipantToAdd += OnSelectedAddingAttendee;
-        PeopleGetter.SendToken += PeopleGetter_SendToken;
     }
 
     /// <summary>
@@ -106,20 +98,8 @@ public class CallPreviewManager : MonoBehaviour
     {
         UserObject.OnSelectedParticipantsChanged -= OnSelectedAttendeesChanged;
         UserObject.OnSelectedParticipantToAdd -= OnSelectedAddingAttendee;
-        PeopleGetter.SendToken -= PeopleGetter_SendToken;
         attendeeStatus.text = "";
     }
-
-
-    /// <summary>
-    /// set token for REST api call 
-    /// </summary>
-    /// <param name="token"></param>
-    private void PeopleGetter_SendToken(string token)
-    {
-        authentificationToken = token;
-    }
-
 
     /// <summary>
     /// show the meeting info: meeting title, all attendees with name and respsonse status
@@ -306,7 +286,7 @@ public class CallPreviewManager : MonoBehaviour
 
         //Call API to update attendees
         var url = "https://graph.microsoft.com/v1.0/me/onlineMeetings/";
-        return await OnlineMeeting.Patch(authentificationToken,url, meetingID, requestBody);
+        return await OnlineMeeting.Patch(Token, url, meetingID, requestBody);
          
     }
     /// <summary>
@@ -316,7 +296,7 @@ public class CallPreviewManager : MonoBehaviour
     public async Task<IOnlineMeetingResponse> GetOnlineMeetingInfo()
     {   
         //Call API to update attendees
-        return await OnlineMeeting.Get(authentificationToken,joinURL);
+        return await OnlineMeeting.Get(Token, joinURL);
     }
     
     /// <summary>
@@ -374,7 +354,7 @@ public class CallPreviewManager : MonoBehaviour
 
             //Call API to update attendees
             var url = "https://graph.microsoft.com/v1.0/me/onlineMeetings/";
-            var returnValue = await OnlineMeeting.Patch(authentificationToken, url, meetingID, requestBody);
+            var returnValue = await OnlineMeeting.Patch(Token, url, meetingID, requestBody);
 
             allAttendeeInfos.Add(newAttendeeInfo);
 
@@ -393,9 +373,16 @@ public class CallPreviewManager : MonoBehaviour
     /// </summary>
     public void JoinMeeting()
     {
-        if (curMeeting is not null) 
+        if (curMeeting is not null)
+        {
             curMeeting.JoinMeeting();
+        }
     }
 
-    
+    /// <summary>
+    /// Called when the app is authenticated and has an authentication token.
+    /// </summary>
+    protected override void OnAuthenticated()
+    {
+    }
 }

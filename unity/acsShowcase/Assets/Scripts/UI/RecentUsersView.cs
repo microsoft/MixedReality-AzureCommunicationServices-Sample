@@ -38,6 +38,9 @@ public class RecentUsersView : MonoBehaviour
     private void OnEnable()
     {
         UserController.LoadedStaticUserProfiles += LoadedStaticUserProfiles;
+
+        // User's may have already been loaded before this script was enabled.
+        LoadedStaticUserProfiles();
     }
     
     /// <summary>

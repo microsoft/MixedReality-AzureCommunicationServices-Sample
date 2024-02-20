@@ -3,6 +3,7 @@
 
 using System.Collections; 
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 /// <summary>
@@ -14,11 +15,27 @@ public class RefreshContent : MonoBehaviour
     private ContentSizeFitter contentSizeFitter; 
 
     /// <summary>
+    /// Avoid multiple refresh requests.
+    /// </summary>
+    private bool refreshPending = false;
+
+    /// <summary>
+    /// When enabled, refresh layout.
+    /// </summary>
+    public void OnEnable()
+    {
+        Refresh();
+    }
+
+    /// <summary>
     /// refresh 
     /// </summary>
     public void Refresh()
     {
-        StartCoroutine(RefreshCoroutine());
+        if (isActiveAndEnabled && !refreshPending)
+        {
+            StartCoroutine(RefreshCoroutine());
+        }
     }
     
     /// <summary>
@@ -27,12 +44,13 @@ public class RefreshContent : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RefreshCoroutine()
     {
+        refreshPending = true;
         yield return null;
+        refreshPending = false;
 
         if (contentSizeFitter != null)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentSizeFitter.gameObject.GetComponent<RectTransform>());
         }
-
     }
 }

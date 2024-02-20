@@ -66,7 +66,12 @@ namespace Azure.Communication.Calling.Unity
                 if (value != _isAuthenticated)
                 {
                     _isAuthenticated = value;
-                    RaiseIsAuthenticatedChanged(value);
+                    if (_isAuthenticated)
+                    {
+                        OnAuthenticated();
+                    }
+                    IsAuthenticationChanged?.Invoke(this, value);
+                    isAuthenticatedChanged?.Invoke(value);
                 }
             }
         }
@@ -75,18 +80,12 @@ namespace Azure.Communication.Calling.Unity
         #region MonoBehaviour Functions
         protected virtual void Start()
         {
-            UpdateAccess(AuthenticationRequest);
-
-            // value starts false. If still false raise event so UI can update
-            if (!IsAuthenticated)
-            {
-                RaiseIsAuthenticatedChanged(IsAuthenticated);
-            }
+            UpdateAccessRequest(AuthenticationRequest);
         }
 
         protected virtual void OnDestroy()
         {
-            UpdateAccess(accressRequest: null);
+            UpdateAccessRequest(accressRequest: null);
         }
         #endregion MonoBehavior Functions
 
@@ -98,7 +97,7 @@ namespace Azure.Communication.Calling.Unity
         #endregion Protected Functions
 
         #region Private Functions
-        private void UpdateAccess(IAuthenticationRequest accressRequest)
+        private void UpdateAccessRequest(IAuthenticationRequest accressRequest)
         {
             if (_authenticationRequest != null)
             {
@@ -127,16 +126,6 @@ namespace Azure.Communication.Calling.Unity
         private void UpdateIsAuthenticated()
         { 
             IsAuthenticated = !string.IsNullOrEmpty(Token);
-            if (IsAuthenticated)
-            {
-                OnAuthenticated();
-            }
-        }
-
-        private void RaiseIsAuthenticatedChanged(bool value)
-        {
-            IsAuthenticationChanged?.Invoke(this, value);
-            isAuthenticatedChanged?.Invoke(value);
         }
         #endregion
     }
