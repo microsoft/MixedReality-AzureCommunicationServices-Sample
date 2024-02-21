@@ -49,6 +49,7 @@ public abstract class CallScenario : MonoBehaviour
     private bool updateIncomingAudioStatus = false;
     private bool updateVideoCaptureStartedOrEnded = false;
     private int defaultCamIndex = 0;
+    const string defaultCameraName = "QC Back Camera";
 
     private List<VideoDeviceControls> videoDeviceControlList = new List<VideoDeviceControls>();
     protected bool isSharedCamera = true;
@@ -465,16 +466,18 @@ public abstract class CallScenario : MonoBehaviour
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
-        if (CurrentCall is not null)
+        if (CurrentCall != null)
         {
             return CurrentCall?.AddParticipant(personID);
         }
         else
+        {
             return null;
+        }
     }
 
     /// <summary>
-    /// remove a participant from this call 
+    /// Remove a participant from this call 
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
@@ -1121,7 +1124,7 @@ public abstract class CallScenario : MonoBehaviour
                 videoDevCtrl.CapturingChanged += OnVideoCapturingChanged;
 
                 // default camera for HoloLens2
-                if (item.Name.Contains("QC Back Camera"))
+                if (item.Name.Contains(defaultCameraName))
                 {
                     defaultCamIndex = videoDeviceControlList.Count - 1;
                 }

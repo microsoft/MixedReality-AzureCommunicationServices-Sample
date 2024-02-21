@@ -34,27 +34,27 @@ public class CallPreviewManager : AuthenticatedOperation
     private GameObject callPreviewPanel;
 
     /// <summary>
-    /// current meeting 
+    /// Current meeting 
     /// </summary>
     private EventView curMeeting = null;
 
     /// <summary>
-    /// user controler 
+    /// User controler 
     /// </summary>
     private UserController userControler;
     
     /// <summary>
-    /// people getter, to get user info
+    /// People getter, to get user info
     /// </summary>
     private PeopleGetter peopleGetter;
     
     /// <summary>
-    /// photo getter, to get user icon 
+    /// Photo getter, to get user icon 
     /// </summary>
     private PhotoGetter photoGettter;
     
     /// <summary>
-    /// keep track of all the attendees 
+    /// Keep track of all the attendees 
     /// </summary>
     private List<AttendeeInfo> allAttendeeInfos = new List<AttendeeInfo>();
     public List<AttendeeInfo> AllAttendeeInfos
@@ -62,12 +62,12 @@ public class CallPreviewManager : AuthenticatedOperation
         get { return allAttendeeInfos;  }
     }
     /// <summary>
-    /// join URL of the meeting 
+    /// Join URL of the meeting 
     /// </summary>
     private string joinURL;
     
     /// <summary>
-    /// meeting ID 
+    /// Meeting ID 
     /// </summary>
     private string meetingID;
 
@@ -102,7 +102,7 @@ public class CallPreviewManager : AuthenticatedOperation
     }
 
     /// <summary>
-    /// show the meeting info: meeting title, all attendees with name and respsonse status
+    /// Show the meeting info: meeting title, all attendees with name and respsonse status
     /// this meeting info is coming from MS graph
     /// </summary>
     /// <param name="meeting"></param>
@@ -170,10 +170,7 @@ public class CallPreviewManager : AuthenticatedOperation
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariables("", "", PageType.Participants);
-                    userObject.SetName(attendee.emailAddress.address);
-                    userObject.SetProfileIcon(null);
-                    userObject.SetPresenceIcon(PresenceAvailability.Offline);
+                    userObject.SetVariablesAndUI("", "", PageType.Participants, attendee.emailAddress.address, null, PresenceAvailability.Offline); ;
                 }
             }
             else
@@ -182,10 +179,7 @@ public class CallPreviewManager : AuthenticatedOperation
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                    userObject.SetName(profile.DisplayName);
-                    userObject.SetProfileIcon(profile.Icon);
-                    userObject.SetPresenceIcon(profile.Presence);
+                    userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                     attendeeInfo.ID = profile.Id;
                 }
             }
@@ -198,7 +192,7 @@ public class CallPreviewManager : AuthenticatedOperation
     }
 
     /// <summary>
-    /// retrieve user profile from email address 
+    /// Retrieve user profile from email address 
     /// </summary>
     /// <param name="userList"></param>
     private void GetPeopleHandler(IUsers userList)
@@ -209,7 +203,7 @@ public class CallPreviewManager : AuthenticatedOperation
     }
 
     /// <summary>
-    /// handler when attendees photo are loaded 
+    /// Handler when attendees photo are loaded 
     /// </summary>
     /// <param name="usersProfile"></param>
     public void OnAllPhotosLoaded(List<StaticUserProfile> usersProfile)
@@ -225,10 +219,7 @@ public class CallPreviewManager : AuthenticatedOperation
                     var userObject = attendee.GetComponent<UserObject>();
                     if (userObject != null)
                     {
-                        userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                        userObject.SetName(profile.DisplayName);
-                        userObject.SetProfileIcon(profile.Icon);
-                        userObject.SetPresenceIcon(profile.Presence);
+                        userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                         attendee.ID = profile.Id;
                     }   
                 }
@@ -236,7 +227,7 @@ public class CallPreviewManager : AuthenticatedOperation
         }
     } 
     /// <summary>
-    /// get called when attendee selection changes, if one or more attendees are selected
+    /// Get called when attendee selection changes, if one or more attendees are selected
     /// the remove attendee button will be shown
     /// </summary>
     private void OnSelectedAttendeesChanged()
@@ -248,7 +239,7 @@ public class CallPreviewManager : AuthenticatedOperation
     }
     
     /// <summary>
-    /// remove selected attendees by updating meeting
+    /// Remove selected attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -300,7 +291,7 @@ public class CallPreviewManager : AuthenticatedOperation
     }
     
     /// <summary>
-    /// called when clicking on the remove button 
+    /// Called when clicking on the remove button 
     /// </summary>
     public async void OnRemoveButtonClicked()
     {
@@ -309,7 +300,7 @@ public class CallPreviewManager : AuthenticatedOperation
     } 
     
     /// <summary>
-    /// add new attendees by updating meeting
+    /// Add new attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -342,10 +333,13 @@ public class CallPreviewManager : AuthenticatedOperation
             var newAttendeeInfo = newAttendee.GetComponent<AttendeeInfo>();
             if (userObject != null)
             {
-                userObject.SetVariables(UserController.SelectedUserObject.Id, UserController.SelectedUserObject.Email, PageType.Participants);
-                userObject.SetName(UserController.SelectedUserObject.DisplayName);
-                userObject.SetProfileIcon(null);
-                userObject.SetPresenceIcon(UserController.SelectedUserObject.Presence);
+                userObject.SetVariablesAndUI(
+                    UserController.SelectedUserObject.Id, 
+                    UserController.SelectedUserObject.Email, 
+                    PageType.Participants, 
+                    UserController.SelectedUserObject.DisplayName, 
+                    null, 
+                    UserController.SelectedUserObject.Presence);
 
                 newAttendeeInfo.Email = UserController.SelectedUserObject.Email;
                 newAttendeeInfo.ID = UserController.SelectedUserObject.Id;
@@ -369,11 +363,11 @@ public class CallPreviewManager : AuthenticatedOperation
     }
 
     /// <summary>
-    /// join this meeting 
+    /// Join this meeting 
     /// </summary>
     public void JoinMeeting()
     {
-        if (curMeeting is not null)
+        if (curMeeting != null)
         {
             curMeeting.JoinMeeting();
         }

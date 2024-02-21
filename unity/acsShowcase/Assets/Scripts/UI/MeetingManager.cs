@@ -257,7 +257,7 @@ public class MeetingManager : MonoBehaviour
         ApplyPendingActions();
         if (startListeningComingCall)
         {
-            if (currentActiveCall is not null)
+            if (currentActiveCall != null)
             {
                 // wait for previous call agent to be destroyed before start listening 
                 if (currentActiveCall.CurrentCallAgent == null)
@@ -351,7 +351,7 @@ public class MeetingManager : MonoBehaviour
         }
 
         var newUser = new TeamsUserIdentity(person);
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
             return currentActiveCall.AddParticipant(newUser.CreateIdentifier());
         else
             return null;
@@ -362,7 +362,7 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
         {
             await currentActiveCall.RemoveParticipant(identifier);
         }
@@ -445,7 +445,7 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     private void UpdateCamera()
     {
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
         {
             if (isSharedCamera)
             {
@@ -482,7 +482,7 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     private void UpdateMicrophone()
     {
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
         {
             if (isMute)
             {
@@ -518,7 +518,7 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     private void UpdateSpeaker()
     {
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
         {
             if (isSpeakerOff)
                 currentActiveCall.MuteSpeaker();
@@ -533,7 +533,7 @@ public class MeetingManager : MonoBehaviour
     /// </summary>
     public void Leave()
     {
-        if (currentActiveCall is not null)
+        if (currentActiveCall != null)
         {
             currentActiveCall.Leave();
             startListeningComingCall = true;

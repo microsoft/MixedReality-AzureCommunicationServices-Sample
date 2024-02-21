@@ -142,10 +142,13 @@ public class UserObject : MonoBehaviour
     /// <param name="userObject"></param>
     public void Copy(UserObject userObject)
     {
-        SetVariables(userObject.Id, userObject.Email, userObject.UserObjectPageType);
-        SetName(userObject.DisplayName);
-        SetProfileIcon((Texture2D)userObject.profileIcon.texture);
-        SetPresenceIcon(userObject.presenceAvail);
+        SetVariablesAndUI(
+            userObject.Id, 
+            userObject.Email, 
+            userObject.UserObjectPageType, 
+            userObject.DisplayName, 
+            (Texture2D)userObject.profileIcon.texture, 
+            userObject.presenceAvail);
     }
 
     
@@ -267,6 +270,23 @@ public class UserObject : MonoBehaviour
     /// <param name="id"></param>
     /// <param name="email"></param>
     /// <param name="pageType"></param>
+    /// <param name="name"></param>
+    /// <param name="texture"></param>
+    /// <param name="presenceRecieved"></param>
+    public void SetVariablesAndUI(string id, string email, PageType pageType, string name, Texture2D texture, PresenceAvailability presenceRecieved)
+    {
+        SetVariables(id, email, pageType);
+        SetName(name);
+        SetProfileIcon(texture);
+        SetPresenceIcon(presenceRecieved);
+    }
+
+    /// <summary>
+    /// set info 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="email"></param>
+    /// <param name="pageType"></param>
     public void SetVariables(string id, string email, PageType pageType)
     {
         this.id = id;
@@ -295,7 +315,7 @@ public class UserObject : MonoBehaviour
     /// <param name="texture"></param>
     public void SetProfileIcon(Texture2D texture)
     {
-        if (texture != null && texture.name != "Ellipse 8")
+        if (texture != null)
         {
             SetForIcon();
             profileIcon.texture = texture;
