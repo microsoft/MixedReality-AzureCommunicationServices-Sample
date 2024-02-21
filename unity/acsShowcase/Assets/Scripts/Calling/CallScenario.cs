@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Azure.Communication.Calling.Unity;
 using Azure.Communication.Calling.UnityClient;
 using System;
 using System.Collections.Concurrent;
@@ -46,12 +47,12 @@ public abstract class CallScenario : MonoBehaviour
     private bool updateListeningStatus = false;
     private bool updateOutgoingAudioStatus = false;
     private bool updateIncomingAudioStatus = false;
+    private bool updateVideoCaptureStartedOrEnded = false;
     private int defaultCamIndex = 0;
 
     private List<VideoDeviceControls> videoDeviceControlList = new List<VideoDeviceControls>();
     protected bool isSharedCamera = true;
 
-    const string defaultCameraName = "QC Back Camera";
     const string labelRaw = "Raw";
     const string labelStandard = "Std";
     protected ConcurrentQueue<Action> pendingActions = new ConcurrentQueue<Action>();
@@ -86,9 +87,6 @@ public abstract class CallScenario : MonoBehaviour
     [Header("Base Events")] [SerializeField] [Tooltip("Event fired when status changes.")]
     private UnityEvent<CallState> statusChanged = new UnityEvent<CallState>();
 
-    [SerializeField] [Tooltip("Event fired when mute status changes.")]
-    private StringChangeEvent muteStatusChanged = new StringChangeEvent();
-
     [SerializeField] [Tooltip("Event fired when speaker mute status changes.")]
     private StringChangeEvent speakerMuteStatusChanged = new StringChangeEvent();
 
@@ -118,6 +116,42 @@ public abstract class CallScenario : MonoBehaviour
 
     [SerializeField] [Tooltip("Event fired when output video devices changed.")]
     private ObjectChangeEvent videoDeviceControlsChanged = new ObjectChangeEvent();
+
+    [SerializeField]
+    [Tooltip("Event fired when mic audio is muted.")]
+    private UnityEvent muted = new UnityEvent();
+
+    /// <summary>
+    /// Event fired when mic audio is unmuted
+    /// </summary>
+    public UnityEvent Muted => muted;
+
+    [SerializeField]
+    [Tooltip("Event fired when mic audio is unmuted.")]
+    private UnityEvent unmuted = new UnityEvent();
+
+    /// <summary>
+    /// Event fired when mic audio is unmuted
+    /// </summary>
+    public UnityEvent Unmuted => unmuted;
+
+    [SerializeField]
+    [Tooltip("Event fired when video is being captured.")] 
+    private UnityEvent videoCaptureStarted = new UnityEvent();
+
+    /// <summary>
+    /// Event fired when video is being captured.
+    /// </summary>
+    public UnityEvent VideoCaptureStarted => videoCaptureStarted;
+
+    [SerializeField]
+    [Tooltip("Event fired when video is no longer being captured.")]
+    private UnityEvent videoCaptureEnded = new UnityEvent();
+
+    /// <summary>
+    /// Event fired when video is no longer being captured.
+    /// </summary>
+    public UnityEvent VideoCaptureEnded => videoCaptureEnded;
 
     protected SingleAsyncRunner SingleAsyncRunner
     {
@@ -198,6 +232,7 @@ public abstract class CallScenario : MonoBehaviour
                 InvalidateRemoteParticipants();
                 InvalidateOutgoingAudioStatus();
                 InvalidateIncomingAudioStatus();
+                InvalidateVideoCaptureStartedOrEnded();
             }
         }
     }
@@ -245,6 +280,7 @@ public abstract class CallScenario : MonoBehaviour
         InvalidateListeningStatus();
         InvalidateOutgoingAudioStatus();
         InvalidateIncomingAudioStatus();
+        InvalidateVideoCaptureStartedOrEnded();
         LoadDeviceManager();
         ScenarioStarted();
     }
@@ -308,6 +344,12 @@ public abstract class CallScenario : MonoBehaviour
         {
             updateIncomingAudioStatus = false;
             UpdateIncomingAudioStatus();
+        }
+
+        if (updateVideoCaptureStartedOrEnded)
+        {
+            updateVideoCaptureStartedOrEnded = false;
+            UpdateVideoCaptureStartedOnEnded();
         }
     }
 
@@ -404,7 +446,8 @@ public abstract class CallScenario : MonoBehaviour
         if (videoDeviceControlList.Count > 0)
         {
             videoDeviceControlList[defaultCamIndex].StartCapture();
-        }
+            InvalidateVideoCaptureStartedOrEnded();
+        }        
     }
 
     public void UnShareCamera()
@@ -413,6 +456,7 @@ public abstract class CallScenario : MonoBehaviour
         if (videoDeviceControlList.Count > 0)
         {
             videoDeviceControlList[defaultCamIndex].StopCapture();
+            InvalidateVideoCaptureStartedOrEnded();
         }
     }
     
@@ -421,27 +465,23 @@ public abstract class CallScenario : MonoBehaviour
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
-        if (CurrentCall != null)
+        if (CurrentCall is not null)
         {
             return CurrentCall?.AddParticipant(personID);
         }
         else
-        {
             return null;
-        }
     }
 
     /// <summary>
-    /// Remove a participant from this call 
+    /// remove a participant from this call 
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
-        if (CurrentCall != null)
+        if (CurrentCall is not null)
         {
             if (CurrentCall != null && identifier != null)
-            {
                 await CurrentCall.RemoveParticipantAsync(identifier);
-            }
         }
     }
 
@@ -452,9 +492,7 @@ public abstract class CallScenario : MonoBehaviour
     public virtual void Leave()
     {
         if (isSharedCamera)
-        {
             UnShareCamera();
-        }
         
         CurrentCallAgent = null;
         SingleAsyncRunner.QueueAsync(async () =>
@@ -465,21 +503,26 @@ public abstract class CallScenario : MonoBehaviour
 
     protected async Task HangUpCurrentCall()
     {
-        if (CurrentCall != null)
+        var call = CurrentCall;
+        CurrentCall = null;
+
+        if (call != null && 
+            call.State != CallState.Disconnected &&
+            call.State != CallState.Disconnecting)
         {
             try
             {
-                await CurrentCall.HangUpAsync(new HangUpOptions()
+                await call.HangUpAsync(new HangUpOptions()
                 {
                     ForEveryone = false
                 });
             }
             catch (Exception e)
             {
-                Debug.LogError("Error HangUpCurrentCall. Exception: " + e.Message);
+                Log.Error<CallScenario>($"Error HangUpCurrentCall. Exception: {e.Message}");
             }
-            CurrentCall = null;
         }
+
         InvalidateStatus();
     }
 
@@ -491,7 +534,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new outgoing video options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new outgoing video options while there is an active call.");
             return null;
         }
 
@@ -509,7 +552,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new incoming video options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new incoming video options while there is an active call.");
             return null;
         }
 
@@ -524,7 +567,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new outgoing audio options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new outgoing audio options while there is an active call.");
             return null;
         }
 
@@ -547,7 +590,7 @@ public abstract class CallScenario : MonoBehaviour
     {
         if (CurrentCall != null)
         {
-            Debug.LogError("Unable to create new incoming audio options while there is an active call.");
+            Log.Error<CallScenario>("Unable to create new incoming audio options while there is an active call.");
             return null;
         }
 
@@ -626,6 +669,11 @@ public abstract class CallScenario : MonoBehaviour
         updateIncomingAudioStatus = true;
     }
 
+    protected void InvalidateVideoCaptureStartedOrEnded()
+    {
+        updateVideoCaptureStartedOrEnded = true;
+    }
+
     private void OnCurrentCallStateChanged(object sender, PropertyChangedEventArgs args)
     {
         InvalidateStatus();
@@ -683,7 +731,7 @@ public abstract class CallScenario : MonoBehaviour
 
     private void OnOutgoingVideoStreamFormatChanged(object sender, VideoStreamFormatChangedEventArgs args)
     {
-        Debug.LogError("Unable handle outgoing video format change.");
+        Log.Error<CallScenario>("Unable handle outgoing video format change.");
     }
 
     private void OnRawOutgoingAudioStreamStateChanged(object sender, AudioStreamStateChangedEventArgs args)
@@ -738,7 +786,7 @@ public abstract class CallScenario : MonoBehaviour
         if (customAudioReceiver != null && stream != null && args.AudioBuffer.Count > 0)
         {
             var participantIds = args.RemoteParticipantIds;
-            Debug.Log($"Using ummixed audio for participant id = {(participantIds != null && participantIds.Count > 0 ? participantIds[0] : "empty")}");
+            Log.Verbose<CallScenario>($"Using ummixed audio for participant id = {(participantIds != null && participantIds.Count > 0 ? participantIds[0] : "empty")}");
             customAudioReceiver.AddSamples(args.AudioBuffer[0].Buffer);
         }
     }
@@ -825,7 +873,14 @@ public abstract class CallScenario : MonoBehaviour
             muted = CurrentCall.IsOutgoingAudioMuted;
         }
 
-        muteStatusChanged?.Invoke(muted ? "Muted" : "Unmuted");
+        if (muted)
+        {
+            Muted?.Invoke();
+        }
+        else
+        {
+            Unmuted?.Invoke();
+        }
     }
 
     private void UpdateListeningStatus()
@@ -856,6 +911,25 @@ public abstract class CallScenario : MonoBehaviour
         requestedIncomingAudioStatus?.Invoke(rawIncomingAudioRequested ? labelRaw : labelStandard);
         incomingAudioStatus?.Invoke(rawIncomingAudioStream != null ? labelRaw : labelStandard);
         UpdateOutgoingAndIncomingAudioStatus();
+    }
+
+    private void UpdateVideoCaptureStartedOnEnded()
+    {
+        int activeVideoCaptures = 0;
+
+        if (CurrentCall != null)
+        {
+            activeVideoCaptures = CurrentCall.OutgoingVideoStreams.Count;
+        }
+
+        if (activeVideoCaptures > 0)
+        {
+            videoCaptureStarted?.Invoke();
+        }
+        else
+        {
+            videoCaptureEnded?.Invoke();
+        }
     }
 
     private void UpdateOutgoingAndIncomingAudioStatus()
@@ -969,17 +1043,18 @@ public abstract class CallScenario : MonoBehaviour
         if (rawOutgoingVideoStream != null)
         {
             _ = StopVideoCapture(rawOutgoingVideoStream);
-            rawOutgoingVideoStream = null;
 
             try
             {
-                rawOutgoingVideoStream.StateChanged += OnOutgoingVideoStreamStateChanged;
+                rawOutgoingVideoStream.StateChanged -= OnOutgoingVideoStreamStateChanged;
                 rawOutgoingVideoStream.FormatChanged -= OnOutgoingVideoStreamFormatChanged;
             }
             catch (Exception)
             {
                 // BUGBUG sometimes removing event handlers throws
             }
+
+            rawOutgoingVideoStream = null;
         }
 
         rawOutgoingVideoStreamOptions = null;
@@ -1014,13 +1089,25 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateVideoDeviceControls()
     {
-        List<object> videoDeviceControls = new List<object>();
+        var newVideoDeviceControls = new List<object>();
+
+        if (videoDeviceControlList != null)
+        {
+            foreach (var item in videoDeviceControlList)
+            {
+                item.CapturingChanged -= OnVideoCapturingChanged;
+                item.Dispose();
+            }
+            videoDeviceControlList.Clear();
+        }
 
         if (rawOutgoingVideoStream != null)
         {
             VideoDeviceControls videoDevCtrl = new VideoDeviceControls("Scene Generate", rawOutgoingVideoStream, StartVideoCapture, StopVideoCapture);
             videoDeviceControlList.Add(videoDevCtrl);
-            videoDeviceControls.Add(videoDevCtrl);
+            newVideoDeviceControls.Add(videoDevCtrl);
+            videoDevCtrl.CapturingChanged += OnVideoCapturingChanged;
+
         }
 
         if (CurrentDeviceManager != null)
@@ -1030,16 +1117,18 @@ public abstract class CallScenario : MonoBehaviour
             {
                 VideoDeviceControls videoDevCtrl = new VideoDeviceControls(item.Name, new LocalOutgoingVideoStream(item), StartVideoCapture, StopVideoCapture);
                 videoDeviceControlList.Add(videoDevCtrl);
-                videoDeviceControls.Add(videoDevCtrl);
+                newVideoDeviceControls.Add(videoDevCtrl);
+                videoDevCtrl.CapturingChanged += OnVideoCapturingChanged;
+
                 // default camera for HoloLens2
-                if (item.Name.Contains(defaultCameraName))
+                if (item.Name.Contains("QC Back Camera"))
                 {
                     defaultCamIndex = videoDeviceControlList.Count - 1;
                 }
             }
         }
 
-        videoDeviceControlsChanged?.Invoke(videoDeviceControls);
+        videoDeviceControlsChanged?.Invoke(newVideoDeviceControls);
     }
 
     private async Task<bool> StartVideoCapture(OutgoingVideoStream outgoingVideoStream)
@@ -1057,7 +1146,7 @@ public abstract class CallScenario : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to start video. Exception: {ex}");
+                    Log.Error<CallScenario>($"Failed to start video. Exception: {ex}");
                 }
             }
             else
@@ -1095,7 +1184,7 @@ public abstract class CallScenario : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to stop video. Exception: {ex}");
+                    Log.Error<CallScenario>($"Failed to stop video. Exception: {ex}");
                 }
             }
             else
@@ -1133,5 +1222,10 @@ public abstract class CallScenario : MonoBehaviour
         {
             stream.SendRawAudioBufferAsync((RawAudioBuffer)args.Container).Wait();
         }
+    }
+
+    private void OnVideoCapturingChanged(object sender, bool capturing)
+    {
+        InvalidateVideoCaptureStartedOrEnded();
     }
 }

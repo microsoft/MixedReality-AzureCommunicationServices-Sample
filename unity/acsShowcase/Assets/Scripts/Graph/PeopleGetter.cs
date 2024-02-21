@@ -31,8 +31,11 @@ namespace Azure.Communication.Calling.Unity
         [SerializeField]
         private PeopleChangedEvent peopleChanged = new PeopleChangedEvent();
 
-        public static event Action<PeopleGetter, PeopleChangedEventArgs> PeopleChanged;
-        public static event Action<string> SendToken;
+        /// <summary>
+        /// Event raised when the list of people changes.
+        /// </summary>
+        public event Action<PeopleGetter, PeopleChangedEventArgs> PeopleChanged;
+
         public delegate void GetPeopleHandler(IUsers allUsers);
         
         
@@ -41,7 +44,6 @@ namespace Azure.Communication.Calling.Unity
         #region Public Properties
         public IReadOnlyList<IUser> People { get; private set; }
         #endregion Public Properties
-
         
         #region Protected Functions
         protected override void OnAuthenticated()
@@ -82,7 +84,7 @@ namespace Azure.Communication.Calling.Unity
         {
             IUsers people = null;
             string token = Token;
-            SendToken?.Invoke(token);
+
             if (!string.IsNullOrEmpty(token))
             {
                 Log.Verbose<PeopleGetter>("Requesting for people from the Microsoft Graph...");

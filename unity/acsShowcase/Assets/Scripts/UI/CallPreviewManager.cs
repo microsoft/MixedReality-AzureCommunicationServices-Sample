@@ -2,20 +2,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Communication.Calling.Unity;
 using Azure.Communication.Calling.Unity.Rest;
-using Azure.Communication.Calling.UnityClient;
-using TMPro; 
+using TMPro;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
+
 /// <summary>
 /// This class controls the window for a call preview, after clicking join from a meeting on the main panel.
 /// </summary>
-public class CallPreviewManager : MonoBehaviour
+public class CallPreviewManager : AuthenticatedOperation
 {
     [SerializeField] [Tooltip("The parent game object that contains the list of all the attendees")]
     private GameObject attendeeContainer;
@@ -36,27 +34,27 @@ public class CallPreviewManager : MonoBehaviour
     private GameObject callPreviewPanel;
 
     /// <summary>
-    /// Current meeting 
+    /// current meeting 
     /// </summary>
     private EventView curMeeting = null;
 
     /// <summary>
-    /// User controller 
+    /// user controler 
     /// </summary>
     private UserController userControler;
     
     /// <summary>
-    /// People getter, to get user info
+    /// people getter, to get user info
     /// </summary>
     private PeopleGetter peopleGetter;
     
     /// <summary>
-    /// Photo getter, to get user icon 
+    /// photo getter, to get user icon 
     /// </summary>
     private PhotoGetter photoGettter;
     
     /// <summary>
-    /// Keep track of all the attendees 
+    /// keep track of all the attendees 
     /// </summary>
     private List<AttendeeInfo> allAttendeeInfos = new List<AttendeeInfo>();
     public List<AttendeeInfo> AllAttendeeInfos
@@ -64,17 +62,12 @@ public class CallPreviewManager : MonoBehaviour
         get { return allAttendeeInfos;  }
     }
     /// <summary>
-    /// Join URL of the meeting 
+    /// join URL of the meeting 
     /// </summary>
     private string joinURL;
     
     /// <summary>
-    /// Authentication token
-    /// </summary>
-    private string authentificationToken;
-    
-    /// <summary>
-    /// Meeting ID 
+    /// meeting ID 
     /// </summary>
     private string meetingID;
 
@@ -96,7 +89,6 @@ public class CallPreviewManager : MonoBehaviour
     {
         UserObject.OnSelectedParticipantsChanged += OnSelectedAttendeesChanged;
         UserObject.OnSelectedParticipantToAdd += OnSelectedAddingAttendee;
-        PeopleGetter.SendToken += PeopleGetter_SendToken;
     }
 
     /// <summary>
@@ -106,23 +98,11 @@ public class CallPreviewManager : MonoBehaviour
     {
         UserObject.OnSelectedParticipantsChanged -= OnSelectedAttendeesChanged;
         UserObject.OnSelectedParticipantToAdd -= OnSelectedAddingAttendee;
-        PeopleGetter.SendToken -= PeopleGetter_SendToken;
         attendeeStatus.text = "";
     }
 
-
     /// <summary>
-    /// Set token for REST api call 
-    /// </summary>
-    /// <param name="token"></param>
-    private void PeopleGetter_SendToken(string token)
-    {
-        authentificationToken = token;
-    }
-
-
-    /// <summary>
-    /// Show the meeting info: meeting title, all attendees with name and respsonse status
+    /// show the meeting info: meeting title, all attendees with name and respsonse status
     /// this meeting info is coming from MS graph
     /// </summary>
     /// <param name="meeting"></param>
@@ -190,7 +170,10 @@ public class CallPreviewManager : MonoBehaviour
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariablesAndUI("", "", PageType.Participants, attendee.emailAddress.address, null, PresenceAvailability.Offline);
+                    userObject.SetVariables("", "", PageType.Participants);
+                    userObject.SetName(attendee.emailAddress.address);
+                    userObject.SetProfileIcon(null);
+                    userObject.SetPresenceIcon(PresenceAvailability.Offline);
                 }
             }
             else
@@ -199,7 +182,10 @@ public class CallPreviewManager : MonoBehaviour
                 var userObject = newAttendee.GetComponent<UserObject>();
                 if (userObject != null)
                 {
-                    userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
+                    userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
+                    userObject.SetName(profile.DisplayName);
+                    userObject.SetProfileIcon(profile.Icon);
+                    userObject.SetPresenceIcon(profile.Presence);
                     attendeeInfo.ID = profile.Id;
                 }
             }
@@ -212,7 +198,7 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Retrieve user profile from email address 
+    /// retrieve user profile from email address 
     /// </summary>
     /// <param name="userList"></param>
     private void GetPeopleHandler(IUsers userList)
@@ -223,7 +209,7 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Handler when attendees photo are loaded 
+    /// handler when attendees photo are loaded 
     /// </summary>
     /// <param name="usersProfile"></param>
     public void OnAllPhotosLoaded(List<StaticUserProfile> usersProfile)
@@ -239,7 +225,10 @@ public class CallPreviewManager : MonoBehaviour
                     var userObject = attendee.GetComponent<UserObject>();
                     if (userObject != null)
                     {
-                        userObject.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
+                        userObject.SetVariables(profile.Id, profile.Email, PageType.Participants);
+                        userObject.SetName(profile.DisplayName);
+                        userObject.SetProfileIcon(profile.Icon);
+                        userObject.SetPresenceIcon(profile.Presence);
                         attendee.ID = profile.Id;
                     }   
                 }
@@ -247,23 +236,19 @@ public class CallPreviewManager : MonoBehaviour
         }
     } 
     /// <summary>
-    /// Get called when attendee selection changes, if one or more attendees are selected
+    /// get called when attendee selection changes, if one or more attendees are selected
     /// the remove attendee button will be shown
     /// </summary>
     private void OnSelectedAttendeesChanged()
     {
         if (UserController.SelectedUserObjects.Count > 0 && callPreviewPanel.activeSelf)
-        {
             removeAttendeeButton.SetActive(true);
-        }
         else
-        {
             removeAttendeeButton.SetActive(false);
-        }
     }
     
     /// <summary>
-    /// Remove selected attendees by updating meeting
+    /// remove selected attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -301,7 +286,7 @@ public class CallPreviewManager : MonoBehaviour
 
         //Call API to update attendees
         var url = "https://graph.microsoft.com/v1.0/me/onlineMeetings/";
-        return await OnlineMeeting.Patch(authentificationToken,url, meetingID, requestBody);
+        return await OnlineMeeting.Patch(Token, url, meetingID, requestBody);
          
     }
     /// <summary>
@@ -311,11 +296,11 @@ public class CallPreviewManager : MonoBehaviour
     public async Task<IOnlineMeetingResponse> GetOnlineMeetingInfo()
     {   
         //Call API to update attendees
-        return await OnlineMeeting.Get(authentificationToken,joinURL);
+        return await OnlineMeeting.Get(Token, joinURL);
     }
     
     /// <summary>
-    /// Called when clicking on the remove button 
+    /// called when clicking on the remove button 
     /// </summary>
     public async void OnRemoveButtonClicked()
     {
@@ -324,7 +309,7 @@ public class CallPreviewManager : MonoBehaviour
     } 
     
     /// <summary>
-    /// Add new attendees by updating meeting
+    /// add new attendees by updating meeting
     /// https://learn.microsoft.com/en-us/graph/api/onlinemeeting-update?view=graph-rest-1.0&tabs=http
     /// NOTE: this feature is not working properly. The change is updated accordingly and can be verified using graph API
     /// however the change does not reflect properly on the Teams app.   
@@ -357,7 +342,11 @@ public class CallPreviewManager : MonoBehaviour
             var newAttendeeInfo = newAttendee.GetComponent<AttendeeInfo>();
             if (userObject != null)
             {
-                userObject.SetVariablesAndUI(UserController.SelectedUserObject.Id, UserController.SelectedUserObject.Email, PageType.Participants, UserController.SelectedUserObject.DisplayName, null, UserController.SelectedUserObject.Presence);
+                userObject.SetVariables(UserController.SelectedUserObject.Id, UserController.SelectedUserObject.Email, PageType.Participants);
+                userObject.SetName(UserController.SelectedUserObject.DisplayName);
+                userObject.SetProfileIcon(null);
+                userObject.SetPresenceIcon(UserController.SelectedUserObject.Presence);
+
                 newAttendeeInfo.Email = UserController.SelectedUserObject.Email;
                 newAttendeeInfo.ID = UserController.SelectedUserObject.Id;
                 newAttendeeInfo.ParentGameObject = newAttendee;
@@ -365,7 +354,7 @@ public class CallPreviewManager : MonoBehaviour
 
             //Call API to update attendees
             var url = "https://graph.microsoft.com/v1.0/me/onlineMeetings/";
-            var returnValue = await OnlineMeeting.Patch(authentificationToken, url, meetingID, requestBody);
+            var returnValue = await OnlineMeeting.Patch(Token, url, meetingID, requestBody);
 
             allAttendeeInfos.Add(newAttendeeInfo);
 
@@ -380,13 +369,20 @@ public class CallPreviewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Join this meeting 
+    /// join this meeting 
     /// </summary>
     public void JoinMeeting()
     {
-        if (curMeeting != null) 
+        if (curMeeting is not null)
+        {
             curMeeting.JoinMeeting();
+        }
     }
 
-    
+    /// <summary>
+    /// Called when the app is authenticated and has an authentication token.
+    /// </summary>
+    protected override void OnAuthenticated()
+    {
+    }
 }

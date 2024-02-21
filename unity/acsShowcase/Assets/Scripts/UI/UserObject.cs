@@ -25,27 +25,21 @@ public class UserObject : MonoBehaviour
     private TextMeshProUGUI initialsText;
     [SerializeField] [Tooltip("The texture image of the presence")]
     private List<Texture2D> presences;
-    [SerializeField] [Tooltip("This object is shown when user object is selected")]
-    private GameObject selectedOverlay;
-    [SerializeField] [Tooltip("This object is shown when user object is hovered")]
-    private GameObject hoverOverlay;
     [SerializeField] [Tooltip("The pressable button of this user object")]
     private PressableButton pressableButton;
-    [SerializeField] [Tooltip("minimum duration in second when hover enter and exit")]
-    private float hoverMinDuration = 0.1f;
     
     /// <summary>
-    /// List of background color 
+    /// list of background color 
     /// </summary>
     private List<Color> backgroundColors = new List<Color>() { new Color(170 / 255f, 1, 241 / 255f, 1), new Color(1, 136 / 255f, 145 / 255f, 1), new Color(238 / 255f, 160 / 255f, 1, 1) };
     
     /// <summary>
-    /// List of initial text color 
+    /// list of initial text color 
     /// </summary>
     private List<Color> initialsTextColors = new List<Color>() { new Color(63 / 255f, 118 / 255f, 192 / 255f, 1), new Color(183 / 255f, 32 / 255f, 35 / 255f, 1), new Color(149 / 255f, 32 / 255f, 183 / 255f, 1) };
 
     /// <summary>
-    /// User id 
+    /// user id 
     /// </summary>
     private string id;
     public string Id
@@ -55,7 +49,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// User email
+    /// user email
     /// </summary>
     private string email;
     public string Email
@@ -65,7 +59,7 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// User display name 
+    /// user display name 
     /// </summary>
     private string displayName;
     public string DisplayName
@@ -75,12 +69,22 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Is selected?
+    /// is selected?
     /// </summary>
-    public bool IsSelected = false;
-    
+    public bool IsSelected
+    {
+        get => pressableButton != null && pressableButton.IsToggled.Active;
+        set
+        {
+            if (pressableButton != null)
+            {
+                pressableButton.ForceSetToggled(value);
+            }
+        }
+    }
+
     /// <summary>
-    /// User page type 
+    /// user page type 
     /// </summary>
     private PageType userPageType;
     public PageType UserObjectPageType
@@ -90,18 +94,18 @@ public class UserObject : MonoBehaviour
     }
     
     /// <summary>
-    /// User presence availability 
+    /// user presence availability 
     /// </summary>
     private PresenceAvailability presenceAvail;
     
     
     /// <summary>
-    /// Default icon texture 
+    /// default icon texture 
     /// </summary>
     private Texture defaultIconTexture;
 
     /// <summary>
-    /// User presence 
+    /// user presence 
     /// </summary>
     public PresenceAvailability Presence
     {
@@ -110,33 +114,19 @@ public class UserObject : MonoBehaviour
     }
     
     /// <summary>
-    /// Event fired when participant selection has changed 
+    /// event fired when participant selection has changed 
     /// </summary>
     public static event Action OnSelectedParticipantsChanged;
     
     /// <summary>
-    /// Event fired when participant is selected to add  
+    /// event fired when participant is selected to add  
     /// </summary>
     public static event Action OnSelectedParticipantToAdd;
      
     /// <summary>
-    /// Event fired when selecting a particiant for a one to one call
+    /// event fired when selecting a particiant for a one to one call
     /// </summary>
     public static event Action<UserObject> OnSelectedParticipantCall;
-    /// <summary>
-    /// Time when hover exit occurs 
-    /// </summary>
-    private float exitHoverTime = 0;
-    
-    /// <summary>
-    /// True when it is user button is entering hover 
-    /// </summary>
-    private bool isEnterHover = false;
-    
-    /// <summary>
-    /// True when it is user button is exiting hover 
-    /// </summary>
-    private bool isExitHover = false;
 
     /// <summary>
     /// Start 
@@ -147,36 +137,20 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Update 
-    /// </summary>
-    private void Update()
-    {
-        
-        if (isExitHover)
-        {
-            // avoid flickering of overlay hover image because the hover enter and exit 
-            // can occurs very frequently 
-            if (Time.time - exitHoverTime > hoverMinDuration)
-            {
-                isEnterHover = false;
-                isExitHover = false;
-                OverlayHover(false);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Copy user object 
+    /// copy user object 
     /// </summary>
     /// <param name="userObject"></param>
     public void Copy(UserObject userObject)
     {
-        SetVariablesAndUI(userObject.Id, userObject.Email, userObject.UserObjectPageType, userObject.DisplayName, (Texture2D)userObject.profileIcon.texture, userObject.presenceAvail);
+        SetVariables(userObject.Id, userObject.Email, userObject.UserObjectPageType);
+        SetName(userObject.DisplayName);
+        SetProfileIcon((Texture2D)userObject.profileIcon.texture);
+        SetPresenceIcon(userObject.presenceAvail);
     }
 
     
     /// <summary>
-    /// Select user object 
+    /// select user object 
     /// </summary>
     public void Select()
     {
@@ -197,7 +171,6 @@ public class UserObject : MonoBehaviour
             else
             {
                 UserController.SelectedUserObjects.Add(this);
-                SetSelectedOverlay(true);
                 UserController.SelectedUserObject = this;
                 IsSelected = true;
             }
@@ -216,7 +189,6 @@ public class UserObject : MonoBehaviour
                 if (UserController.SelectedUserObject != null)
                     UserController.SelectedUserObject.Select();
                 UserController.SelectedUserObject = this;
-                SetSelectedOverlay(true);
                 IsSelected = true;
                 UserController.AddToRelevantContacts(this);
             }
@@ -242,52 +214,23 @@ public class UserObject : MonoBehaviour
         if (UserObjectPageType == PageType.Participants)
         {
             UserController.SelectedUserObjects.Remove(this);
-            SetSelectedOverlay(false);
-            OverlayHover(false);
             UserController.SelectedUserObject = null;
             IsSelected = false;
         }
         else
         {
             UserController.SelectedUserObject = null;
-            SetSelectedOverlay(false);
             IsSelected = false;
         }
     }
 
     /// <summary>
-    /// Set interactability
+    /// set interactability
     /// </summary>
     /// <param name="isInteractable"></param>
     public void SetInteractability(bool isInteractable)
     {
         pressableButton.enabled = isInteractable;
-    }
-
-    /// <summary>
-    /// Overlay when it is hoverd 
-    /// </summary>
-    /// <param name="isHovering"></param>
-    public void OverlayHover(bool isHovering)
-    {
-        if (selectedOverlay.activeSelf)
-            isHovering = false;
-        hoverOverlay.SetActive(isHovering);
-        SetOverlayIcon(isHovering, hoverOverlay);
-    }
-
-    /// <summary>
-    /// Overlay when it is selected 
-    /// </summary>
-    /// <param name="setActive"></param>
-    private void SetSelectedOverlay(bool setActive)
-    {
-        if (setActive)
-            hoverOverlay.SetActive(false);
-        selectedOverlay.SetActive(setActive);
-        SetOverlayIcon(setActive, selectedOverlay);
-        if (!setActive && UserController.SelectedUserObject == this)
-            OverlayHover(true);
     }
 
     /// <summary>
@@ -319,29 +262,12 @@ public class UserObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Set info and update UI 
+    /// set info 
     /// </summary>
     /// <param name="id"></param>
     /// <param name="email"></param>
     /// <param name="pageType"></param>
-    /// <param name="name"></param>
-    /// <param name="texture"></param>
-    /// <param name="presenceRecieved"></param>
-    public void SetVariablesAndUI(string id, string email, PageType pageType, string name, Texture2D texture, PresenceAvailability presenceRecieved)
-    {
-        SetVariables(id, email, pageType);
-        SetName(name);
-        SetProfileIcon(texture);
-        SetPresenceIcon(presenceRecieved);
-    }
-
-/// <summary>
-/// set info 
-/// </summary>
-/// <param name="id"></param>
-/// <param name="email"></param>
-/// <param name="pageType"></param>
-public void SetVariables(string id, string email, PageType pageType)
+    public void SetVariables(string id, string email, PageType pageType)
     {
         this.id = id;
         this.email = email;
@@ -350,7 +276,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// Set name 
+    /// set name 
     /// </summary>
     /// <param name="name"></param>
     public void SetName(string name)
@@ -364,12 +290,12 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// Set profile icon 
+    /// set profile icon 
     /// </summary>
     /// <param name="texture"></param>
     public void SetProfileIcon(Texture2D texture)
     {
-        if (texture != null)
+        if (texture != null && texture.name != "Ellipse 8")
         {
             SetForIcon();
             profileIcon.texture = texture;
@@ -382,7 +308,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// Set icon 
+    /// set icon 
     /// </summary>
     private void SetForIcon()
     {
@@ -391,7 +317,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// Set no icon 
+    /// set no icon 
     /// </summary>
     private void SetForNoIcon()
     {
@@ -403,7 +329,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// Get user initial 
+    /// get user initial 
     /// </summary>
     /// <returns></returns>
     private string GetInitials()
@@ -416,7 +342,7 @@ public void SetVariables(string id, string email, PageType pageType)
 
     
     /// <summary>
-    /// Set icon and text color 
+    /// set icon and text color 
     /// </summary>
     private void SetIconAndTextColors()
     {
@@ -426,7 +352,7 @@ public void SetVariables(string id, string email, PageType pageType)
     }
 
     /// <summary>
-    /// Set user presence icon
+    /// set user presence icon
     /// </summary>
     /// <param name="presenceRecieved"></param>
     public void SetPresenceIcon(PresenceAvailability presenceRecieved)
@@ -462,29 +388,6 @@ public void SetVariables(string id, string email, PageType pageType)
                 presence.texture = presences[5];
                 break;
         }
-    }
-
-    /// <summary>
-    /// Called when user button is entering hover mode 
-    /// </summary>
-    public void OnEnterHover()
-    {
-        if (!isEnterHover)
-        {
-            isEnterHover = true;
-            OverlayHover(true);
-        }
-        exitHoverTime = Time.time;
-        isExitHover = false;
-    }
-
-    /// <summary>
-    /// Called when user button is exiting hover mode 
-    /// </summary>
-    public void OnExitHover()
-    {
-        exitHoverTime = Time.time;
-        isExitHover = true;
     }
 }
 

@@ -99,8 +99,10 @@ public class UserController : MonoBehaviour
             profileGetter.ProfileLoaded += OnProfileLoaded;
         }
 
-        PeopleGetter.PeopleChanged += OnPeopleChanged;
-
+        if (peopleGetter != null)
+        {
+            peopleGetter.PeopleChanged += OnPeopleChanged;
+        }
     }
 
     private void OnDisable()
@@ -120,7 +122,10 @@ public class UserController : MonoBehaviour
             profileGetter.ProfileLoaded -= OnProfileLoaded;
         }
 
-        PeopleGetter.PeopleChanged -= OnPeopleChanged;
+        if (peopleGetter != null)
+        {
+            peopleGetter.PeopleChanged -= OnPeopleChanged;
+        }
     }
 
     /// <summary>
@@ -237,18 +242,19 @@ public class UserController : MonoBehaviour
     /// </summary>
     public static void ClearSelectedUserObjects()
     {
-        foreach(var userObject in SelectedUserObjects.ToList())
+        foreach (var userObject in SelectedUserObjects.ToList())
         {
-            if(userObject != null)
+            if (userObject != null)
             {
                 userObject.DeSelect();
-                userObject.OverlayHover(false);
             } 
         }
-        if(SelectedUserObject != null)
+
+        if (SelectedUserObject != null)
         {
             SelectedUserObject.DeSelect();  
         } 
+
         SelectedUserObject = null;
     }
 

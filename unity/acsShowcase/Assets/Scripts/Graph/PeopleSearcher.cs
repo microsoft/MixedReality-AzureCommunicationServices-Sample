@@ -164,7 +164,7 @@ namespace Azure.Communication.Calling.Unity
     {
         [JsonProperty(PropertyName = "id")]
         public string id;
-        [JsonProperty(PropertyName = "displayName")]
+        [JsonProperty(PropertyName = "DisplayName")]
         public string displayName;
         [JsonProperty(PropertyName = "userPrincipalName")]
         public string email;

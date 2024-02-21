@@ -105,7 +105,12 @@ public class ParticipantRepeaterItem : RepeaterItem
         switch (args.Stream.State)
         {
             case VideoStreamState.Available:
-                videoStreamPlayer.Stream = args.Stream;
+                // if the current stream is screen sharing, ignore other kind 
+                if (videoStreamPlayer.Stream == null ||
+                    videoStreamPlayer.Stream.SourceKind != VideoStreamSourceKind.ScreenSharing)
+                {
+                    videoStreamPlayer.Stream = args.Stream;
+                }
                 break;
             case VideoStreamState.Started:
                 break;
