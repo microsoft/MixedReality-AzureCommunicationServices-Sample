@@ -9,7 +9,7 @@ using MixedReality.Toolkit.UX;
 /// </summary>
 public class CustomPinButtonLogic : MonoBehaviour
 {
-    [Tooltip("The UI being controlled.")]
+    [Tooltip("The UI component being controlled.")]
     [SerializeField]
     private MonoBehaviour UI;
 
@@ -19,7 +19,7 @@ public class CustomPinButtonLogic : MonoBehaviour
 
     [Tooltip("The distance the user can travel from the UI before the button is unpinned.")]
     [SerializeField]
-    private float maxDistance = 10.0f;
+    private float maxDistance = 3.0f;
 
     private bool lastPinnedState = true;
 
