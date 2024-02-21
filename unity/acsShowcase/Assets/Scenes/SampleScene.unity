@@ -4731,6 +4731,9 @@ PrefabInstance:
       addedObject: {fileID: 2004951162}
     - targetCorrespondingSourceObject: {fileID: 2335485236933921044, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2004951164}
+    - targetCorrespondingSourceObject: {fileID: 2335485236933921044, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2004951161}
   m_SourcePrefab: {fileID: 100100000, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
 --- !u!1 &1936680214 stripped
@@ -5164,6 +5167,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8a10bdd6850674590a7d931a87adb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2004951164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004951155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2510d1403312fca41bd06c36b321da3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UI: {fileID: 2004951163}
+  pinToggles:
+  - {fileID: 3657285490606564907}
+  - {fileID: 5384054054166637574}
+  maxDistance: 10
 --- !u!1 &2098405344 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4876455793497933649, guid: 621077045ea0ed34fb3590db9ec96bca, type: 3}
@@ -8204,8 +8224,38 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2839998589188716224, guid: 7f00f06956bf4fb4ea97febc9334f312, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 8203963940511611656}
   m_SourcePrefab: {fileID: 100100000, guid: 7f00f06956bf4fb4ea97febc9334f312, type: 3}
+--- !u!114 &8203963940511611655 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 894452531531728232, guid: 7f00f06956bf4fb4ea97febc9334f312, type: 3}
+  m_PrefabInstance: {fileID: 8203963940511611654}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135935529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c8a10bdd6850674590a7d931a87adb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8203963940511611656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135935529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2510d1403312fca41bd06c36b321da3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UI: {fileID: 8203963940511611655}
+  pinToggles:
+  - {fileID: 182679652}
+  maxDistance: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
