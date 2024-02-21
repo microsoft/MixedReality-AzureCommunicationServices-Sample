@@ -17,17 +17,17 @@ public class HorizontalCenterView : MonoBehaviour
     private float rotatingSpeed = 1;
     
     /// <summary>
-    /// temporary distance from the camera for calculation
+    /// Temporary distance from the camera for calculation
     /// </summary>
     private float distFromCamera = -1000;
 
     /// <summary>
-    /// is it rotating (adjusting)
+    /// Is it rotating (adjusting)
     /// </summary>
     private bool isRotating = false;
     
     /// <summary>
-    /// target angle to rotate to the front the camera 
+    /// Target angle to rotate to the front the camera 
     /// </summary>
     private float targetAngle = 0f;
 

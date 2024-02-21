@@ -86,14 +86,17 @@ namespace Azure.Communication.Calling.Unity
                     Log.Error<PresenceGetter>("Failed to obtain user's presence. Exception: {0}", ex);
                 }
             }
+
+
+            var args = new PresenceLoadedEventArgs(null);
             if (presence != null)
             {
                 Log.Verbose<PresenceGetter>("Loaded presence");
                 Presence = presence;
-                var args = new PresenceLoadedEventArgs(presence);
-                presenceLoaded?.Invoke(args);
-                PresenceLoaded?.Invoke(this, args);
+                args = new PresenceLoadedEventArgs(presence);
             }
+            presenceLoaded?.Invoke(args);
+            PresenceLoaded?.Invoke(this, args);
         }
 
         private PresenceAvailability GetPresence(string presence)

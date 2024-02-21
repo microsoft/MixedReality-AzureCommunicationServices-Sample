@@ -46,17 +46,17 @@ public class ParticipantPanelController : MonoBehaviour
     private MeetingManager meetingManager;
     
     /// <summary>
-    /// user controler 
+    /// User controler 
     /// </summary>
     private UserController userControler;
 
     /// <summary>
-    /// add participant event
+    /// Add participant event
     /// </summary>
     public static event Action<GraphUser> OnAddParticipant;
     
     /// <summary>
-    /// remove participant event  
+    /// Remove participant event  
     /// </summary>
     public static event Action<RemoteParticipant> OnRemoveParticipant;
 
@@ -93,7 +93,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// update participant list 
+    /// Update participant list 
     /// </summary>
     /// <returns></returns>
     private IEnumerator OnParticipantListUpdateCoroutine()
@@ -102,7 +102,7 @@ public class ParticipantPanelController : MonoBehaviour
 
         if (meetingManager.IsCurrentActiveCallTeamsMeeting())
         {
-            if (attendeeStatus is not null && participantStatus is not null)
+            if (attendeeStatus != null && participantStatus != null)
                 participantStatus.text = attendeeStatus.text;
         }
         else
@@ -110,7 +110,7 @@ public class ParticipantPanelController : MonoBehaviour
             participantStatus.text = "";
         }
         
-        if (inMeetingPanel is not null && callPreviewManager is not null)
+        if (inMeetingPanel != null && callPreviewManager != null)
         {
             var allInMeetingParticipants = allParticipantListItem.GetComponentsInChildren<ParticipantRepeaterItem>();
             videoController.SetAllParticipant(allInMeetingParticipants);
@@ -134,9 +134,9 @@ public class ParticipantPanelController : MonoBehaviour
 
                 UserObject userObjectParticipant = participant.gameObject.GetComponent<UserObject>();
                 AttendeeInfo responseStatusParticipant = participant.gameObject.GetComponent<AttendeeInfo>();
-                if (responseStatusParticipant is not null)
+                if (responseStatusParticipant != null)
                     responseStatusParticipant.ParentGameObject = participantItem.gameObject;
-                if (userObjectParticipant is not null)
+                if (userObjectParticipant != null)
                 {
                     userObjectParticipant.SetName(participantItem.DisplayName);
                 }
@@ -148,8 +148,8 @@ public class ParticipantPanelController : MonoBehaviour
                     {
                         UserObject userObjectAttendee = attendee.gameObject.GetComponent<UserObject>();
                         AttendeeInfo responseStatusAttendee = attendee.gameObject.GetComponent<AttendeeInfo>();
-                        if (userObjectParticipant is not null && userObjectAttendee is not null &&
-                            responseStatusParticipant is not null && responseStatusAttendee is not null)
+                        if (userObjectParticipant != null && userObjectAttendee != null &&
+                            responseStatusParticipant != null && responseStatusAttendee != null)
                         {
                             userObjectParticipant.Copy(userObjectAttendee);
                             userObjectParticipant.UserObjectPageType = PageType.Participants;
@@ -167,10 +167,7 @@ public class ParticipantPanelController : MonoBehaviour
                     UserProfile profile = userControler.GetUserProfileFromID(participantItem.RemoteParticipant.Identifier.RawId);
                     if (profile != null)
                     {
-                        userObjectParticipant.SetVariables(profile.Id, profile.Email, PageType.Participants);
-                        userObjectParticipant.SetName(profile.DisplayName);
-                        userObjectParticipant.SetProfileIcon(profile.Icon);
-                        userObjectParticipant.SetPresenceIcon(profile.Presence);
+                        userObjectParticipant.SetVariablesAndUI(profile.Id, profile.Email, PageType.Participants, profile.DisplayName, profile.Icon, profile.Presence);
                         userObjectParticipant.UserObjectPageType = PageType.Participants;
                     }
                     else
@@ -185,7 +182,7 @@ public class ParticipantPanelController : MonoBehaviour
             }
 
 
-            if (notInMeetingPanel is not null)
+            if (notInMeetingPanel != null)
             {
                 // remove previous not in meeting participants
                 var children = new List<GameObject>();
@@ -204,15 +201,15 @@ public class ParticipantPanelController : MonoBehaviour
                         AttendeeInfo responseStatusParticipant = participant.gameObject.GetComponent<AttendeeInfo>();
                         UserObject userObjectAttendee = attendee.gameObject.GetComponent<UserObject>();
                         AttendeeInfo responseStatusAttendee = attendee.gameObject.GetComponent<AttendeeInfo>();
-                        if (userObjectParticipant is not null && userObjectAttendee is not null &&
-                            responseStatusParticipant is not null && responseStatusAttendee is not null)
+                        if (userObjectParticipant != null && userObjectAttendee != null &&
+                            responseStatusParticipant != null && responseStatusAttendee != null)
                         {
                             userObjectParticipant.Copy(userObjectAttendee);
                             userObjectParticipant.UserObjectPageType = PageType.Participants;
                             responseStatusParticipant.Copy(responseStatusAttendee);
                         }
 
-                        if (userObjectParticipant is not null)
+                        if (userObjectParticipant != null)
                             userObjectParticipant.SetInteractability(false);
                     }
                 }
@@ -225,12 +222,12 @@ public class ParticipantPanelController : MonoBehaviour
         }
 
         yield return null;
-        if (contentFitter is not null)
+        if (contentFitter != null)
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentFitter.gameObject.GetComponent<RectTransform>());
     }
     
     /// <summary>
-    /// event occurs when participant selection has changed 
+    /// Event occurs when participant selection has changed 
     /// </summary>
     private void OnSelectedParticipantsChanged()
     {
@@ -241,17 +238,16 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// remove participant 
+    /// Remove participant 
     /// </summary>
     public void RemoveParticipants()
     {
         List<ParticipantRepeaterItem> allInMeetingParticipants = new List<ParticipantRepeaterItem>();
-        if (inMeetingPanel is not null)
+        if (inMeetingPanel != null)
         {
             allInMeetingParticipants = inMeetingPanel.GetComponentsInChildren<ParticipantRepeaterItem>().ToList();
         }
 
-        RemoteParticipant remoteParticipant = null;
         foreach (var user in UserController.SelectedUserObjects)
         {
             var attendeeInfo = user.gameObject.GetComponent<AttendeeInfo>();
@@ -291,7 +287,7 @@ public class ParticipantPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// convert user object to graph user 
+    /// Convert user object to graph user 
     /// </summary>
     /// <param name="userObject"></param>
     /// <returns></returns>

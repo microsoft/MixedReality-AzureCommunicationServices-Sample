@@ -92,10 +92,7 @@ public class SearchWindow : MonoBehaviour
                 {
                     var userPrefab = GameObject.Instantiate(horizontalUserPrefab, viewportContent);
                     var userObject = userPrefab.GetComponent<UserObject>();
-                    userObject.SetVariables(user.Id, user.Email, searchPageType); 
-                    userObject.SetName(user.DisplayName);
-                    userObject.SetProfileIcon(user.Icon);
-                    userObject.SetPresenceIcon(user.Presence);
+                    userObject.SetVariablesAndUI(user.Id, user.Email, searchPageType, user.DisplayName, user.Icon, user.Presence);
                 }
             }
             searchResultsCount.text = $"{searchResults.Count - mainUserSearched} Search Results";
@@ -103,7 +100,7 @@ public class SearchWindow : MonoBehaviour
         }
     }
     /// <summary>
-    /// validate search input 
+    /// Validate search input 
     /// </summary>
     /// <param name="text"></param>
     /// <param name="charIndex"></param>
@@ -111,20 +108,20 @@ public class SearchWindow : MonoBehaviour
     /// <returns></returns>
     private char ValidateInput(string text, int charIndex, char addedChar)
     {
-        peopleSearcher.SearchForUsers(text + addedChar);
+        peopleSearcher.Query = text + addedChar;
         return addedChar;
     }  
     
     /// <summary>
-    /// perform the search
+    /// Perform the search
     /// </summary>
     public void PerformSearch()
     {
-        peopleSearcher.SearchForUsers(searchInput.text); 
+        peopleSearcher.Query = searchInput.text; 
     } 
     
     /// <summary>
-    /// clear the search result 
+    /// Clear the search result 
     /// </summary>
     public void ClearSearch()
     {
@@ -138,7 +135,7 @@ public class SearchWindow : MonoBehaviour
     }
     
     /// <summary>
-    /// set search type 
+    /// Set search type 
     /// </summary>
     /// <param name="isMainWindow"></param>
     public void SetSearchPageType(bool isMainWindow)

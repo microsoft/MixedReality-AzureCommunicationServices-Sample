@@ -74,14 +74,18 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
+
+            var args = new ProfileLoadedEventArgs(null);
             if (user != null)
             {
                 Log.Verbose<ProfileGetter>("Loaded profile");
                 Profile = user;
-                var args = new ProfileLoadedEventArgs(user);
+                args = new ProfileLoadedEventArgs(user);
                 profileLoaded?.Invoke(args);
                 ProfileLoaded?.Invoke(this, args);
             }
+            profileLoaded?.Invoke(args);
+            ProfileLoaded?.Invoke(this, args);
         }
         #endregion
     }

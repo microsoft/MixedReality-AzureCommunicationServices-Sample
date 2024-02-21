@@ -16,8 +16,11 @@ public class JoinTeamsMeeting : CallScenario
 
     public string JoinUrl { get; set; }
     
-    [SerializeField] [Tooltip("event occures when receiving new caption text")]
+    [SerializeField] [Tooltip("Event occures when receiving new caption text")]
     private UnityEvent<string> onCaptionReceived = null;
+
+    [SerializeField] [Tooltip("Configure your caption language")]
+    private string captionLanguage = "en-us";
 
     private TeamsCaptions teamsCaptions = null;
 
@@ -103,7 +106,7 @@ public class JoinTeamsMeeting : CallScenario
     {
         CaptionsCallFeature captionsCallFeature = CurrentCall.Features.Captions;
         
-        if (captionsCallFeature is not null)
+        if (captionsCallFeature != null)
         {
             CallCaptions callCaptions = await captionsCallFeature.GetCaptionsAsync();
             if (callCaptions.CaptionsKind == CaptionsType.TeamsCaptions)
@@ -114,7 +117,7 @@ public class JoinTeamsMeeting : CallScenario
 
                 var options = new StartCaptionsOptions
                 {
-                    SpokenLanguage = "en-us"
+                    SpokenLanguage = captionLanguage
                 };
                 try
                 {
@@ -128,7 +131,7 @@ public class JoinTeamsMeeting : CallScenario
         }
         else
         {
-            Debug.LogError("captionsCallFeature is null");
+            Debug.LogError("captionsCallFeature == null");
         }
 
     }

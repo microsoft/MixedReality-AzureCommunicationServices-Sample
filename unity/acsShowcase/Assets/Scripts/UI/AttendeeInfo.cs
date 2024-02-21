@@ -11,14 +11,14 @@ using UnityEngine;
 public class AttendeeInfo : MonoBehaviour
 {
 
-    [SerializeField] [Tooltip("attendee name text display")] 
+    [SerializeField] [Tooltip("Attendee name text display")] 
     private TextMeshProUGUI name;
 
-    [SerializeField] [Tooltip("attendee status display")]
+    [SerializeField] [Tooltip("Attendee status display")]
     private TextMeshProUGUI status;
 
     /// <summary>
-    /// attendee email 
+    /// Attendee email 
     /// </summary>
     private string email;
     
@@ -29,7 +29,7 @@ public class AttendeeInfo : MonoBehaviour
     }
     
     /// <summary>
-    /// attendee id 
+    /// Attendee id 
     /// </summary>
     private string id;
 
@@ -40,7 +40,7 @@ public class AttendeeInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// parent game object place holder 
+    /// Parent game object place holder 
     /// </summary>
     private GameObject parentGameObject = null; 
     public GameObject ParentGameObject 
@@ -51,7 +51,7 @@ public class AttendeeInfo : MonoBehaviour
    
     
     /// <summary>
-    /// set attendee info 
+    /// Set attendee info 
     /// </summary>
     /// <param name="eventAttendee"></param>
 
@@ -63,7 +63,7 @@ public class AttendeeInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// copy attendee info 
+    /// Copy attendee info 
     /// </summary>
     /// <param name="info"></param>
     public void Copy(AttendeeInfo info)
@@ -74,7 +74,7 @@ public class AttendeeInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// set attendee status 
+    /// Set attendee status 
     /// </summary>
     /// <param name="status"></param>
     public void SetStatus(string status)

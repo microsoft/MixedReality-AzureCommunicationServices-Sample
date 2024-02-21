@@ -3,28 +3,27 @@
 
 using UnityEngine;
 
-//namespace Azure.Communication.Calling.Unity.UI
-//{
-    public class RepeaterItem : MonoBehaviour
-    {
-        private object dataSource = null;
 
-        public object DataSource
+public class RepeaterItem : MonoBehaviour
+{
+    private object dataSource = null;
+
+    public object DataSource
+    {
+        get => dataSource;
+        set
         {
-            get => dataSource;
-            set
+            if (dataSource != value)
             {
-                if (dataSource != value)
-                {
-                    var old = dataSource;
-                    dataSource = value;
-                    OnDataSourceChanged(old, dataSource);
-                }
+                var old = dataSource;
+                dataSource = value;
+                OnDataSourceChanged(old, dataSource);
             }
         }
-
-        protected virtual void OnDataSourceChanged(object oldValue, object newValue)
-        {
-        }
     }
-//}
+
+    protected virtual void OnDataSourceChanged(object oldValue, object newValue)
+    {
+    }
+}
+

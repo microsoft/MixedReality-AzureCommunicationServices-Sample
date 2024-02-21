@@ -27,7 +27,7 @@ public class CurrentEventView : EventView
     }
 
     /// <summary>
-    /// update current meeting 
+    /// Update current meeting 
     /// </summary>
     /// <param name="oldValue"></param>
     /// <param name="newValue"></param>
@@ -99,7 +99,7 @@ public class CurrentEventView : EventView
     }
 
     /// <summary>
-    /// display upcoming meeting info
+    /// Display upcoming meeting info
     /// </summary>
     private void UpdateFields()
     {
@@ -158,7 +158,7 @@ public class CurrentEventView : EventView
     }
 
     /// <summary>
-    /// clear the upcoming display 
+    /// Clear the upcoming display 
     /// </summary>
     public void Reset()
     {

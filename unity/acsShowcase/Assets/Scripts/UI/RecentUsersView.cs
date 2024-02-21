@@ -28,7 +28,7 @@ public class RecentUsersView : MonoBehaviour
     private RectTransform contentToRefresh;
     
     /// <summary>
-    /// is viewport expanded?
+    /// Is viewport expanded?
     /// </summary>
     private bool isViewportExpanded;
     
@@ -86,10 +86,7 @@ public class RecentUsersView : MonoBehaviour
             GameObject userPrefab = GameObject.Instantiate(horizontalUserPrefab, scrollViewContent);
             ++count;
             var userObject = userPrefab.GetComponent<UserObject>();
-            userObject.SetVariables(user.Id, user.Email, PageType.RelevantContacts);
-            userObject.SetName(user.DisplayName);
-            userObject.SetProfileIcon(user.Icon);
-            userObject.SetPresenceIcon(user.Presence);
+            userObject.SetVariablesAndUI(user.Id, user.Email, PageType.RelevantContacts, user.DisplayName, user.Icon, user.Presence);
             if(count > 10)
                 userObject.gameObject.SetActive(false);
         }
@@ -125,7 +122,7 @@ public class RecentUsersView : MonoBehaviour
     }
     
     /// <summary>
-    /// to hide or show users
+    /// To hide or show users
     /// </summary>
     /// <param name="hide"></param>
     private void HideOrShowChildren(bool hide)

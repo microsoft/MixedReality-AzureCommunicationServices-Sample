@@ -54,7 +54,7 @@ public class EventView : RepeaterItem
 
     
     /// <summary>
-    /// clear all current selected users 
+    /// Clear all current selected users 
     /// </summary>
     public void ClearSelectedUsers()
     {
@@ -62,7 +62,7 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// update data source 
+    /// Update data source 
     /// </summary>
     /// <param name="oldValue"></param>
     /// <param name="newValue"></param>
@@ -75,7 +75,7 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// update layout 
+    /// Update layout 
     /// </summary>
     private void Layout()
     {
@@ -95,7 +95,7 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// clear the display 
+    /// Clear the display 
     /// </summary>
     private void ClearFields()
     {
@@ -116,11 +116,11 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// update meeting info, make it as incoming meeting if the condition matches 
+    /// Update meeting info, make it as incoming meeting if the condition matches 
     /// </summary>
     private void UpdateFields()
     {
-        if (data is null) return;
+        if (data == null) return;
 
         // ignore if this event is not Teams meeting 
         if (data.onlineMeetingProvider != EventOnlineMeetingProviderType.teamsForBusiness)
@@ -166,7 +166,7 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// join this meeting 
+    /// Join this meeting 
     /// </summary>
     public void JoinMeeting()
     {
@@ -174,7 +174,7 @@ public class EventView : RepeaterItem
     }
 
     /// <summary>
-    /// raise on select event 
+    /// Raise on select event 
     /// </summary>
     public void RaiseOnSelectEvent()
     {

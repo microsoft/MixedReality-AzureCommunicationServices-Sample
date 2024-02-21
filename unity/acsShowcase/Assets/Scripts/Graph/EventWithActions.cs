@@ -118,12 +118,12 @@ namespace Azure.Communication.Calling.Unity
             string joinUrl = inner.onlineMeeting?.joinUrl;
             if (string.IsNullOrEmpty(joinUrl))
             {
-                Log.Error<EventWithActions>("Unable to join event, join url is null or empty ({0})", subject);
+                Log.Error<EventWithActions>("Unable to join event, join url == null or empty ({0})", subject);
             }
             else if (_meetingManager == null)
             {
 
-                Log.Error<EventWithActions>("Unable to join event, meeting manager is null ({0})", subject);
+                Log.Error<EventWithActions>("Unable to join event, meeting manager == null ({0})", subject);
             }
             else
             {

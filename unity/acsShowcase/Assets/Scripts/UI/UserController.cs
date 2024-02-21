@@ -12,22 +12,22 @@ using UnityEngine;
 public class UserController : MonoBehaviour
 {
     /// <summary>
-    /// list of user profiles 
+    /// List of user profiles 
     /// </summary>
     public static List<UserProfile> UserProfiles = new List<UserProfile>();
 
     /// <summary>
-    /// list selected user objects 
+    /// List selected user objects 
     /// </summary>
     public static List<UserObject> SelectedUserObjects = new List<UserObject>();
     
     /// <summary>
-    /// selected user object
+    /// Selected user object
     /// </summary>
     public static UserObject SelectedUserObject = null;
     
     /// <summary>
-    /// fired when user profiles is loaded  
+    /// Fired when user profiles is loaded  
     /// </summary>
     public static event Action LoadedStaticUserProfiles;
 
@@ -171,16 +171,17 @@ public class UserController : MonoBehaviour
     /// </summary>
     private void SetUI()
     {
-        if (ProfileGetter.Profile != null && photoGetter?.Photo != null && presenceGetter?.Presence != null)
-        {
-            GameObject userPrefab = mainUserPrefab;
-            userPrefab.transform.SetAsFirstSibling();
-            var userObject = userPrefab.GetComponent<UserObject>();
-            userObject.SetVariables(ProfileGetter.Profile.id, ProfileGetter.Profile.mail, PageType.RelevantContacts);
-            userObject.SetName(ProfileGetter.Profile.displayName);
-            userObject.SetProfileIcon(photoGetter.Photo);
-            userObject.SetPresenceIcon(presenceGetter.Presence.availability);
-        }
+        GameObject userPrefab = mainUserPrefab;
+        userPrefab.transform.SetAsFirstSibling();
+        var userObject = userPrefab.GetComponent<UserObject>();
+        userObject.SetVariablesAndUI(
+            ProfileGetter.Profile.id, 
+            ProfileGetter.Profile.mail, 
+            PageType.RelevantContacts, 
+            ProfileGetter.Profile.displayName, 
+            photoGetter.Photo, 
+            presenceGetter.
+            Presence.availability);
     }
 
     /// <summary>
@@ -265,7 +266,7 @@ public class UserController : MonoBehaviour
     }
 
     /// <summary>
-    /// add user to relevant contact
+    /// Add user to relevant contact
     /// </summary>
     /// <param name="user"></param>
     public static void AddToRelevantContacts(UserObject user)
@@ -278,7 +279,7 @@ public class UserController : MonoBehaviour
     }
 
     /// <summary>
-    /// clear all 
+    /// Clear all 
     /// </summary>
     public void ClearAll()
     {

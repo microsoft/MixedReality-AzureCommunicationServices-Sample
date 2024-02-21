@@ -24,7 +24,7 @@ public class IncomingCallController : MonoBehaviour
     {
         var callerName = callerNameObject.text;
         //User is in relevant contacts and has a non-null profile picture
-        if (UserController.UserProfiles != null && UserController.UserProfiles.Any(x => x.DisplayName == callerName && x.Icon != null && x.Icon.name != "Ellipse 8"))
+        if (UserController.UserProfiles != null && UserController.UserProfiles.Any(x => x.DisplayName == callerName && x.Icon != null))
         {
             callerProfileIcon.color = Color.white;
             callerInitials.text = "";

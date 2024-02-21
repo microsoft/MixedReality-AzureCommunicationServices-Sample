@@ -72,6 +72,9 @@ namespace Azure.Communication.Calling.Unity
         private SynchronizationContext SynchronizationContext;
         private string ClientId;
 
+        private const string editorRedirectURL = "http://localhost";
+        private const string deviceRedirectURL = "https://login.microsoftonline.com/common/oauth2/nativeclient";
+
         public static string GetDefaultAuthority()
         {
             return AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount.ToString();
@@ -101,10 +104,10 @@ namespace Azure.Communication.Calling.Unity
                 // Set redirect URI to localhost URI and port that we can actually listen on
                 .WithRedirectUri(HttpUtility.FindFreeLocalhostRedirectUri())
 #else
-                .WithRedirectUri("http://localhost")
+                .WithRedirectUri(editorRedirectURL)
 #endif
 #else
-                .WithRedirectUri("https://login.microsoftonline.com/common/oauth2/nativeclient")
+                .WithRedirectUri(deviceRedirectURL)
 #endif
                 ;
 

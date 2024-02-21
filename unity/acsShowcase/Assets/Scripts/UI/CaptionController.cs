@@ -18,12 +18,12 @@ public class CaptionController : MonoBehaviour
     private TextMeshProUGUI captionText;
 
     /// <summary>
-    /// list of each line of caption 
+    /// List of each line of caption 
     /// </summary>
     private List<string> multiLineText = new List<string>();
     
     /// <summary>
-    /// maximum number of line can be displayed 
+    /// Maximum number of line can be displayed 
     /// </summary>
     private const int maxLine = 5;
 
@@ -69,13 +69,10 @@ public class CaptionController : MonoBehaviour
             multiLineText.RemoveAt(0);
         }
 
-        // remove previous text if this new text is the continuation of the previous one 
+        // remove previous text 
         if (multiLineText.Count > 0)
         {
-            var lastLine = multiLineText[multiLineText.Count - 1].ToLower().Replace(',', ' '); 
-            var lineTextEdit = lineText.ToLower().Replace(',', ' ');
-            if (lineTextEdit.Contains(lastLine));
-                multiLineText.RemoveAt(multiLineText.Count - 1);
+            multiLineText.RemoveAt(multiLineText.Count - 1);
         }
 
         multiLineText.Add(lineText);

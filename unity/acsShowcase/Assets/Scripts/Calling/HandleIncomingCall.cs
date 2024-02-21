@@ -35,7 +35,7 @@ public class HandleIncomingCall : CallScenario
 
     public bool IsValidIncomingCall()
     {
-        return (incomingCall is not null);
+        return (incomingCall != null);
     }
     
     [SerializeField]

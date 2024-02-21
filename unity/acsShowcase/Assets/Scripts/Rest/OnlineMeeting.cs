@@ -49,8 +49,6 @@ namespace Azure.Communication.Calling.Unity.Rest
 
         string subject { get; }
 
-        IChatInfo chatInfo { get; }
-
         DateTime startDateTime { get; }
 
         DateTime endDateTime { get; }
@@ -69,9 +67,6 @@ namespace Azure.Communication.Calling.Unity.Rest
         public string id { get; set; }
 
         public string subject { get; set; }
-
-        [JsonConverter(typeof(ConcreteConverter<GraphChatInfo>))]
-        public IChatInfo chatInfo { get; set; }
 
         public DateTime startDateTime { get; set; }
 

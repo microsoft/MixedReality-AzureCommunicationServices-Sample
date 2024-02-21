@@ -52,17 +52,11 @@ namespace Azure.Communication.Calling.Unity
         #endregion Serializable Fields
 
         #region Public Events
-        [Header("Events")]
-
-        [SerializeField]
-        private PeopleChangedEvent peopleChanged = new PeopleChangedEvent();
-
-        public event Action<PeopleSearcher, PeopleChangedEventArgs> PeopleChanged;
         public static event Action<List<StaticUserProfile>> OnSearchComplete;
         #endregion Public Events
 
         #region Public Properties
-        public IReadOnlyList<IUser> People { get; private set; }
+        public IReadOnlyList<StaticUserProfile> People { get; private set; }
         #endregion Public Properties
 
         #region MonoBehaviour Functions
@@ -83,43 +77,6 @@ namespace Azure.Communication.Calling.Unity
         public void RequestUpdate()
         {
             UpdateSearchWorker();
-        }
-
-        public async void SearchForUsers(string querry)
-        {
-            IUsers searchResultsDeserialized = null;
-            string searchResults = null;
-            var deserializedData = new SearchResults();
-            string token = Token;
-            var tempUserProfiles = new List<StaticUserProfile>();
-            int hitCount = 0;
-            if (!string.IsNullOrEmpty(token))
-            {
-                try
-                {
-                    Log.Verbose<PhotoGetter>("Requesting presences for all users");
-                    searchResults = await Rest.People.Search2(token, querry);
-                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<SearchResults>(searchResults);
-                    Log.Verbose<PhotoGetter>("Request for user presences completed.");
-                }
-                catch (Exception ex)
-                {
-                    Log.Error<PhotoGetter>("Failed to obtain user presences. Exception: {0}", ex);
-                }
-            }
-
-            if (deserializedData.value != null && deserializedData.value.Count() > 0 && deserializedData.value.FirstOrDefault().hitsContainers != null
-                 && deserializedData.value.FirstOrDefault().hitsContainers.Count() > 0 && deserializedData.value.FirstOrDefault().hitsContainers.FirstOrDefault().hits != null)
-            {
-                var hits = deserializedData.value.FirstOrDefault().hitsContainers.FirstOrDefault().hits;
-                foreach (var hit in hits)
-                {
-                    var hitResponse = hit.resource;  
-                    tempUserProfiles.Add(new StaticUserProfile(hitResponse.id, hitResponse.displayName, hitResponse.email, null, PresenceAvailability.PresenceUnknown));
-                }
-            }
-            OnSearchComplete?.Invoke(tempUserProfiles);
-
         }
         #endregion Public Functions
 
@@ -147,14 +104,16 @@ namespace Azure.Communication.Calling.Unity
 
         private async void UpdateSearchWorker()
         {
-            IUsers people = null;
+            string searchResults = null;
+            var deserializedData = new SearchResults();
             string token = Token;
             if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(query))
             {
                 Log.Verbose<PeopleSearcher>("Searching for people from the Microsoft Graph ({0})...", query);
                 try
                 {
-                    people = await Rest.People.Search(token, query);
+                    searchResults = await Rest.People.Search(token, query);
+                    deserializedData = Newtonsoft.Json.JsonConvert.DeserializeObject<SearchResults>(searchResults);
                     Log.Verbose<PeopleSearcher>("Search for people completed.");
                 }
                 catch (Exception ex)
@@ -163,22 +122,21 @@ namespace Azure.Communication.Calling.Unity
                 }
             }
 
-            var listPeople = new List<IUser>();
-
-            if (people?.value != null)
+            var listPeople = new List<StaticUserProfile>();
+            if (deserializedData.value != null && deserializedData.value.Count() > 0 && deserializedData.value.FirstOrDefault().hitsContainers != null
+     && deserializedData.value.FirstOrDefault().hitsContainers.Count() > 0 && deserializedData.value.FirstOrDefault().hitsContainers.FirstOrDefault().hits != null)
             {
-                Log.Verbose<PeopleSearcher>("Found people ({0})", people.value.Length);
-                foreach (var person in people.value)
+                var hits = deserializedData.value.FirstOrDefault().hitsContainers.FirstOrDefault().hits;
+                foreach (var hit in hits)
                 {
-                    Log.Verbose<PeopleSearcher>("    * {0}", person.displayName);
-                    listPeople.Add(new UserWithActions(AuthenticationRequest, meetingManager, person));
+                    var hitResponse = hit.resource;
+                    Log.Verbose<PeopleSearcher>("    * {0}", hitResponse.displayName);
+                    listPeople.Add(new StaticUserProfile(hitResponse.id, hitResponse.displayName, hitResponse.email, null, PresenceAvailability.PresenceUnknown));
                 }
             }
 
             People = listPeople.AsReadOnly();
-            var args = new PeopleChangedEventArgs(People);
-            PeopleChanged?.Invoke(this, args);
-            peopleChanged?.Invoke(args);
+            OnSearchComplete?.Invoke(listPeople);
         }
         #endregion Private Functions
     }
