@@ -532,9 +532,9 @@ GameObject:
   - component: {fileID: 6975055864418901575}
   - component: {fileID: 709227087768783755}
   - component: {fileID: 894452531531728232}
+  - component: {fileID: 3709275229411502779}
   - component: {fileID: 6269103748489490334}
   - component: {fileID: 6239352850511431949}
-  - component: {fileID: 3709275229411502779}
   - component: {fileID: 441526869368498700}
   - component: {fileID: 1807513847275839628}
   - component: {fileID: 8870747788241813065}
@@ -731,6 +731,23 @@ MonoBehaviour:
   useFixedVerticalPosition: 1
   fixedVerticalPosition: 0
   orientToReferenceDirection: 0
+--- !u!114 &3709275229411502779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2839998589188716224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2510d1403312fca41bd06c36b321da3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  solver: {fileID: 894452531531728232}
+  solverHandler: {fileID: 709227087768783755}
+  pinToggles:
+  - {fileID: 6148595604907969185}
+  maxDistance: 3
 --- !u!114 &6269103748489490334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,22 +779,6 @@ MonoBehaviour:
   executionOrder: 0
   constraintOnRotation: 5
   useLocalSpaceForConstraint: 0
---- !u!114 &3709275229411502779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2839998589188716224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2510d1403312fca41bd06c36b321da3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UI: {fileID: 894452531531728232}
-  pinToggles:
-  - {fileID: 6148595604907969185}
-  maxDistance: 3
 --- !u!114 &441526869368498700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2464,11 +2465,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <IsToggled>k__BackingField.onExited.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <IsToggled>k__BackingField.onEntered.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <IsToggled>k__BackingField.onExited.m_PersistentCalls.m_Calls.Array.data[0].m_Mode

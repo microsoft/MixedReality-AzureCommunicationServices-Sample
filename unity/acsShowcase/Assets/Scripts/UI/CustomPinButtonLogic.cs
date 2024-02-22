@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using MixedReality.Toolkit.UX;
+using MixedReality.Toolkit.SpatialManipulation;
 
 /// <summary>
 /// This class adds some custom logic to toggle the pin buttons under special circumstances.
@@ -9,11 +11,15 @@ using MixedReality.Toolkit.UX;
 /// </summary>
 public class CustomPinButtonLogic : MonoBehaviour
 {
-    [Tooltip("The UI component being controlled.")]
+    [Tooltip("The solver being controlled.")]
     [SerializeField]
-    private MonoBehaviour UI;
+    private Solver solver;
 
-    [Tooltip("The toggle buttons which control this UI.")]
+    [Tooltip("The SolverHandler, used to get the ")]
+    [SerializeField]
+    private SolverHandler solverHandler;
+
+    [Tooltip("The toggle buttons which control this solver.")]
     [SerializeField]
     private List<PressableButton> pinToggles = new List<PressableButton>();
 
@@ -21,34 +27,59 @@ public class CustomPinButtonLogic : MonoBehaviour
     [SerializeField]
     private float maxDistance = 3.0f;
 
-    private bool lastPinnedState = true;
+    private float squareMaxDistance;
+    private UnityAction<float> onEnteredListener;
+    private UnityAction<float> onExitedListener;
+
+    /// A Unity event function that is called on the frame when a script is enabled just before any of the update methods.
+    void Start()
+    {
+        onEnteredListener = (_) => SolverToggle(false);
+        onExitedListener = (_) => SolverToggle(true);
+
+        foreach (PressableButton button in pinToggles)
+        {
+            button.IsToggled.OnEntered.AddListener(onEnteredListener);
+            button.IsToggled.OnExited.AddListener(onExitedListener);
+        }
+        squareMaxDistance = maxDistance * maxDistance;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (PressableButton button in pinToggles)
+        {
+            button.IsToggled.OnEntered.RemoveListener(onEnteredListener);
+            button.IsToggled.OnExited.RemoveListener(onExitedListener);
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
         // If the UI is more than the max distance from the user, unpin it to enable the solver
-        if (maxDistance < (UI.transform.position - Camera.main.transform.position).magnitude)
+        if (squareMaxDistance < (solver.transform.position - solverHandler.TransformTarget.position).sqrMagnitude)
         {
-            foreach (PressableButton button in pinToggles)
-            {
-                button.ForceSetToggled(false);
-            }
-            return;
+            SolverToggle(true);
         }
-    
-        // If the UI has changed state since last frame, ensure that all of the buttons reflect this change 
-        if (lastPinnedState != UI.enabled)
-        {
-            foreach (PressableButton button in pinToggles)
-            {
-                // The button being toggled and the solver being enabled should be inverse
-                if (button.IsToggled == UI.enabled)
-                {
-                    button.ForceSetToggled(!UI.enabled);
-                };
-            }
-        }
+    }
 
-        lastPinnedState = UI.enabled;
+    private void SolverToggle(bool solverEnabled)
+    {
+        solver.enabled = solverEnabled;
+        ToggleOtherButtons();
+    }
+
+    private void ToggleOtherButtons()
+    {
+        // Ensure that all of the buttons reflect this change 
+        foreach (PressableButton button in pinToggles)
+        {
+            // The button being toggled and the solver being enabled should be inverse
+            if (button.IsToggled == solver.enabled)
+            {
+                button.ForceSetToggled(!solver.enabled);
+            };
+        }
     }
 }
