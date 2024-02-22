@@ -7,8 +7,6 @@ The following are known issues, unsupported features, or pitfalls you may encoun
 
 * When leaving a meeting, the exception "Error HangUpCurrentCall. Exception: Unknown error" is thrown. This is an ACS issue.
 
-* On device, the depth submission mode must be 24-bit for UI to mask properly. 
-
 * Some features, including 1:1 calling, inviting contacts to a meeting, and adding/removing participants from a meeting, are not implemented. Their UI will call a not-implemented dialogue.
 
 ![Screenshot showing a warning that the feature is not implemented.](./images/not-implemented.png)
