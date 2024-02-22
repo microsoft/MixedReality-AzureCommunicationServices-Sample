@@ -2733,6 +2733,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5566904021312241556, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: <IsToggled>k__BackingField.onExited.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5566904021312241556, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
+      propertyPath: <IsToggled>k__BackingField.onEntered.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6726666168125165161, guid: 44fd649c36e6a5943a7d13f76e2a9bcf, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
