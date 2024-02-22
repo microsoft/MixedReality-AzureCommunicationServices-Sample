@@ -5184,7 +5184,7 @@ MonoBehaviour:
   pinToggles:
   - {fileID: 3657285490606564907}
   - {fileID: 5384054054166637574}
-  maxDistance: 10
+  maxDistance: 3
 --- !u!114 &2004951165 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7057686687854709819, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
