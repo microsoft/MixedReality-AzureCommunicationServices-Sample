@@ -15,7 +15,7 @@ public class CustomPinButtonLogic : MonoBehaviour
     [SerializeField]
     private Solver solver;
 
-    [Tooltip("The SolverHandler, used to get the ")]
+    [Tooltip("The SolverHandler, used to get the target transform")]
     [SerializeField]
     private SolverHandler solverHandler;
 
@@ -45,7 +45,7 @@ public class CustomPinButtonLogic : MonoBehaviour
         squareMaxDistance = maxDistance * maxDistance;
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         foreach (PressableButton button in pinToggles)
         {
