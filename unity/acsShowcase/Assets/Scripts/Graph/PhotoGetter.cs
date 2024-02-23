@@ -67,6 +67,7 @@ namespace Azure.Communication.Calling.Unity
         #region Private Functions
         private async void UpdateProfilesWorkerAsync()
         {
+            Photo = null;
             byte[] data = null;
             string token = Token;
             if (!string.IsNullOrEmpty(token))
@@ -106,10 +107,6 @@ namespace Azure.Communication.Calling.Unity
                 {
                     Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
                 }
-            }
-            else
-            {
-                Photo = null;
             }
             photoLoaded?.Invoke(args);
             PhotoLoaded?.Invoke(this, args);
