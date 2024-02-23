@@ -843,17 +843,16 @@ public class MeetingManager : MonoBehaviour
                     HandleDisconnected();
                     break;
 
-                case MeetingCallState.Disconnecting:
-                    break;
-
                 case MeetingCallState.Connecting:
                     HandlingConnecting();
                     break;
 
+                case MeetingCallState.Disconnecting:
                 case MeetingCallState.Unknown:
                 case MeetingCallState.EarlyMedia:
                 case MeetingCallState.Ringing:
                 case MeetingCallState.InLobby:
+                    Log.Verbose<MeetingManager>("Ingnoring call state {0}", lastCallState);
                     break;
 
                 default:
