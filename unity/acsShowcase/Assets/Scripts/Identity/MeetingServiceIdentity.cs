@@ -8,7 +8,7 @@ namespace Azure.Communication.Calling.Unity
     /// </summary>
     public class MeetingServiceIdentity
     {
-        internal MeetingServiceIdentity(string endpoint, string communcationAccessToken, string graphAccessToken, bool isGuest, string displayName = null)
+        internal MeetingServiceIdentity(string endpoint, string communcationAccessToken, string graphAccessToken, bool isGuest, string displayName)
         {
             Endpoint = endpoint;
             CommunicationAccessToken = communcationAccessToken;

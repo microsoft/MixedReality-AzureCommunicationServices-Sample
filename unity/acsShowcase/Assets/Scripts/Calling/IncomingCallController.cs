@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -11,19 +9,34 @@ using UnityEngine.UI;
 
 public class IncomingCallController : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI callerName;
     [SerializeField] private TextMeshProUGUI callerInitials;
     [SerializeField] private RawImage callerProfileIcon;
     [SerializeField] private Texture2D nullIconTexture;
 
     /// <summary>
+    /// Update the caller's name
+    /// </summary>
+    public void UpdateCallerName(string callerName)
+    {
+        if (callerName != null)
+        {
+            this.callerName.text = callerName;
+        }
+
+        UpdateInitials(callerName);
+    }
+
+    /// <summary>
     /// Sets the icon for the incoming call window. If the user is in relevant contacts and has a profile image, it will use that image.
     /// Otherwise, it will set it with the incoming callers initials (as the only data recieved is the name)
     /// </summary>
-    /// <param name="callerNameObject">The incoming callers display name object in the incoming call window</param>
-    public void GetInitials(TextMeshProUGUI callerNameObject)
+    private void UpdateInitials(string callerName)
     {
-        var callerName = callerNameObject.text;
-        //User is in relevant contacts and has a non-null profile picture
+        SetInitials(callerName);
+
+        // User is in relevant contacts and has a non-null profile picture
+        // TODO: Load the profile picture from the user's profile using Graph APIs
         if (UserController.UserProfiles != null && UserController.UserProfiles.Any(x => x.DisplayName == callerName && x.Icon != null))
         {
             callerProfileIcon.color = Color.white;
@@ -37,6 +50,7 @@ public class IncomingCallController : MonoBehaviour
         }
         
     }
+
     /// <summary>
     /// Sets the initials as the logo for the incoming caller
     /// </summary>

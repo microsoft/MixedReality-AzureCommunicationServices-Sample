@@ -19,19 +19,7 @@ public class HandleIncomingCall : CallScenario
 
     public string Token { get; set; }
 
-    public string IncomingCallFrom
-    {
-        get => caller;
-
-        private set
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                caller = value;
-                incomingCallFromChanged?.Invoke(caller);
-            }
-        }
-    }
+    public string IncomingCallFrom { get; private set; }
 
     public bool IsValidIncomingCall()
     {
@@ -42,26 +30,23 @@ public class HandleIncomingCall : CallScenario
     [Tooltip("Event fired when the current caller has changed.")]
     private StringChangeEvent incomingCallFromChanged = new StringChangeEvent();
 
+    /// <summary>
+    /// Event fired when the current caller has changed.
+    /// </summary>
+    public StringChangeEvent IncomingCallFromChanged => incomingCallFromChanged;
+
 
     protected override void ScenarioStarted()
     {
-        incomingCallFromChanged?.Invoke(caller);
+        if (!string.IsNullOrEmpty(IncomingCallFrom))
+        {
+            incomingCallFromChanged?.Invoke(IncomingCallFrom);
+        }
     }
 
     protected override void ScenarioDestroyed()
     {
         Leave();
-        DestroyCallAgent();
-    }
-
-    public void StartListening(string displayName, bool isGuest)
-    {
-        CreateCallAgent(displayName, isGuest);
-    }
-
-    public void StopListening()
-    {
-        DestroyCallAgent();
     }
 
     public void Accept()
@@ -108,10 +93,15 @@ public class HandleIncomingCall : CallScenario
     {
         SingleAsyncRunner.QueueAsync(() =>
         {
-            if (CurrentCall == null)
+            var incomingCallFrom = call?.CallerDetails.DisplayName;
+
+            if (CurrentCall == null &&
+                incomingCallFromChanged != null &&
+                !string.IsNullOrEmpty(incomingCallFrom))
             {
                 incomingCall = call;
-                IncomingCallFrom = incomingCall?.CallerDetails.DisplayName;
+                IncomingCallFrom = incomingCallFrom;
+                incomingCallFromChanged.Invoke(incomingCallFrom);
                 return Task.CompletedTask;
             }
             else
@@ -120,46 +110,4 @@ public class HandleIncomingCall : CallScenario
             }
         });
     }
-
-    private void CreateCallAgent(string displayName, bool isGuest)
-    {
-        SingleAsyncRunner.QueueAsync(async () =>
-        {
-            
-            if (CurrentCallAgent != null)
-            {
-                return;
-            }
-            
-            if (string.IsNullOrEmpty(displayName))
-                displayName = "Test User";
-
-            var callClient = CallClientHost.Instance.CallClient;
-            var credential = new CallTokenCredential(Token);
-
-            var callAgentOptions = new CallAgentOptions()
-            {
-                DisplayName = displayName,
-                EmergencyCallOptions = new EmergencyCallOptions()
-                {
-                    CountryCode = "US"
-                }
-            };
-
-            try
-            {
-                CurrentCallAgent = await callClient.CreateCallAgent(credential, callAgentOptions);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to create call agent. Exception: {ex}");
-            }
-        });
-    }
-
-    private void DestroyCallAgent()
-    { 
-        CurrentCallAgent = null;
-    }
-
 }

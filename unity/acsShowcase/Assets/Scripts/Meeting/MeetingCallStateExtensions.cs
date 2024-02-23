@@ -13,7 +13,7 @@ namespace Azure.Communication.Calling.Unity
             switch (value)
             {
                 case CallState.None:
-                    return MeetingCallState.None;
+                    return MeetingCallState.Unknown;
 
                 case CallState.EarlyMedia:
                     return MeetingCallState.EarlyMedia;
@@ -51,7 +51,7 @@ namespace Azure.Communication.Calling.Unity
         {
             switch (value)
             {
-                case MeetingCallState.None:
+                case MeetingCallState.Unknown:
                     return CallState.None;
 
                 case MeetingCallState.EarlyMedia:

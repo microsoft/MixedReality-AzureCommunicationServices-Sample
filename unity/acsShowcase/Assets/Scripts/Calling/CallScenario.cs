@@ -13,6 +13,34 @@ using UnityEngine.Events;
 
 
 /// <summary>
+/// The event arguments used on a call scenario state change.
+/// </summary>
+[Serializable]
+public struct CallScenarioStateChangedEventArgs
+{
+    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommunicationCall call)
+    {
+        Scenario = scenario;
+        Call = call;
+    }
+
+    public CallScenario Scenario { get; private set; }
+
+    public CommunicationCall Call { get; private set; }
+
+    public CallState State => Call?.State ?? CallState.None;
+}
+
+/// <summary>
+/// Event raised when the call state changes.
+/// </summary>
+[Serializable]
+public class CallScenarioStateChangedEvent : UnityEvent<CallScenarioStateChangedEventArgs>
+{
+}
+
+
+/// <summary>
 /// This base class manages call status, microphone audio, speaker audio, video devices, and a 
 /// participant list.
 /// </summary>
@@ -84,9 +112,6 @@ public abstract class CallScenario : MonoBehaviour
     [SerializeField] [Tooltip("A video format to capture the Unity scene at.")]
     private VideoStreamPixelFormat customVideoFormat = VideoStreamPixelFormat.Rgba;
 
-    [Header("Base Events")] [SerializeField] [Tooltip("Event fired when status changes.")]
-    private UnityEvent<CallState> statusChanged = new UnityEvent<CallState>();
-
     [SerializeField] [Tooltip("Event fired when speaker mute status changes.")]
     private StringChangeEvent speakerMuteStatusChanged = new StringChangeEvent();
 
@@ -116,6 +141,18 @@ public abstract class CallScenario : MonoBehaviour
 
     [SerializeField] [Tooltip("Event fired when output video devices changed.")]
     private ObjectChangeEvent videoDeviceControlsChanged = new ObjectChangeEvent();
+
+
+    [Header("Base Events")]
+    [SerializeField]
+    [Tooltip("Event fired when status changes.")]
+    private CallScenarioStateChangedEvent statusChanged = new CallScenarioStateChangedEvent();
+
+    /// <summary>
+    /// Event fire when status changes.
+    /// </summary>
+    public CallScenarioStateChangedEvent StatusChanged => statusChanged;
+
 
     [SerializeField]
     [Tooltip("Event fired when mic audio is muted.")]
@@ -166,7 +203,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    public CallAgent CurrentCallAgent
+    public CallAgent CallAgent
     {
         get => currentCallAgent;
 
@@ -177,7 +214,6 @@ public abstract class CallScenario : MonoBehaviour
                 if (currentCallAgent != null)
                 {
                     currentCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
-                    currentCallAgent.Dispose();
                 }
 
                 currentCallAgent = value;
@@ -297,6 +333,7 @@ public abstract class CallScenario : MonoBehaviour
             rawOutgoingVideoStreamFormat = customVideoFormat;
             UpdateRawOutgoingVideoStream();
         }
+
 
         if (updateStatus)
         {
@@ -480,10 +517,9 @@ public abstract class CallScenario : MonoBehaviour
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
-        if (CurrentCall is not null)
+        if (CurrentCall != null && identifier != null)
         {
-            if (CurrentCall != null && identifier != null)
-                await CurrentCall.RemoveParticipantAsync(identifier);
+            await CurrentCall.RemoveParticipantAsync(identifier);
         }
     }
 
@@ -494,9 +530,10 @@ public abstract class CallScenario : MonoBehaviour
     public virtual void Leave()
     {
         if (isSharedCamera)
+        {
             UnShareCamera();
+        }
         
-        CurrentCallAgent = null;
         SingleAsyncRunner.QueueAsync(async () =>
         {
             await HangUpCurrentCall();
@@ -506,8 +543,6 @@ public abstract class CallScenario : MonoBehaviour
     protected async Task HangUpCurrentCall()
     {
         var call = CurrentCall;
-        CurrentCall = null;
-
         if (call != null && 
             call.State != CallState.Disconnected &&
             call.State != CallState.Disconnecting)
@@ -524,8 +559,6 @@ public abstract class CallScenario : MonoBehaviour
                 Log.Error<CallScenario>($"Error HangUpCurrentCall. Exception: {e.Message}");
             }
         }
-
-        InvalidateStatus();
     }
 
     protected virtual void IncomingCall(IncomingCall call)
@@ -854,17 +887,15 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateStatus()
     {
-        string status = null;
-        if (CurrentCall == null)
+        // If the call is disconnected, clear the current call. Send a "disconnected" event and then send
+        // a "no call" event.
+        if (CurrentCall != null && CurrentCall.State == CallState.Disconnected)
         {
-            status = "No Call";
-            statusChanged?.Invoke(CallState.None);
+            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall));
+            CurrentCall = null;
         }
-        else
-        {
-            status = CurrentCall.State.ToString();
-            statusChanged?.Invoke(CurrentCall.State);
-        }
+
+        statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall));
     }
 
     private void UpdatedMuteStatus()
@@ -887,7 +918,7 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateListeningStatus()
     {
-        listeningStatusChanged?.Invoke(CurrentCallAgent == null ? "Not Listening" : "Listening");
+        listeningStatusChanged?.Invoke(CallAgent == null ? "Not Listening" : "Listening");
     }
 
     private void UpdatedSpeakerMuteStatus()
