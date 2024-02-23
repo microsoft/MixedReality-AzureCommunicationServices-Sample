@@ -1358,18 +1358,6 @@ MonoBehaviour:
   showCallPreviewPanel:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 477849038}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 466479061}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -1550,6 +1538,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 477849038}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   hideCallPreviewPanel:
     m_PersistentCalls:
       m_Calls:
@@ -1664,18 +1664,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 477849038}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1490350478}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -1759,6 +1747,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 477849038}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
   hideInCallPanel:
     m_PersistentCalls:
@@ -3878,17 +3878,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5538609101190203090, guid: c6356064a933d064fba34026c45433cf, type: 3}
   m_PrefabInstance: {fileID: 1493582825}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1493582829 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8549994558877221974, guid: c6356064a933d064fba34026c45433cf, type: 3}
-  m_PrefabInstance: {fileID: 1493582825}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1493582830 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5586197685266048609, guid: c6356064a933d064fba34026c45433cf, type: 3}
@@ -7776,10 +7765,6 @@ PrefabInstance:
     - target: {fileID: 2285528167394270934, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
       propertyPath: incomingCall.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1493582829}
-    - target: {fileID: 2285528167394270934, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
-      propertyPath: incomingCall.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
       objectReference: {fileID: 1493582830}
     - target: {fileID: 2285528167394270934, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
       propertyPath: videoCaptureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7801,10 +7786,6 @@ PrefabInstance:
       propertyPath: incomingCallAccepted.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1765846493}
-    - target: {fileID: 2285528167394270934, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
-      propertyPath: incomingCall.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 1493582829}
     - target: {fileID: 3064664388982988231, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

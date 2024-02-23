@@ -97,9 +97,11 @@ public class HandleIncomingCall : CallScenario
 
             if (CurrentCall == null &&
                 incomingCallFromChanged != null &&
-                string.IsNullOrEmpty(incomingCallFrom))
+                !string.IsNullOrEmpty(incomingCallFrom))
             {
-                incomingCallFromChanged.Invoke(caller);
+                incomingCall = call;
+                IncomingCallFrom = incomingCallFrom;
+                incomingCallFromChanged.Invoke(incomingCallFrom);
                 return Task.CompletedTask;
             }
             else

@@ -18,16 +18,17 @@ using UnityEngine.Events;
 [Serializable]
 public struct CallScenarioStateChangedEventArgs
 {
-    public CallScenarioStateChangedEventArgs(CallScenario scenario, CallState state)
+    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommunicationCall call)
     {
         Scenario = scenario;
-        State = state;
+        Call = call;
     }
 
     public CallScenario Scenario { get; private set; }
 
-    public CallState State { get; private set; }
+    public CommunicationCall Call { get; private set; }
 
+    public CallState State => Call?.State ?? CallState.None;
 }
 
 /// <summary>
@@ -333,6 +334,7 @@ public abstract class CallScenario : MonoBehaviour
             UpdateRawOutgoingVideoStream();
         }
 
+
         if (updateStatus)
         {
             updateStatus = false;
@@ -515,10 +517,9 @@ public abstract class CallScenario : MonoBehaviour
     /// </summary>
     public async Task RemoveParticipant(RemoteParticipant identifier)
     {
-        if (CurrentCall is not null)
+        if (CurrentCall != null && identifier != null)
         {
-            if (CurrentCall != null && identifier != null)
-                await CurrentCall.RemoveParticipantAsync(identifier);
+            await CurrentCall.RemoveParticipantAsync(identifier);
         }
     }
 
@@ -542,8 +543,6 @@ public abstract class CallScenario : MonoBehaviour
     protected async Task HangUpCurrentCall()
     {
         var call = CurrentCall;
-        CurrentCall = null;
-
         if (call != null && 
             call.State != CallState.Disconnected &&
             call.State != CallState.Disconnecting)
@@ -560,8 +559,6 @@ public abstract class CallScenario : MonoBehaviour
                 Log.Error<CallScenario>($"Error HangUpCurrentCall. Exception: {e.Message}");
             }
         }
-
-        InvalidateStatus();
     }
 
     protected virtual void IncomingCall(IncomingCall call)
@@ -890,14 +887,15 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateStatus()
     {
-        if (CurrentCall == null)
+        // If the call is disconnected, clear the current call. Send a "disconnected" event and then send
+        // a "no call" event.
+        if (CurrentCall != null && CurrentCall.State == CallState.Disconnected)
         {
-            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CallState.None));
+            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall));
+            CurrentCall = null;
         }
-        else
-        {
-            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall.State));
-        }
+
+        statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall));
     }
 
     private void UpdatedMuteStatus()

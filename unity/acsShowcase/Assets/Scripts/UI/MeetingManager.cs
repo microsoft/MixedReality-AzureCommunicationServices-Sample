@@ -11,9 +11,6 @@ using System.Collections.Generic;
 using Azure.Communication.Calling.Unity;
 using Azure.Communication.Calling.Unity.Rest;
 using Azure.Communication.Calling.UnityClient;
-using Unity.VisualScripting.Antlr3.Runtime;
-using System.Linq.Expressions;
-
 
 /// <summary>
 /// Manage login authentication, teams meeting, incoming call, et... 
@@ -250,6 +247,14 @@ public class MeetingManager : MonoBehaviour
     public void Update()
     {
         ApplyPendingActions();
+    }
+
+    /// <summary>
+    /// On destroying this component, sign out of the meeting services.
+    /// </summary>
+    private void OnDestroy()
+    {
+        SignOut();
     }
 
     /// <summary>
@@ -686,12 +691,12 @@ public class MeetingManager : MonoBehaviour
         communicationAzureActiveDirectoryAccessTokenResponse = TokenResponse.Invalid;
         functionAppAccessTokenResponse = TokenResponse.Invalid;
         graphAccessTokenResponse = TokenResponse.Invalid;
-        currentActiveScenario = null;
         serviceIdentity = null;
         teamMeeting.Token = null;
         handleIncomingCall.Token = null;
         teamMeeting.CallAgent = null;
         handleIncomingCall.CallAgent = null;
+        SetCurrentActiveCallScenario(null);
         currentCallAgent?.Dispose();
         currentCallAgent = null;
         IsLoggedIn = false;
@@ -812,9 +817,9 @@ public class MeetingManager : MonoBehaviour
             }
             else
             {
-                HandleCallStateChanges(MeetingCallState.None);
+                HandleCallStateChanges(MeetingCallState.NoCall);
             }
-            Log.Verbose<MeetingManager>("Status changed {0}->{1}", Status, status);
+            Log.Verbose<MeetingManager>("Status changed {0}", Status);
         }
     }
 
@@ -822,14 +827,15 @@ public class MeetingManager : MonoBehaviour
     {
         if (newCallState != lastCallState)
         {
-            Log.Verbose<MeetingManager>("Call state changing {0}->{1}", lastCallState, status.CallState);
-            lastCallState = status.CallState;
+            Log.Verbose<MeetingManager>("Call state changing {0}->{1}", lastCallState, newCallState);
+            lastCallState = newCallState;
             switch (lastCallState)
             {
                 case MeetingCallState.Connected:
                     HandleConnected();
                     break;
 
+                case MeetingCallState.NoCall:
                 case MeetingCallState.Disconnected:
                     HandleDisconnected();
                     break;
@@ -841,17 +847,17 @@ public class MeetingManager : MonoBehaviour
                     HandlingConnecting();
                     break;
 
+                case MeetingCallState.Unknown:
                 case MeetingCallState.EarlyMedia:
                 case MeetingCallState.Ringing:
                 case MeetingCallState.InLobby:
-                case MeetingCallState.None:
                     break;
 
                 default:
                     Log.Warning<MeetingManager>("Unhandled call state {0}", lastCallState);
                     break;
             }
-            Log.Verbose<MeetingManager>("Call state changed {0}->{1}", lastCallState, status.CallState);
+            Log.Verbose<MeetingManager>("Call state changed {0}", lastCallState);
         }
     }
 
@@ -863,9 +869,12 @@ public class MeetingManager : MonoBehaviour
 
     private void HandleDisconnected()
     {
-        Leave();
-        SetCurrentActiveCallScenario(null);
-        leftCall?.Invoke();
+        if (currentActiveScenario != null)
+        {
+            Leave();
+            SetCurrentActiveCallScenario(null);
+            leftCall?.Invoke();
+        }
     }
 
     private void HandlingConnecting()
@@ -1067,8 +1076,8 @@ public class MeetingManager : MonoBehaviour
             case CallState.Disconnected:
                 ApplyStatus(MeetingStatus.LoggedIn(MeetingCallState.Disconnected));
                 break;
-            case CallState.None:
-                ApplyStatus(MeetingStatus.LoggedIn(MeetingCallState.None));
+            case CallState.None:                 
+                ApplyStatus(MeetingStatus.LoggedIn(args.Call == null ? MeetingCallState.NoCall : MeetingCallState.Unknown));
                 break;
             case CallState.Ringing:
                 ApplyStatus(MeetingStatus.LoggedIn(MeetingCallState.Ringing));
