@@ -392,8 +392,7 @@ public class MeetingManager : MonoBehaviour
         }
         else
         {
-            // 1-1 calling not working 
-            //LogInIfPossible(joinLocator: null, user);
+            Log.Warning<MeetingManager>("1:1 calling is not yet implemented by this sample.");
         }
     }
 
@@ -403,9 +402,13 @@ public class MeetingManager : MonoBehaviour
     public void SetShareCamera(bool enable)
     {
         if (enable)
+        {
             ShareCamera();
+        }
         else
+        {
             UnshareCamera();
+        }
     }
 
     /// <summary>
