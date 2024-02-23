@@ -2973,21 +2973,6 @@ MonoBehaviour:
   customVideoSource: {fileID: 1709710045}
   customVideoResolution: 1
   customVideoFormat: 3
-  statusChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450737122}
-        m_TargetAssemblyTypeName: MeetingManager, Assembly-CSharp
-        m_MethodName: OnCallStateChanged
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   speakerMuteStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3040,6 +3025,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   videoDeviceControlsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  statusChanged:
     m_PersistentCalls:
       m_Calls: []
   muted:
@@ -4047,21 +4035,6 @@ MonoBehaviour:
   customVideoSource: {fileID: 1709710045}
   customVideoResolution: 1
   customVideoFormat: 3
-  statusChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450737122}
-        m_TargetAssemblyTypeName: MeetingManager, Assembly-CSharp
-        m_MethodName: OnCallStateChanged
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   speakerMuteStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4116,6 +4089,9 @@ MonoBehaviour:
   videoDeviceControlsChanged:
     m_PersistentCalls:
       m_Calls: []
+  statusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   muted:
     m_PersistentCalls:
       m_Calls: []
@@ -4130,19 +4106,7 @@ MonoBehaviour:
       m_Calls: []
   incomingCallFromChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450737122}
-        m_TargetAssemblyTypeName: MeetingManager, Assembly-CSharp
-        m_MethodName: OnIncomingCall
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1765846493 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1898137939936102890, guid: ef00bb39f1f4c4a4fb541230c78b2077, type: 3}

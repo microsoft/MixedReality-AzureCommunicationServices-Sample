@@ -39,6 +39,16 @@ namespace Azure.Communication.Calling.Unity
             };
         }
 
+        public static MeetingStatus LoggedOut()
+        {
+            return new MeetingStatus()
+            {
+                AuthenticationState = MeetingAuthenticationState.LoggedOut,
+                AuthenticationError = MeetingAuthenticationError.None,
+                CallState = MeetingCallState.None
+            };
+        }
+
         public MeetingAuthenticationState AuthenticationState { get; private set; }
 
         public MeetingAuthenticationError AuthenticationError { get; private set; }

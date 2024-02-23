@@ -52,6 +52,6 @@ namespace Azure.Communication.Calling.Unity
         /// <summary>
         /// A display name used if joining as a guest.
         /// </summary>
-        public string displayName;
+        public string guestName;
     }
 }

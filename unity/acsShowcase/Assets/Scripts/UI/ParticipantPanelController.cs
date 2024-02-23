@@ -100,7 +100,7 @@ public class ParticipantPanelController : MonoBehaviour
     {
         yield return null;
 
-        if (meetingManager.IsCurrentActiveCallTeamsMeeting())
+        if (meetingManager.IsCurrentActiveCallScenarioTeamsMeeting())
         {
             if (attendeeStatus != null && participantStatus != null)
                 participantStatus.text = attendeeStatus.text;
@@ -190,7 +190,7 @@ public class ParticipantPanelController : MonoBehaviour
                 children.ForEach(child => Destroy(child));
 
                 // show not in meeting participant for teams meeting only
-                if (meetingManager.IsCurrentActiveCallTeamsMeeting())
+                if (meetingManager.IsCurrentActiveCallScenarioTeamsMeeting())
                 {
                     // at this point, allAttendeeList contains only the participant not yet joined the meeting
                     notInMeetingHeaderText.text = string.Format("Other invited ({0})", allAttendeeList.Count);

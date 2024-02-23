@@ -13,6 +13,33 @@ using UnityEngine.Events;
 
 
 /// <summary>
+/// The event arguments used on a call scenario state change.
+/// </summary>
+[Serializable]
+public struct CallScenarioStateChangedEventArgs
+{
+    public CallScenarioStateChangedEventArgs(CallScenario scenario, CallState state)
+    {
+        Scenario = scenario;
+        State = state;
+    }
+
+    public CallScenario Scenario { get; private set; }
+
+    public CallState State { get; private set; }
+
+}
+
+/// <summary>
+/// Event raised when the call state changes.
+/// </summary>
+[Serializable]
+public class CallScenarioStateChangedEvent : UnityEvent<CallScenarioStateChangedEventArgs>
+{
+}
+
+
+/// <summary>
 /// A base class which represents a manual test scenario for Azure Communication Calling SDK.
 /// This base class manages call status, microphone audio, speaker audio, video devices, and a 
 /// participant list.
@@ -85,9 +112,6 @@ public abstract class CallScenario : MonoBehaviour
     [SerializeField] [Tooltip("A video format to capture the Unity scene at.")]
     private VideoStreamPixelFormat customVideoFormat = VideoStreamPixelFormat.Rgba;
 
-    [Header("Base Events")] [SerializeField] [Tooltip("Event fired when status changes.")]
-    private UnityEvent<CallState> statusChanged = new UnityEvent<CallState>();
-
     [SerializeField] [Tooltip("Event fired when speaker mute status changes.")]
     private StringChangeEvent speakerMuteStatusChanged = new StringChangeEvent();
 
@@ -117,6 +141,18 @@ public abstract class CallScenario : MonoBehaviour
 
     [SerializeField] [Tooltip("Event fired when output video devices changed.")]
     private ObjectChangeEvent videoDeviceControlsChanged = new ObjectChangeEvent();
+
+
+    [Header("Base Events")]
+    [SerializeField]
+    [Tooltip("Event fired when status changes.")]
+    private CallScenarioStateChangedEvent statusChanged = new CallScenarioStateChangedEvent();
+
+    /// <summary>
+    /// Event fire when status changes.
+    /// </summary>
+    public CallScenarioStateChangedEvent StatusChanged => statusChanged;
+
 
     [SerializeField]
     [Tooltip("Event fired when mic audio is muted.")]
@@ -167,7 +203,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    public CallAgent CurrentCallAgent
+    public CallAgent CallAgent
     {
         get => currentCallAgent;
 
@@ -178,7 +214,6 @@ public abstract class CallScenario : MonoBehaviour
                 if (currentCallAgent != null)
                 {
                     currentCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
-                    currentCallAgent.Dispose();
                 }
 
                 currentCallAgent = value;
@@ -495,9 +530,10 @@ public abstract class CallScenario : MonoBehaviour
     public virtual void Leave()
     {
         if (isSharedCamera)
+        {
             UnShareCamera();
+        }
         
-        CurrentCallAgent = null;
         SingleAsyncRunner.QueueAsync(async () =>
         {
             await HangUpCurrentCall();
@@ -855,16 +891,13 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateStatus()
     {
-        string status = null;
         if (CurrentCall == null)
         {
-            status = "No Call";
-            statusChanged?.Invoke(CallState.None);
+            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CallState.None));
         }
         else
         {
-            status = CurrentCall.State.ToString();
-            statusChanged?.Invoke(CurrentCall.State);
+            statusChanged?.Invoke(new CallScenarioStateChangedEventArgs(this, CurrentCall.State));
         }
     }
 
@@ -888,7 +921,7 @@ public abstract class CallScenario : MonoBehaviour
 
     private void UpdateListeningStatus()
     {
-        listeningStatusChanged?.Invoke(CurrentCallAgent == null ? "Not Listening" : "Listening");
+        listeningStatusChanged?.Invoke(CallAgent == null ? "Not Listening" : "Listening");
     }
 
     private void UpdatedSpeakerMuteStatus()

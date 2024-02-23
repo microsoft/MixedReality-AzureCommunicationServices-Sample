@@ -67,6 +67,7 @@ namespace Azure.Communication.Calling.Unity
                         endpoint: options.communicationEndpoint,
                         communcationAccessToken: communicationToken,
                         graphAccessToken: graphToken,
+                        displayName: options.guestName,
                         isGuest: false));
                 }
                 catch (Exception ex)
@@ -96,7 +97,7 @@ namespace Azure.Communication.Calling.Unity
                     throw new ArgumentException("The Communication Services access key and the Function App access token are empty");
                 }
 
-                if (string.IsNullOrWhiteSpace(options.displayName))
+                if (string.IsNullOrWhiteSpace(options.guestName))
                 {
                     Log.Error<MeetingServiceIdentityProvider>("Display name string is empty");
                     throw new ArgumentException("Display name token  string cannot be empty.");
@@ -130,7 +131,7 @@ namespace Azure.Communication.Calling.Unity
                         endpoint: options.communicationEndpoint,
                         communcationAccessToken: communicationToken,
                         graphAccessToken: graphToken,
-                        displayName: options.displayName,
+                        displayName: options.guestName,
                         isGuest: true));
                 }
                 catch (Exception ex)
