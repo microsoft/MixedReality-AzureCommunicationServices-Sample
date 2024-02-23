@@ -182,7 +182,7 @@ public class MeetingManager : MonoBehaviour
     /// <summary>
     /// enable to start listening to the incoming call 
     /// </summary>
-    private bool startListeningComingCall = false;
+    private bool startListeningIncomingCall = false;
 
     /// <summary>
     /// is camera enabled?
@@ -255,17 +255,14 @@ public class MeetingManager : MonoBehaviour
     public void Update()
     {
         ApplyPendingActions();
-        if (startListeningComingCall)
+        if (startListeningIncomingCall)
         {
-            if (currentActiveCall != null)
+            // wait for previous call agent to be destroyed before start listening 
+            if (currentActiveCall == null || currentActiveCall.CurrentCallAgent == null)
             {
-                // wait for previous call agent to be destroyed before start listening 
-                if (currentActiveCall.CurrentCallAgent == null)
-                {
-                    handleIncomingCall.StartListening(DisplayName, forceSignInAsGuest);
-                    SetCurrentActiveCall(null);
-                    startListeningComingCall = false;
-                }
+                handleIncomingCall.StartListening(DisplayName, forceSignInAsGuest);
+                SetCurrentActiveCall(null);
+                startListeningIncomingCall = false;
             }
         }
     }
@@ -404,11 +401,6 @@ public class MeetingManager : MonoBehaviour
         {
             Log.Error<MeetingManager>("Can't create call. Invalid user");
         }
-        else
-        {
-            // 1-1 calling not working 
-            //LogInIfPossible(joinLocator: null, user);
-        }
     }
 
     /// <summary>
@@ -536,7 +528,7 @@ public class MeetingManager : MonoBehaviour
         if (currentActiveCall != null)
         {
             currentActiveCall.Leave();
-            startListeningComingCall = true;
+            startListeningIncomingCall = true;
         }
     }
 
@@ -775,10 +767,14 @@ public class MeetingManager : MonoBehaviour
                     break;
 
                 case MeetingCallState.Disconnected:
-                case MeetingCallState.Disconnecting:
                     leftCall?.Invoke();
+                    Leave();
                     break;
 
+                case MeetingCallState.Disconnecting:
+                    break;
+
+                case MeetingCallState.EarlyMedia:
                 case MeetingCallState.Connecting:
                 case MeetingCallState.Ringing:
                 case MeetingCallState.InLobby:
@@ -790,7 +786,7 @@ public class MeetingManager : MonoBehaviour
                     break;
 
                 default:
-                    Log.Warning<MeetingManager>("Unhandled call state {0}", lastCallState); 
+                    Log.Warning<MeetingManager>("Unhandled call state {0}", lastCallState);
                     break;
             }
         }
@@ -984,6 +980,12 @@ public class MeetingManager : MonoBehaviour
                 break;
             case CallState.Ringing:
                 status = MeetingStatus.LoggedIn(MeetingCallState.Ringing);
+                break;
+            case CallState.InLobby:
+                status = MeetingStatus.LoggedIn(MeetingCallState.InLobby);
+                break;
+            case CallState.EarlyMedia:
+                status = MeetingStatus.LoggedIn(MeetingCallState.EarlyMedia);
                 break;
         }
         ApplyStatus(status);

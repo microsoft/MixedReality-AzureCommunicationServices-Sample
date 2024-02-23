@@ -1076,18 +1076,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1450737121}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 3657285490606564907}
         m_TargetAssemblyTypeName: MixedReality.Toolkit.StatefulInteractable, MixedReality.Toolkit.Core
         m_MethodName: ForceSetToggled
@@ -3657,17 +3645,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1421751894}
   m_CullTransparentMesh: 1
---- !u!1 &1450737121 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1268164973564785702, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
-  m_PrefabInstance: {fileID: 7636352638245676751}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1450737122 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2285528167394270934, guid: cc7b20423af449b4f86b52bf00a30d3a, type: 3}
   m_PrefabInstance: {fileID: 7636352638245676751}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1450737121}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af04333dcbacc1d4eb89b22dbcada3ac, type: 3}

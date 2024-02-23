@@ -13,7 +13,6 @@ using UnityEngine.Events;
 
 
 /// <summary>
-/// A base class which represents a manual test scenario for Azure Communication Calling SDK.
 /// This base class manages call status, microphone audio, speaker audio, video devices, and a 
 /// participant list.
 /// </summary>
