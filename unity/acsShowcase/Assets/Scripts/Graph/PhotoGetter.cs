@@ -107,6 +107,10 @@ namespace Azure.Communication.Calling.Unity
                     Log.Error<PhotoGetter>("Failed load image data into 2D texture.");
                 }
             }
+            else
+            {
+                Photo = null;
+            }
             photoLoaded?.Invoke(args);
             PhotoLoaded?.Invoke(this, args);
         }
