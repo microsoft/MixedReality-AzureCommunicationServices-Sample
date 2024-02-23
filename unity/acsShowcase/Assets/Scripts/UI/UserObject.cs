@@ -27,7 +27,9 @@ public class UserObject : MonoBehaviour
     private List<Texture2D> presences;
     [SerializeField] [Tooltip("The pressable button of this user object")]
     private PressableButton pressableButton;
-    
+    [SerializeField] [Tooltip("The default icon texture")]
+    private Texture defaultIconTexture;
+
     /// <summary>
     /// list of background color 
     /// </summary>
@@ -98,11 +100,6 @@ public class UserObject : MonoBehaviour
     /// </summary>
     private PresenceAvailability presenceAvail;
     
-    
-    /// <summary>
-    /// default icon texture 
-    /// </summary>
-    private Texture defaultIconTexture;
 
     /// <summary>
     /// user presence 
@@ -127,14 +124,6 @@ public class UserObject : MonoBehaviour
     /// event fired when selecting a particiant for a one to one call
     /// </summary>
     public static event Action<UserObject> OnSelectedParticipantCall;
-
-    /// <summary>
-    /// Start 
-    /// </summary>
-    void Start()
-    {
-        defaultIconTexture = profileIcon.texture;
-    }
 
     /// <summary>
     /// copy user object 
