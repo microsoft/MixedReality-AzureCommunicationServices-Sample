@@ -1,6 +1,6 @@
-# Azure Communication Services for HoloLens 2
+# Sample: Video Calling and Teams in a HoloLens 2 Application
 
-## Introduction 
+## Introduction
 
 This sample demonstrates how to use the Azure Communication Services within an immersive mixed reality application, running on HoloLens 2.
 
