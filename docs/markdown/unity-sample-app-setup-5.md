@@ -26,4 +26,4 @@ Next paste this the key into the Unity project:
     > For development purposes, you can also use a communication user access token for authentication. This can be generated from **Settings > Identities & User Access Tokens** from the ACS resource.
 
 ## Next: Known Issues
-Next, the [known issues page](./known-issues), describes some known bugs, unsupported features, and pitfalls.
+Next, the [known issues page](./known-issues.md), describes some known bugs, unsupported features, and pitfalls.
