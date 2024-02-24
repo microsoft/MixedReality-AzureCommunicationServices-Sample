@@ -12,7 +12,8 @@ This sample demonstrates how to use the Azure Communication Services within an i
 4. Install [.Net 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 5. Install [git lfs](https://git-lfs.github.com/)
 6. Clone [repository](https://github.com/microsoft/MixedReality-AzureCommunicationServices-Sample)
-7. Access to a work/school Teams account with administrative privileges.
+7. Access to an Azure Tenant with the necessary privileges for creating new resources and app registrations.
+8. Access to a work/school Teams account with administrative privileges.
 
 ## Overview
 
