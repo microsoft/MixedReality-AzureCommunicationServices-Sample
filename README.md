@@ -42,7 +42,7 @@ This immersive HoloLens 2 sample is made up of two parts:
 The following Microsoft components are used by this sample:
 
 * **[ACS Calling SDK](https://docs.microsoft.com/azure/communication-services/concepts/voice-video-calling/calling-sdk-features)**. Unity app uses this to connect to ACS meetings and participate in video calls.
-* **[ACS Identity SDK](https://docs.microsoft.com/azure/communication-services/concepts/identity-model)**. Consumed by the provided sample Azure Function App. This is used to obtain ACS access tokens.  
+* **[ACS Identity SDK](https://docs.microsoft.com/azure/communication-services/concepts/identity-model)**. The provided sample Azure Function App uses this to obtain ACS access tokens.  
 * **[Azure Identity SDK](https://docs.microsoft.com/dotnet/api/overview/azure/identity-readme)**.  Also used by the provided sample Azure Function App.
 * **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the provided sample Azure Function App.
 * **[Mixed Reality Toolkit 3](http://www.mixedrealitytoolkit.org)**. Used to create mixed reality user experiences in Unity.
