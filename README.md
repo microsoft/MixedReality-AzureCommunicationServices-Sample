@@ -46,8 +46,8 @@ The following Microsoft components are used by this sample:
 * **[Azure Identity SDK](https://docs.microsoft.com/dotnet/api/overview/azure/identity-readme)**.  Also used by the provided sample Azure Function App.
 * **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the provided sample Azure Function App.
 * **[Mixed Reality Toolkit 3](http://www.mixedrealitytoolkit.org)**. Used to create mixed reality user experiences in Unity.
-* **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. A Windows authentication broker used on HoloLens to authenticate users.
-* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. An authentication library used to authenticate users within the Unity editor.
+* **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. Windows authentication broker to authenticate users on HoloLens.
+* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Authentication library used to authenticate users in the Unity editor.
 
 ![Block diagram detailing the components used in this sample application](./docs/markdown/images/acs-on-hololens-2-block-diag.png)
 
