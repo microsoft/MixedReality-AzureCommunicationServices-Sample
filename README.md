@@ -4,26 +4,31 @@
 This sample demonstrates how to use the Azure Communication Services (ACS) within an immersive mixed reality application, running on HoloLens 2.
 
 ## Getting Started
-1.	Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
-2.  Install [Windows 10.0+ SDK](https://developer.microsoft.com/windows/downloads/windows-sdk/)
-3.  Install [Unity 2022 LTS](https://unity3d.com/get-unity/download) with Universal Windows Platform Build Support
-4.  Install [.Net 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-5.  Install [git lfs](https://git-lfs.github.com/)
-5.	Clone [repository](https://github.com/microsoft/MixedReality-AzureCommunicationServices-Sample)
-6.  For AAD authentication, obtain access to a work/school Teams account with administrative privileges.
+
+1. Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
+2. Install [Windows 10.0+ SDK](https://developer.microsoft.com/windows/downloads/windows-sdk/)
+3. Install [Unity 2022 LTS](https://unity3d.com/get-unity/download) with Universal Windows Platform Build Support
+4. Install [.Net 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+5. Install [git lfs](https://git-lfs.github.com/)
+6. Clone [repository](https://github.com/microsoft/MixedReality-AzureCommunicationServices-Sample)
+7. For AAD authentication, obtain access to a work/school Teams account with administrative privileges.
 
 ## Overview
-[Azure Communication Services](https://docs.microsoft.com/azure/communication-services/overview) (ACS) are cloud-based services backed by REST APIs and client library SDKs that help developers integrate voice, video, chat, telephony, and email communications into their applications.  While ACS provides many features, this sample mainly focuses on the Teams interoperability, such as joining a Teams meeting. 
 
-> There are many more ACS features not covered by this sample application. Please visit the main ACS [documentation](https://docs.microsoft.com/azure/communication-services/overview) for additional features and pricing. 
-> 
+[Azure Communication Services](https://docs.microsoft.com/azure/communication-services/overview) (ACS) are cloud-based services backed by REST APIs and client library SDKs that help developers integrate voice, video, chat, telephony, and email communications into their applications.  While ACS provides many features, this sample mainly focuses on the Teams interoperability, such as joining a Teams meeting.
+
+![A screenshot of the application's main panel and video call experience. The left  shows a panel with the signed-in user's profile picture and name, along with an upcoming meeting and a list of relevant contacts. The right shows a video panel with call controls.](./docs/markdown/images/acs-main-panel-in-call.png)
+
 The sample app utilizes the following ACS features:
+
 * Connecting to ACS as a "bring your own identity" (BYOI) user.
 * Connecting to ACS as an authenticated Teams users, via a work/school AAD.
 * Joining a Teams meeting as a Teams or guest (BYOI) user.
 * Participating in voice and video communications during a Teams meeting.
 
 > To sign into ACS as Teams user, an administrator must grant the sample app access to the Teams' tenant. This means, the first time a Teams user authenticates with ACS, using this application, the Teams user must be an administrator for their tenant.
+
+There are many more ACS features not covered by this sample application. Please visit the main ACS [documentation](https://docs.microsoft.com/azure/communication-services/overview) for additional features and pricing.
 
 ## App Components
 
@@ -47,9 +52,8 @@ The following Microsoft components are used by this sample:
 
 ![Block diagram detailing the components used in this sample application](./docs/markdown/images/acs-on-hololens-2-block-diag.png)
 
-
 ## Next Step
-The next step, [Setting Up Azure Communication Services](./azure-communication-services-setup-1.md#setting-up-azure-communication-services), will walk you through how to create an Azure Communication Services resource.
+The next step, [Setting Up Azure Communication Services](./docs/markdown/azure-communication-services-setup-1.md#setting-up-azure-communication-services), will walk you through how to create an Azure Communication Services resource.
 
 ## Contributing
 
