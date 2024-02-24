@@ -1,7 +1,8 @@
 # Azure Communication Services for HoloLens 2
 
 ## Introduction 
-This sample demonstrates how to use the Azure Communication Services (ACS) within an immersive mixed reality application, running on HoloLens 2.
+
+This sample demonstrates how to use the Azure Communication Services within an immersive mixed reality application, running on HoloLens 2.
 
 ## Getting Started
 
@@ -11,24 +12,22 @@ This sample demonstrates how to use the Azure Communication Services (ACS) withi
 4. Install [.Net 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 5. Install [git lfs](https://git-lfs.github.com/)
 6. Clone [repository](https://github.com/microsoft/MixedReality-AzureCommunicationServices-Sample)
-7. For AAD authentication, obtain access to a work/school Teams account with administrative privileges.
+7. Access to a work/school Teams account with administrative privileges.
 
 ## Overview
 
-[Azure Communication Services](https://docs.microsoft.com/azure/communication-services/overview) (ACS) are cloud-based services backed by REST APIs and client library SDKs that help developers integrate voice, video, chat, telephony, and email communications into their applications.  While ACS provides many features, this sample mainly focuses on the Teams interoperability, such as joining a Teams meeting.
+[Azure Communication Services](https://docs.microsoft.com/azure/communication-services/overview)  (ACS) empower developers to seamlessly integrate voice, video, chat, telephony, and email communications into their applications. In this HoloLens 2 sample application, we focus on Teams interoperability, specifically joining Teams meetings. Here’s what our app demonstrates:
+
+1. **Authenticated Teams Integration:** Connect to ACS as an authenticated Teams user using your work/ school credentials.
+2. **Microsoft Graph Integration:** Retrieve coworker information and upcoming meetings.
+3. **Teams Meeting Participation:** Join Teams meetings with video and audio.
+4. **Live Captions:** Render live captions during Teams meetings.
+5. **Incoming Calls:** Accept 1:1 Teams video and audio calls.
+6. **XR Interactions with MRTK3:** Utilize the [Mixed Reality Toolkit 3](http://www.mixedrealitytoolkit.org) for seamless XR interfaces.
 
 ![A screenshot of the application's main panel and video call experience. The left  shows a panel with the signed-in user's profile picture and name, along with an upcoming meeting and a list of relevant contacts. The right shows a video panel with call controls.](./docs/markdown/images/acs-main-panel-in-call.png)
 
-The sample app utilizes the following ACS features:
-
-* Connecting to ACS as a "bring your own identity" (BYOI) user.
-* Connecting to ACS as an authenticated Teams users, via a work/school AAD.
-* Joining a Teams meeting as a Teams or guest (BYOI) user.
-* Participating in voice and video communications during a Teams meeting.
-
-> To sign into ACS as Teams user, an administrator must grant the sample app access to the Teams' tenant. This means, the first time a Teams user authenticates with ACS, using this application, the Teams user must be an administrator for their tenant.
-
-There are many more ACS features not covered by this sample application. Please visit the main ACS [documentation](https://docs.microsoft.com/azure/communication-services/overview) for additional features and pricing.
+There are many more Azure Communication Services features not covered by this sample application. Please visit the Azure Communication Services [documentation](https://docs.microsoft.com/azure/communication-services/overview) for additional features and pricing.
 
 ## App Components
 
@@ -46,7 +45,7 @@ The following Microsoft components are used by this sample:
 * **[ACS Identity SDK](https://docs.microsoft.com/azure/communication-services/concepts/identity-model)**. Used by the sample Function App to obtain ACS access tokens.  
 * **[Azure Identity SDK](https://docs.microsoft.com/dotnet/api/overview/azure/identity-readme)**. Also used by the sample Function App to obtain ACS access tokens.
 * **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the Azure Function App.
-* **[Mixed Reality Toolkit 3](https://github.com/Microsoft/MixedRealityToolkit-Unity)**. Used to create mixed reality user experiences in the Unity app.
+* **[Mixed Reality Toolkit 3](http://www.mixedrealitytoolkit.org)**. Used to create mixed reality user experiences in Unity.
 * **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. One of the authenticated methods used by the Unity app. 
 * **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Another one of the authenticated methods used by the Unity app when playing in the Unity editor
 
