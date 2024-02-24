@@ -34,7 +34,7 @@ There are many more Azure Communication Services features not covered by this sa
 This immersive HoloLens 2 sample is made up of two parts:
 
 * **Unity App**. A native application that runs on HoloLens 2 devices.
-* **Web App**. An Azure Function application that helps create ACS access tokens from AAD access tokens.
+* **Web App**. An Azure Function application that returns an Azure Communication Services access tokens for an authenticated user using a Microsoft Entra ID.
 
 <!-- This "break-page" diff is only used when merging MDs into a single file. --->
 <div class='break-page'></div>
@@ -42,12 +42,12 @@ This immersive HoloLens 2 sample is made up of two parts:
 The following Microsoft components are used by this sample:
 
 * **[ACS Calling SDK](https://docs.microsoft.com/azure/communication-services/concepts/voice-video-calling/calling-sdk-features)**. Unity app uses this to connect to ACS meetings and participate in video calls.
-* **[ACS Identity SDK](https://docs.microsoft.com/azure/communication-services/concepts/identity-model)**. Used by the sample Function App to obtain ACS access tokens.  
-* **[Azure Identity SDK](https://docs.microsoft.com/dotnet/api/overview/azure/identity-readme)**. Also used by the sample Function App to obtain ACS access tokens.
-* **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the Azure Function App.
+* **[ACS Identity SDK](https://docs.microsoft.com/azure/communication-services/concepts/identity-model)**. Consumed by the provided sample Azure Function App. This is used to obtain ACS access tokens.  
+* **[Azure Identity SDK](https://docs.microsoft.com/dotnet/api/overview/azure/identity-readme)**.  Also used by the provided sample Azure Function App.
+* **[Azure Functions SDK](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs?tabs=in-process)**. Used by the provided sample Azure Function App.
 * **[Mixed Reality Toolkit 3](http://www.mixedrealitytoolkit.org)**. Used to create mixed reality user experiences in Unity.
-* **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. One of the authenticated methods used by the Unity app. 
-* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. Another one of the authenticated methods used by the Unity app when playing in the Unity editor
+* **[Web Account Manager (WAM) for UWP](https://docs.microsoft.com/windows/uwp/security/web-account-manager)**. A Windows authentication broker used on HoloLens to authenticate users.
+* **[Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)**. An authentication library used to authenticate users within the Unity editor.
 
 ![Block diagram detailing the components used in this sample application](./docs/markdown/images/acs-on-hololens-2-block-diag.png)
 
