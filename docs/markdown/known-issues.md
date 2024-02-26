@@ -1,4 +1,5 @@
 # Known Issues
+
 The following are known issues, unsupported features, or pitfalls you may encounter when running the sample app:
 
 * When joining a meeting, you will not be able to see the video of participants that have joined before you. In order to see other participants' video, they will have to toggle it off and on. There is an ACS issue where OnVideoStreamStateChanged is not fired when other participants has an active stream before the user joins meeting. 
@@ -11,6 +12,7 @@ The following are known issues, unsupported features, or pitfalls you may encoun
 
 ![Screenshot showing a warning that the feature is not implemented.](./images/not-implemented.png)
 
-# The End
+## The End
+
  This is the of the sample app documentation. To learn about the Unity sample application, and how setup with
  AAD, go to the [start](./azure-function-setup-1.md#multi-tenant-accounts-and-communication-services) of this documentation
