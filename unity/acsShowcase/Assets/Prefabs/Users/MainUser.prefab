@@ -224,6 +224,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 31c743e644772c44492a5100b330ae6d, type: 3}
   - {fileID: 2800000, guid: d2086432f49773e4abf53fc65626554c, type: 3}
   pressableButton: {fileID: 0}
+  defaultIconTexture: {fileID: 2800000, guid: a7c55f177c2da3c48ade207a599e9ddd, type: 3}
 --- !u!114 &7152402777604146220
 MonoBehaviour:
   m_ObjectHideFlags: 0

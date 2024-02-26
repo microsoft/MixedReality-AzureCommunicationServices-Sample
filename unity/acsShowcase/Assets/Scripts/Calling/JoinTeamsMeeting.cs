@@ -33,13 +33,17 @@ public class JoinTeamsMeeting : CallScenario
         Leave();
     }
 
-
-
-    public void Join(string displayName, bool isGuest)
+    public void Join()
     {
         if (CurrentCall != null)
         {
             return;
+        }
+
+        var currentCallAgent = CallAgent;
+        if (CallAgent == null)
+        {
+            throw new InvalidOperationException("CallAgent is invalid.");
         }
 
         SingleAsyncRunner.QueueAsync(async () =>
@@ -47,16 +51,6 @@ public class JoinTeamsMeeting : CallScenario
             var callClient = CallClientHost.Instance.CallClient;
             var credential = new CallTokenCredential(Token);
             var teamLocator = new TeamsMeetingLinkLocator(JoinUrl);
-            if (string.IsNullOrEmpty(displayName))
-                displayName = "Test User";
-            var callAgentOptions = new CallAgentOptions()
-            {
-                DisplayName = displayName,
-                EmergencyCallOptions = new EmergencyCallOptions()
-                {
-                    CountryCode = "US"
-                }
-            };
 
             var joinCallOptions = new JoinCallOptions()
             {
@@ -66,37 +60,11 @@ public class JoinTeamsMeeting : CallScenario
                 IncomingVideoOptions = CreateIncomingVideoOptions()
             };
 
-            if (CurrentCallAgent == null)
+            if (currentCallAgent != null)
             {
                 try
                 {
-                    if (isGuest)
-                    {
-                        CurrentCallAgent = await callClient.CreateCallAgentAsync(credential, callAgentOptions);
-                    }
-                    else
-                    {
-                        CurrentCallAgent = await callClient.CreateTeamsCallAgentAsync(credential);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"Failed to create call agent. Exception: {ex}");
-                }
-            }
-
-            if (CurrentCallAgent != null)
-            {
-                try
-                {
-                    if (CurrentCallAgent is TeamsCallAgent teamsCallAgent)
-                    {
-                        CurrentCall = await teamsCallAgent.JoinAsync(teamLocator, joinCallOptions);
-                    }
-                    else if (CurrentCallAgent is CallAgent acsCallAgent)
-                    {
-                        CurrentCall = await acsCallAgent.JoinAsync(teamLocator, joinCallOptions);
-                    }
+                    CurrentCall = await currentCallAgent.JoinAsync(teamLocator, joinCallOptions);
                 }
                 catch (Exception ex)
                 {
@@ -116,10 +84,12 @@ public class JoinTeamsMeeting : CallScenario
     {
     }
     
+    /// <summary>
+    /// Enable the Teams meeting captions.
+    /// </summary>
     public async Task EnableCaption()
     {
-        CaptionsCallFeature captionsCallFeature = CurrentCall.Features.Captions;
-        
+        CaptionsCallFeature captionsCallFeature = CurrentCall?.Features?.Captions;        
         if (captionsCallFeature != null)
         {
             CallCaptions callCaptions = await captionsCallFeature.GetCaptionsAsync();
@@ -150,19 +120,24 @@ public class JoinTeamsMeeting : CallScenario
 
     }
 
+    /// <summary>
+    /// Stop the Teams meeting captions.
+    /// </summary>
     public async void StopCaption()
     {
-        if (teamsCaptions == null) return;
-        
-        try
+        var captionsToStop = teamsCaptions;
+        teamsCaptions = null;
+
+        if (captionsToStop != null)
         {
-            await teamsCaptions.StopCaptionsAsync();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("Cannot stop caption. " + ex.Message);
+            try
+            {
+                await captionsToStop.StopCaptionsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Cannot stop caption. " + ex.Message);
+            }
         }
     }
-    
-
 }

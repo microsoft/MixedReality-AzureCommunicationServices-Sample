@@ -15,7 +15,7 @@ namespace Azure.Communication.Calling.Unity
             {
                 AuthenticationState = authenticationStatus,
                 AuthenticationError = MeetingAuthenticationError.None,
-                CallState = MeetingCallState.None
+                CallState = MeetingCallState.Unknown
             };
         }
 
@@ -35,7 +35,17 @@ namespace Azure.Communication.Calling.Unity
             {
                 AuthenticationState = MeetingAuthenticationState.LoggedOut,
                 AuthenticationError = error,
-                CallState = MeetingCallState.None
+                CallState = MeetingCallState.Unknown
+            };
+        }
+
+        public static MeetingStatus LoggedOut()
+        {
+            return new MeetingStatus()
+            {
+                AuthenticationState = MeetingAuthenticationState.LoggedOut,
+                AuthenticationError = MeetingAuthenticationError.None,
+                CallState = MeetingCallState.Unknown
             };
         }
 
@@ -167,7 +177,7 @@ namespace Azure.Communication.Calling.Unity
                     result = "On Hold";
                     break;
 
-                case MeetingCallState.None:
+                case MeetingCallState.Unknown:
                 case MeetingCallState.Disconnected:
                 default:
                     result = "Not in meeting";

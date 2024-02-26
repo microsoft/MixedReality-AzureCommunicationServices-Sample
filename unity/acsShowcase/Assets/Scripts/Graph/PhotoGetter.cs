@@ -67,6 +67,7 @@ namespace Azure.Communication.Calling.Unity
         #region Private Functions
         private async void UpdateProfilesWorkerAsync()
         {
+            Photo = null;
             byte[] data = null;
             string token = Token;
             if (!string.IsNullOrEmpty(token))
