@@ -135,8 +135,8 @@ public class UserObject : MonoBehaviour
             userObject.Id, 
             userObject.Email, 
             userObject.UserObjectPageType, 
-            userObject.DisplayName, 
-            (Texture2D)userObject.profileIcon.texture, 
+            userObject.DisplayName,
+            (userObject.profileIcon.texture == null) ? null : (Texture2D)userObject.profileIcon.texture, 
             userObject.presenceAvail);
     }
 
