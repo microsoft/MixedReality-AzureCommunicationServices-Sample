@@ -64,7 +64,14 @@ public class JoinTeamsMeeting : CallScenario
             {
                 try
                 {
-                    CurrentCall = await currentCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    if (CallAgent is TeamsCallAgent teamsCallAgent)
+                    {
+                        CurrentCall = await teamsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
+                    else if (CallAgent is CallAgent acsCallAgent)
+                    {
+                        CurrentCall = await acsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
                 }
                 catch (Exception ex)
                 {

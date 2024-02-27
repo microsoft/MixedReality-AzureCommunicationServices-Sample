@@ -7,7 +7,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,7 +18,7 @@ using UnityEngine.Events;
 [Serializable]
 public struct CallScenarioStateChangedEventArgs
 {
-    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommunicationCall call)
+    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommonCommunicationCall call)
     {
         Scenario = scenario;
         Call = call;
@@ -27,7 +26,7 @@ public struct CallScenarioStateChangedEventArgs
 
     public CallScenario Scenario { get; private set; }
 
-    public CommunicationCall Call { get; private set; }
+    public CommonCommunicationCall Call { get; private set; }
 
     public CallState State => Call?.State ?? CallState.None;
 }
@@ -47,12 +46,6 @@ public class CallScenarioStateChangedEvent : UnityEvent<CallScenarioStateChanged
 /// </summary>
 public abstract class CallScenario : MonoBehaviour
 {
-
-    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-    public static extern uint GetThreadId(IntPtr hThread);
-
-    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-    public static extern IntPtr GetCurrentThread();
     private List<OutgoingVideoStream> outgoingVideoStreamsAtStart = new List<OutgoingVideoStream>();
 
     private VirtualOutgoingVideoStream rawOutgoingVideoStream = null;
@@ -210,7 +203,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    public CommonCallAgent CurrentCallAgent
+    public CommonCallAgent CallAgent
     {
         get => currentCallAgent;
 
@@ -528,9 +521,8 @@ public abstract class CallScenario : MonoBehaviour
         {
             if (CurrentCall is TeamsCall teamsCall)
             {
-                IntPtr hThread = GetCurrentThread();
-                string threadId = GetThreadId(hThread).ToString();
-                return teamsCall?.AddParticipant(personID, new AddTeamsParticipantOptions(threadId));
+                //Not implemented
+                //return teamsCall?.AddParticipant(personID, new AddTeamsParticipantOptions(System.Environment.CurrentManagedThreadId.ToString()));
             }
             else if (CurrentCall is CommunicationCall acsCall)
             {
