@@ -76,6 +76,10 @@ public class HandleIncomingCall : CallScenario
                 {
                     CurrentCall = await acsCall.AcceptAsync(acceptCallOptions);
                 }
+                else
+                {
+                    Log.Error<HandleIncomingCall>($"Unable to accept call. Unknown call type {typeof(acceptCall)}.");
+                }
             }
         });
     }

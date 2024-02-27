@@ -72,6 +72,10 @@ public class JoinTeamsMeeting : CallScenario
                     {
                         CurrentCall = await acsCallAgent.JoinAsync(teamLocator, joinCallOptions);
                     }
+                    else
+                    {
+                        Log.Error<JoinTeamsMeeting>($"Unable to join call/meeting. Unknown call agent type {typeof(CallAgent)}.");
+                    }
                 }
                 catch (Exception ex)
                 {

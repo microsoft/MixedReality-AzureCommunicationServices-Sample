@@ -213,28 +213,14 @@ public abstract class CallScenario : MonoBehaviour
             {
                 if (currentCallAgent != null)
                 {
-                    if (currentCallAgent is TeamsCallAgent teamsCallAgent)
-                    {
-                        teamsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
-                    }
-                    else if (currentCallAgent is CallAgent acsCallAgent)
-                    {
-                        acsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
-                    }
+                    AddCallAgentEventHandlers(currentCallAgent);
                 }
 
                 currentCallAgent = value;
 
                 if (currentCallAgent != null)
                 {
-                    if (currentCallAgent is TeamsCallAgent teamsCallAgent)
-                    {
-                        teamsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
-                    }
-                    else if (currentCallAgent is CallAgent acsCallAgent)
-                    {
-                        acsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
-                    }
+                    RemoveCallAgentEventHandlers(currentCallAgent);
                 }
 
                 InvalidateListeningStatus();
@@ -510,28 +496,57 @@ public abstract class CallScenario : MonoBehaviour
             InvalidateVideoCaptureStartedOrEnded();
         }
     }
-    
+
+    /// <summary>
+    /// Add event handlers to the call agent.
+    /// </summary>
+    private void AddCallAgentEventHandlers(CommonCallAgent commonCallAgent)
+    {
+        if (commonCallAgent != null)
+        {
+            if (commonCallAgent is CallAgent callAgent)
+            {
+                callAgent.IncomingCallReceived += OnIncomingCall;
+            }
+            else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
+            {
+                teamsCallAgent.IncomingCallReceived += OnIncomingTeamsCall;
+            }
+            else
+            {
+                Log.Error<CallScenario>($"Unable register call agent events. Unknown call type {typeof(acsCallAgent)}.");
+            }
+        }
+    }
+    /// <summary>
+    /// Remove event handlers from the call agent.
+    /// </summary>
+    private void RemoveCallAgentEventHandlers(CommonCallAgent commonCallAgent)
+    {
+        if (commonCallAgent != null)
+        {
+            if (commonCallAgent is CallAgent callAgent)
+            {
+                callAgent.IncomingCallReceived -= OnIncomingCall;
+            }
+            else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
+            {
+                teamsCallAgent.IncomingCallReceived -= OnIncomingTeamsCall;
+            }
+            else
+            {
+                Log.Error<CallScenario>($"Unable unregister from call agent events. Unknown call type {typeof(acsCallAgent)}.");
+            }
+        }
+    }
+
     /// <summary>
     /// Add new participant to this call. This functionality is not implemented.
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
-        if (CurrentCall != null)
-        {
-            if (CurrentCall is TeamsCall teamsCall)
-            {
-                //return teamsCall?.AddParticipant(personID, new AddTeamsParticipantOptions(System.Environment.CurrentManagedThreadId.ToString()));
-            }
-            else if (CurrentCall is CommunicationCall acsCall)
-            {
-                //return acsCall?.AddParticipant(personID);
-            }
-            return null;
-        }
-        else
-        {
-            return null;
-        }
+        Log.Warning<CallScenario>("Add participant currently not implemented");
+        return null;
     }
 
     /// <summary>
