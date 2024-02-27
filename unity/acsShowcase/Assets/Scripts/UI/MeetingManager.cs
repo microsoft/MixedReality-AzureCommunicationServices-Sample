@@ -772,26 +772,25 @@ public class MeetingManager : MonoBehaviour
         var callClient = CallClientHost.Instance.CallClient;
         var credential = new CallTokenCredential(serviceIdentity.CommunicationAccessToken);
 
-        var callAgentOptions = new CallAgentOptions()
-        {
-            DisplayName = serviceIdentity.LocalParticipant.DisplayName,
-            EmergencyCallOptions = new EmergencyCallOptions()
-            {
-                CountryCode = "US"
-            }
-        };
-
         CommonCallAgent agent = null;
         try
         {
             Log.Verbose<MeetingManager>("Creting new call agent.");
             if (forceSignInAsGuest)
             {
+                var callAgentOptions = new CallAgentOptions()
+                {
+                    DisplayName = serviceIdentity.LocalParticipant.DisplayName,
+                    EmergencyCallOptions = new EmergencyCallOptions()
+                    {
+                        CountryCode = "US"
+                    }
+                };
                 agent = await callClient.CreateCallAgentAsync(credential, callAgentOptions);
             }
             else
             {
-                agent = await callClient.CreateTeamsCallAgentAsync(credential);
+                agent = await callClient.CreateTeamsCallAgentAsync(credential, new TeamsCallAgentOptions());
             }
         }
         catch (Exception ex)
