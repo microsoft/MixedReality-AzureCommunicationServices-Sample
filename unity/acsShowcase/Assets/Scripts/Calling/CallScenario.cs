@@ -221,7 +221,6 @@ public abstract class CallScenario : MonoBehaviour
                     {
                         acsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
                     }
-                    currentCallAgent.Dispose();
                 }
 
                 currentCallAgent = value;
@@ -513,7 +512,7 @@ public abstract class CallScenario : MonoBehaviour
     }
     
     /// <summary>
-    /// Add new participant to this call
+    /// Add new participant to this call. This functionality is not implemented.
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
@@ -521,12 +520,11 @@ public abstract class CallScenario : MonoBehaviour
         {
             if (CurrentCall is TeamsCall teamsCall)
             {
-                //Not implemented
                 //return teamsCall?.AddParticipant(personID, new AddTeamsParticipantOptions(System.Environment.CurrentManagedThreadId.ToString()));
             }
             else if (CurrentCall is CommunicationCall acsCall)
             {
-                return acsCall?.AddParticipant(personID);
+                //return acsCall?.AddParticipant(personID);
             }
             return null;
         }
