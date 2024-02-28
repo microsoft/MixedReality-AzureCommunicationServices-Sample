@@ -213,14 +213,14 @@ public abstract class CallScenario : MonoBehaviour
             {
                 if (currentCallAgent != null)
                 {
-                    AddCallAgentEventHandlers(currentCallAgent);
+                    RemoveCallAgentEventHandlers(currentCallAgent);
                 }
 
                 currentCallAgent = value;
 
                 if (currentCallAgent != null)
                 {
-                    RemoveCallAgentEventHandlers(currentCallAgent);
+                    AddCallAgentEventHandlers(currentCallAgent);
                 }
 
                 InvalidateListeningStatus();
