@@ -506,15 +506,15 @@ public abstract class CallScenario : MonoBehaviour
         {
             if (commonCallAgent is CallAgent callAgent)
             {
-                callAgent.IncomingCallReceived += OnIncomingCall;
+                callAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
             }
             else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
             {
-                teamsCallAgent.IncomingCallReceived += OnIncomingTeamsCall;
+                teamsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
             }
             else
             {
-                Log.Error<CallScenario>($"Unable register call agent events. Unknown call type {typeof(acsCallAgent)}.");
+                Log.Error<CallScenario>($"Unable register call agent events. Unknown call type {commonCallAgent.GetType()}.");
             }
         }
     }
@@ -527,15 +527,15 @@ public abstract class CallScenario : MonoBehaviour
         {
             if (commonCallAgent is CallAgent callAgent)
             {
-                callAgent.IncomingCallReceived -= OnIncomingCall;
+                callAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
             }
             else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
             {
-                teamsCallAgent.IncomingCallReceived -= OnIncomingTeamsCall;
+                teamsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
             }
             else
             {
-                Log.Error<CallScenario>($"Unable unregister from call agent events. Unknown call type {typeof(acsCallAgent)}.");
+                Log.Error<CallScenario>($"Unable unregister from call agent events. Unknown call type {commonCallAgent.GetType()}.");
             }
         }
     }

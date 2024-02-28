@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Azure.Communication.Calling.UnityClient;
+using Azure.Communication.Calling.Unity;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -78,7 +79,7 @@ public class HandleIncomingCall : CallScenario
                 }
                 else
                 {
-                    Log.Error<HandleIncomingCall>($"Unable to accept call. Unknown call type {typeof(acceptCall)}.");
+                    Log.Error<HandleIncomingCall>($"Unable to accept call. Unknown call type {acceptCall.GetType()}.");
                 }
             }
         });
