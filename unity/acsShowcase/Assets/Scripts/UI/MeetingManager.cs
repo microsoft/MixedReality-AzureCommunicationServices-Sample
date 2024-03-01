@@ -181,7 +181,7 @@ public class MeetingManager : MonoBehaviour
     /// <summary>
     /// current call agent shared with scenarios 
     /// </summary>
-    private CallAgent currentCallAgent = null;
+    private CommonCallAgent currentCallAgent = null;
 
     /// <summary>
     /// is camera enabled?
@@ -371,12 +371,12 @@ public class MeetingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// get called when adding participant 
+    /// Called when adding participant. This funcionality is currently not implemented.
     /// </summary>
     /// <param guestName="participant"></param>
     private void ParticipantPanelControllerOnAddParticipant(GraphUser person)
     {
-        AddParticipant(person);
+        //AddParticipant(person);
     }
 
 
@@ -761,7 +761,7 @@ public class MeetingManager : MonoBehaviour
         return authenicationCancel.Token;
     }
 
-    private async Task<bool> CreateCallAgent(CancellationToken cancellationToke)
+    private async Task<bool> CreateCallAgent(CancellationToken cancellationToken)
     {
         if (currentCallAgent != null)
         {   
@@ -772,33 +772,39 @@ public class MeetingManager : MonoBehaviour
         var callClient = CallClientHost.Instance.CallClient;
         var credential = new CallTokenCredential(serviceIdentity.CommunicationAccessToken);
 
-        var callAgentOptions = new CallAgentOptions()
-        {
-            DisplayName = serviceIdentity.LocalParticipant.DisplayName,
-            EmergencyCallOptions = new EmergencyCallOptions()
-            {
-                CountryCode = "US"
-            }
-        };
-
-        CallAgent agent = null;
+        CommonCallAgent agent = null;
         try
         {
             Log.Verbose<MeetingManager>("Creting new call agent.");
-            agent = await callClient.CreateCallAgent(credential, callAgentOptions);
+            if (forceSignInAsGuest)
+            {
+                var callAgentOptions = new CallAgentOptions()
+                {
+                    DisplayName = serviceIdentity.LocalParticipant.DisplayName,
+                    EmergencyCallOptions = new EmergencyCallOptions()
+                    {
+                        CountryCode = "US"
+                    }
+                };
+                agent = await callClient.CreateCallAgentAsync(credential, callAgentOptions);
+            }
+            else
+            {
+                agent = await callClient.CreateTeamsCallAgentAsync(credential, new TeamsCallAgentOptions());
+            }
         }
         catch (Exception ex)
         {
             Debug.LogError($"Failed to create call agent. Exception: {ex}");
         }
 
-        if (!cancellationToke.IsCancellationRequested)
+        if (!cancellationToken.IsCancellationRequested)
         {
             Log.Verbose<MeetingManager>("Saving new call agent.");
             currentCallAgent = agent;
         }
 
-        return currentCallAgent != null && !cancellationToke.IsCancellationRequested;
+        return currentCallAgent != null && !cancellationToken.IsCancellationRequested;
     }
 
     /// <summary>

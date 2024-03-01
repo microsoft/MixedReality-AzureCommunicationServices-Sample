@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Azure.Communication.Calling.UnityClient;
+using Azure.Communication.Calling.Unity;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -64,7 +65,18 @@ public class JoinTeamsMeeting : CallScenario
             {
                 try
                 {
-                    CurrentCall = await currentCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    if (CallAgent is TeamsCallAgent teamsCallAgent)
+                    {
+                        CurrentCall = await teamsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
+                    else if (CallAgent is CallAgent acsCallAgent)
+                    {
+                        CurrentCall = await acsCallAgent.JoinAsync(teamLocator, joinCallOptions);
+                    }
+                    else
+                    {
+                        Log.Error<JoinTeamsMeeting>($"Unable to join call/meeting. Unknown call agent type {CallAgent.GetType()}.");
+                    }
                 }
                 catch (Exception ex)
                 {

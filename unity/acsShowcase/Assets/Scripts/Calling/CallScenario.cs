@@ -18,7 +18,7 @@ using UnityEngine.Events;
 [Serializable]
 public struct CallScenarioStateChangedEventArgs
 {
-    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommunicationCall call)
+    public CallScenarioStateChangedEventArgs(CallScenario scenario, CommonCommunicationCall call)
     {
         Scenario = scenario;
         Call = call;
@@ -26,7 +26,7 @@ public struct CallScenarioStateChangedEventArgs
 
     public CallScenario Scenario { get; private set; }
 
-    public CommunicationCall Call { get; private set; }
+    public CommonCommunicationCall Call { get; private set; }
 
     public CallState State => Call?.State ?? CallState.None;
 }
@@ -63,8 +63,8 @@ public abstract class CallScenario : MonoBehaviour
 
     private SingleAsyncRunner singleAsyncRunner = null;
     private DeviceManager currentDeviceManager = null;
-    private CallAgent currentCallAgent = null;
-    private CommunicationCall currentCall = null;
+    private CommonCallAgent currentCallAgent = null;
+    private CommonCommunicationCall currentCall = null;
 
     private bool updateStatus = false;
     private bool updateRemoteParticipants = false;
@@ -203,7 +203,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    public CallAgent CallAgent
+    public CommonCallAgent CallAgent
     {
         get => currentCallAgent;
 
@@ -213,14 +213,14 @@ public abstract class CallScenario : MonoBehaviour
             {
                 if (currentCallAgent != null)
                 {
-                    currentCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+                    RemoveCallAgentEventHandlers(currentCallAgent);
                 }
 
                 currentCallAgent = value;
 
                 if (currentCallAgent != null)
                 {
-                    currentCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+                    AddCallAgentEventHandlers(currentCallAgent);
                 }
 
                 InvalidateListeningStatus();
@@ -234,7 +234,7 @@ public abstract class CallScenario : MonoBehaviour
 
     protected IReadOnlyList<OutgoingVideoStream> OutgoingVideoStreamsAtStart => outgoingVideoStreamsAtStart.AsReadOnly();
 
-    protected CommunicationCall CurrentCall
+    protected CommonCommunicationCall CurrentCall
     {
         get => currentCall;
         set
@@ -496,20 +496,57 @@ public abstract class CallScenario : MonoBehaviour
             InvalidateVideoCaptureStartedOrEnded();
         }
     }
-    
+
     /// <summary>
-    /// Add new participant to this call
+    /// Add event handlers to the call agent.
+    /// </summary>
+    private void AddCallAgentEventHandlers(CommonCallAgent commonCallAgent)
+    {
+        if (commonCallAgent != null)
+        {
+            if (commonCallAgent is CallAgent callAgent)
+            {
+                callAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+            }
+            else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
+            {
+                teamsCallAgent.IncomingCallReceived += OnCurrentCallAgentIncomingCall;
+            }
+            else
+            {
+                Log.Error<CallScenario>($"Unable register call agent events. Unknown call type {commonCallAgent.GetType()}.");
+            }
+        }
+    }
+    /// <summary>
+    /// Remove event handlers from the call agent.
+    /// </summary>
+    private void RemoveCallAgentEventHandlers(CommonCallAgent commonCallAgent)
+    {
+        if (commonCallAgent != null)
+        {
+            if (commonCallAgent is CallAgent callAgent)
+            {
+                callAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+            }
+            else if (commonCallAgent is TeamsCallAgent teamsCallAgent)
+            {
+                teamsCallAgent.IncomingCallReceived -= OnCurrentCallAgentIncomingCall;
+            }
+            else
+            {
+                Log.Error<CallScenario>($"Unable unregister from call agent events. Unknown call type {commonCallAgent.GetType()}.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Add new participant to this call. This functionality is not implemented.
     /// </summary>
     public RemoteParticipant AddParticipant(CallIdentifier personID)
     {
-        if (CurrentCall != null)
-        {
-            return CurrentCall?.AddParticipant(personID);
-        }
-        else
-        {
-            return null;
-        }
+        Log.Warning<CallScenario>("Add participant currently not implemented");
+        return null;
     }
 
     /// <summary>
@@ -561,7 +598,7 @@ public abstract class CallScenario : MonoBehaviour
         }
     }
 
-    protected virtual void IncomingCall(IncomingCall call)
+    protected virtual void IncomingCall(CommonIncomingCall call)
     {
     }
 
@@ -610,7 +647,11 @@ public abstract class CallScenario : MonoBehaviour
 
         var result = new OutgoingAudioOptions()
         {
-            IsMuted = MuteAtStart
+            IsMuted = MuteAtStart,
+            Filters = new OutgoingAudioFilters()
+            {
+                NoiseSuppressionMode = NoiseSuppressionMode.Low
+            }
         };
 
         if (rawOutgoingAudioStream != null)
@@ -730,6 +771,11 @@ public abstract class CallScenario : MonoBehaviour
     }
 
     private void OnCurrentCallAgentIncomingCall(object sender, IncomingCallReceivedEventArgs args)
+    {
+        IncomingCall(args.IncomingCall);
+    }
+
+    private void OnCurrentCallAgentIncomingCall(object sender, TeamsIncomingCallReceivedEventArgs args)
     {
         IncomingCall(args.IncomingCall);
     }
