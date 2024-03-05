@@ -1235,6 +1235,14 @@ PrefabInstance:
       propertyPath: m_text
       value: "\uF2B7"
       objectReference: {fileID: 0}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7216918420766221479, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1704,6 +1712,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6770590485004012010, guid: db353d9140c47af4395414573cade1b0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 6770590485004012010, guid: db353d9140c47af4395414573cade1b0, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6801978830895228399, guid: db353d9140c47af4395414573cade1b0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1856,6 +1872,14 @@ PrefabInstance:
     - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_text
       value: "\uF319"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7216918420766221479, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2123,6 +2147,14 @@ PrefabInstance:
       propertyPath: m_text
       value: "\uF2A4"
       objectReference: {fileID: 0}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7216918420766221479, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2308,6 +2340,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5881822350632469630}
     m_Modifications:
+    - target: {fileID: 921799914618226924, guid: 4f0879b9ac330924c8af8713f42aafe4, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 921799914618226924, guid: 4f0879b9ac330924c8af8713f42aafe4, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1697853415383864570, guid: 4f0879b9ac330924c8af8713f42aafe4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3117,6 +3157,14 @@ PrefabInstance:
     - target: {fileID: 2989896725203862839, guid: c6f28dd10223f1a4391a1414f2caa1c0, type: 3}
       propertyPath: m_Name
       value: TodayMeeting
+      objectReference: {fileID: 0}
+    - target: {fileID: 4451204701255695110, guid: c6f28dd10223f1a4391a1414f2caa1c0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2a1243b519afc6d4aa5fecd8ac03718f, type: 2}
+    - target: {fileID: 4451204701255695110, guid: c6f28dd10223f1a4391a1414f2caa1c0, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5269501238517525715, guid: c6f28dd10223f1a4391a1414f2caa1c0, type: 3}
       propertyPath: m_Pivot.x
