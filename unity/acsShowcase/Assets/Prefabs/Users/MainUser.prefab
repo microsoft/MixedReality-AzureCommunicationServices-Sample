@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6166337542978814957
 RectTransform:
   m_ObjectHideFlags: 0
@@ -637,7 +637,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Diego Siciliani
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}
   m_sharedMaterial: {fileID: 3494153625042623378, guid: d70d388a3ab52dd44a14414e57b4d0cd, type: 2}

@@ -626,6 +626,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 31c743e644772c44492a5100b330ae6d, type: 3}
   - {fileID: 2800000, guid: d2086432f49773e4abf53fc65626554c, type: 3}
   pressableButton: {fileID: 7916167422866650842}
+  defaultIconTexture: {fileID: 0}
 --- !u!1 &8117099032962925262
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +783,14 @@ PrefabInstance:
     - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_text
       value: "\uF690"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: f83445bd5ebe9a04586fdf0ec14afe1d, type: 2}
+    - target: {fileID: 5095746839500215027, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5319578128471115350, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: m_AnchorMax.x

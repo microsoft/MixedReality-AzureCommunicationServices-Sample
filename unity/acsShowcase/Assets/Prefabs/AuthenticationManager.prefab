@@ -112,7 +112,7 @@ MonoBehaviour:
   - {fileID: 5169249555944750322}
   - {fileID: 6999667651459382563}
   authority: 3
-  clientID: 
+  clientID: 4f53a086-3369-4a31-af56-bdbbbb0ce5b6
   tenantId: 
   useTenant: 0
   onAuthenticationEvent:
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Azure Funcation App
   scopes:
-  - 
+  - api://72f988bf-86f1-41af-91ab-2d7cd011db47/4f53a086-3369-4a31-af56-bdbbbb0ce5b6/user_impersonation
   resource: 
   onAuthenticationEvent:
     m_PersistentCalls:
